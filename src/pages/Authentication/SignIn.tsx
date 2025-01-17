@@ -1,7 +1,7 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-// import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { stagingURL } from '../../utils/API'
 
 const SignIn: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -12,13 +12,13 @@ const SignIn: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-  
+
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', {
+      const response = await axios.post(`${stagingURL}/api/login/`, {
         username,
         password,
       });
-  
+
       const {
         access,
         refresh,
@@ -27,8 +27,9 @@ const SignIn: React.FC = () => {
         wholesale,
         name,
         phone_number,
+        is_staff
       } = response.data;
-  
+
       // Simpan data pengguna dan wholesale di localStorage
       localStorage.setItem('token', access);
       localStorage.setItem('refresh_token', refresh);
@@ -37,9 +38,10 @@ const SignIn: React.FC = () => {
       localStorage.setItem('ws_id', wholesale);
       localStorage.setItem('ws_name', name || '');
       localStorage.setItem('ws_phone_number', phone_number || '');
-  
+      localStorage.setItem('is_staff', is_staff);
+
       // Navigasi ke dashboard
-      navigate('/');
+      navigate('/profile');
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.detail || 'Invalid username or password.');
@@ -48,7 +50,6 @@ const SignIn: React.FC = () => {
       }
     }
   };
-  
 
   const renderSVG = () => (
     <svg
@@ -172,11 +173,9 @@ const SignIn: React.FC = () => {
       />
     </svg>
   )
-  
+
   return (
     <>
-      {/* <Breadcrumb pageName="Sign In" /> */}
-
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">

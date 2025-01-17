@@ -8,15 +8,18 @@ const Settings = () => {
         <Breadcrumb pageName="Settings" />
 
         <div className="grid grid-cols-5 gap-8">
+          {/* Personal Information Form */}
           <div className="col-span-5 xl:col-span-3">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+              <div className="border-b border-stroke p-4 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
                   Personal Information
                 </h3>
               </div>
+
               <div className="p-7">
-                <form action="#">
+                <form>
+                  {/* Name and Phone */}
                   <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
                     <div className="w-full sm:w-1/2">
                       <label
@@ -52,11 +55,10 @@ const Settings = () => {
                           </svg>
                         </span>
                         <input
-                          className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white"
                           type="text"
-                          name="fullName"
                           id="fullName"
-                          placeholder="Devid Jhon"
+                          placeholder="Enter your name"
                           defaultValue="Devid Jhon"
                         />
                       </div>
@@ -70,20 +72,20 @@ const Settings = () => {
                         Phone Number
                       </label>
                       <input
-                        className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        type="text"
-                        name="phoneNumber"
+                        className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white"
+                        type="tel"
                         id="phoneNumber"
-                        placeholder="+990 3343 7865"
+                        placeholder="Enter phone number"
                         defaultValue="+990 3343 7865"
                       />
                     </div>
                   </div>
 
+                  {/* Email */}
                   <div className="mb-5.5">
                     <label
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="emailAddress"
+                      htmlFor="email"
                     >
                       Email Address
                     </label>
@@ -114,39 +116,39 @@ const Settings = () => {
                         </svg>
                       </span>
                       <input
-                        className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                        className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white"
                         type="email"
-                        name="emailAddress"
-                        id="emailAddress"
-                        placeholder="devidjond45@gmail.com"
+                        id="email"
+                        placeholder="Enter email address"
                         defaultValue="devidjond45@gmail.com"
                       />
                     </div>
                   </div>
 
+                  {/* Username */}
                   <div className="mb-5.5">
                     <label
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="Username"
+                      htmlFor="username"
                     >
                       Username
                     </label>
                     <input
-                      className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                      className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white"
                       type="text"
-                      name="Username"
-                      id="Username"
-                      placeholder="devidjhon24"
+                      id="username"
+                      placeholder="Enter username"
                       defaultValue="devidjhon24"
                     />
                   </div>
 
+                  {/* Bio */}
                   <div className="mb-5.5">
                     <label
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="Username"
+                      htmlFor="bio"
                     >
-                      BIO
+                      Bio
                     </label>
                     <div className="relative">
                       <span className="absolute left-4.5 top-4">
@@ -179,72 +181,75 @@ const Settings = () => {
                           </defs>
                         </svg>
                       </span>
-
                       <textarea
-                        className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        name="bio"
+                        className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white"
                         id="bio"
-                        rows={6}
+                        rows={4}
                         placeholder="Write your bio here"
-                        defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris tempus ut. Donec fermentum blandit aliquet."
+                        defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris tempus ut."
                       ></textarea>
                     </div>
                   </div>
 
                   <div className="flex justify-end gap-4.5">
                     <button
-                      className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                      type="submit"
+                      className="rounded border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                      type="button"
                     >
                       Cancel
                     </button>
                     <button
-                      className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
+                      className="rounded bg-primary px-6 py-2 font-medium text-gray hover:bg-opacity-90"
                       type="submit"
                     >
-                      Save
+                      Save Changes
                     </button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
+
+          {/* Profile Photo Upload */}
           <div className="col-span-5 xl:col-span-2">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+              <div className="border-b border-stroke p-4 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
-                  Your Photo
+                  Profile Photo
                 </h3>
               </div>
               <div className="p-7">
-                <form action="#">
+                <form>
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-14 w-14 rounded-full">
-                      <img src={userThree} alt="User" />
+                      <img src={userThree} alt="User" className="rounded-full" />
                     </div>
                     <div>
-                      <span className="mb-1.5 text-black dark:text-white">
-                        Edit your photo
-                      </span>
-                      <span className="flex gap-2.5">
-                        <button className="text-sm hover:text-primary">
+                      <p className="mb-1.5 text-black dark:text-white">
+                        Change Photo
+                      </p>
+                      <div className="flex gap-2.5">
+                        <button
+                          type="button"
+                          className="text-sm hover:text-primary"
+                        >
                           Delete
                         </button>
-                        <button className="text-sm hover:text-primary">
+                        <button
+                          type="button"
+                          className="text-sm hover:text-primary"
+                        >
                           Update
                         </button>
-                      </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div
-                    id="FileUpload"
-                    className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5"
-                  >
+                  <div className="relative mb-5.5 block w-full cursor-pointer rounded border-2 border-dashed border-primary bg-gray p-4 text-center dark:bg-meta-4 sm:py-7.5">
                     <input
                       type="file"
                       accept="image/*"
-                      className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
+                      className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer opacity-0"
                     />
                     <div className="flex flex-col items-center justify-center space-y-3">
                       <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
@@ -275,24 +280,24 @@ const Settings = () => {
                           />
                         </svg>
                       </span>
-                      <p>
+                      <p className="text-sm">
                         <span className="text-primary">Click to upload</span> or
                         drag and drop
                       </p>
-                      <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
-                      <p>(max, 800 X 800px)</p>
+                      <p className="mt-1.5 text-sm">SVG, PNG, JPG or GIF</p>
+                      <p className="text-sm">(max 800x800px)</p>
                     </div>
                   </div>
 
                   <div className="flex justify-end gap-4.5">
                     <button
-                      className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                      type="submit"
+                      className="rounded border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                      type="button"
                     >
                       Cancel
                     </button>
                     <button
-                      className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
+                      className="rounded bg-primary px-6 py-2 font-medium text-gray hover:bg-opacity-90"
                       type="submit"
                     >
                       Save
