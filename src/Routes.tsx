@@ -10,6 +10,7 @@ import FormLayout from './pages/Form/FormLayout';
 import RegisterRetailer from './pages/RegisterRetailer';
 import Settings from './pages/Settings';
 import Verification from './pages/Verification';
+import Redeem from './pages/Redeem';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
 
@@ -59,7 +60,16 @@ const AppRoutes = () => (
                                 index
                                 element={
                                     <>
-                                        <PageTitle title="eCommerce Dashboard" />
+                                        <PageTitle title="Dashboard" />
+                                        <ECommerce />
+                                    </>
+                                }
+                            />
+                            <Route
+                                path="dashboard"
+                                element={
+                                    <>
+                                        <PageTitle title="Dashboard" />
                                         <ECommerce />
                                     </>
                                 }
@@ -106,6 +116,16 @@ const AppRoutes = () => (
                                     <>
                                         <PageTitle title="Verification" />
                                         <Verification />
+                                    </>
+                                }
+                            />
+
+                            <Route
+                                path="redeem"
+                                element={
+                                    <>
+                                        <PageTitle title="Redeem" />
+                                        <Redeem />
                                     </>
                                 }
                             />

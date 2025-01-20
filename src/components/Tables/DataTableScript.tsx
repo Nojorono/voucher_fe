@@ -1,9 +1,8 @@
 import DataTable, { TableColumn } from 'react-data-table-component';
-import { useNavigate } from 'react-router-dom';
 import { memo, useMemo, useState, useEffect } from 'react';
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { stagingURL, signOut } from '../../utils';
+import { stagingURL } from '../../utils/API';
 import { photoRetailer } from '../../types/photoRetailer';
 import Spinner from '../../components/Spinner'
 
@@ -12,10 +11,10 @@ const CustomLoader = () => (
 );
 
 const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetailer[]; onUpdate: () => void }) => {
-    const navigate = useNavigate();
-
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
     const [pending, setPending] = useState(true);
+    const [rows, setRows] = useState<any[]>([]);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState<string | null>(null);
     const [filter, setFilter] = useState<[number, number] | null>(null);
@@ -42,13 +41,37 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
             .then(result => {
                 console.log('Update result:', result);
                 onUpdate(); // Memanggil fungsi untuk memperbarui data
-
-                if (result.code == "token_not_valid") {
-                    signOut(navigate);
-                }
             })
             .catch(error => {
                 console.error('Error updating data:', error);
+            });
+    };
+
+    // Fungsi untuk menangani reject
+    const rejectData = (id: number) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Token tidak ditemukan di localStorage');
+            return;
+        }
+
+        const myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+
+        const API = `${stagingURL}/api/retailers/${id}/reject_photos/`;
+
+        // Kirim request ke backend untuk menolak berdasarkan retailer_id
+        fetch(API, {
+            method: 'POST', // atau metode yang sesuai
+            headers: myHeaders,
+        })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Reject result:', result);
+                onUpdate(); // Memanggil fungsi untuk memperbarui data
+            })
+            .catch(error => {
+                console.error('Error rejecting data:', error);
             });
     };
 
@@ -57,6 +80,8 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
         selectedIds.forEach((id) => {
             if (flag === 1) {
                 approveData(id); // Hanya mengirim retailer_id untuk approve
+            } else {
+                rejectData(id); // Hanya mengirim retailer_id untuk reject
             }
         });
     };
@@ -74,16 +99,20 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
         return Object.entries(groupedData).map(([retailer_id, images]) => {
             const retailer = dataPhoto.find(r => r.retailer_id === Number(retailer_id));
             const is_verified = retailer?.photos.some(photo => photo.is_verified) ? 1 : 0;
+            const is_approved = retailer?.photos.some(photo => photo.is_approved) ? 1 : 0;
 
             let status;
             let statusColor = 'text-black'; // Default color
 
-            if (is_verified === 0) {
+            if (is_verified === 0 && is_approved === 0) {
                 status = 'Belum Diverifikasi'; // Belum diverifikasi
                 statusColor = 'text-black'; // Hitam
-            } else if (is_verified === 1) {
-                status = 'Sudah Diverifikasi'; // Sudah diverifikasi
+            } else if (is_verified === 1 && is_approved === 1) {
+                status = 'Sudah Diverifikasi dan Disetujui'; // Sudah diverifikasi dan disetujui
                 statusColor = 'text-blue-500'; // Biru
+            } else if (is_verified === 1 && is_approved === 0) {
+                status = 'Sudah Diverifikasi namun Ditolak'; // Sudah diverifikasi namun ditolak
+                statusColor = 'text-red-500'; // Merah
             } else {
                 status = 'Status Tidak Diketahui'; // Status tidak terdefinisi
                 statusColor = 'text-black'; // Hitam
@@ -96,6 +125,7 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
                 retailer_address: retailer?.retailer_address || '',
                 images,
                 is_verified,
+                is_approved,
                 status,
                 statusColor,
             };
@@ -116,7 +146,7 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
         });
 
         return [
-            // createColumn('Retailer Id', (row) => row.retailer_id),
+            createColumn('Retailer Id', (row) => row.retailer_id),
             createColumn('Retailer Name', (row) => row.retailer_name),
             createColumn('Phone Number', (row) => row.retailer_phone_number),
             createColumn('Address', (row) => row.retailer_address),
@@ -149,6 +179,7 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
 
     useEffect(() => {
         const timeout = setTimeout(() => {
+            setRows(transformedData);
             setPending(false);
         }, 2000);
         return () => clearTimeout(timeout);
@@ -163,8 +194,8 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
     const filteredData = useMemo(() => {
         return transformedData.filter(item => {
             if (filter === null) return true; // Tampilkan semua
-            const [verified] = filter; // Mengambil nilai filter
-            return item.is_verified === verified; // Filter berdasarkan is_verified
+            const [verified, approved] = filter; // Destructuring nilai filter
+            return item.is_verified === verified && item.is_approved === approved; // Filter berdasarkan kondisi
         });
     }, [transformedData, filter]);
 
@@ -174,8 +205,8 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
             <div className="mb-2">
                 <select onChange={(e) => handleFilterChange(e.target.value ? e.target.value.split('&').map(Number) as [number, number] : null)} className="p-2 rounded">
                     <option value="">Semua</option>
-                    <option value="1">Sudah Diverifikasi</option>
-                    <option value="0">Belum Diverifikasi</option>
+                    <option value="1&1">Approve </option>
+                    <option value="1&0">Reject</option>
                 </select>
             </div>
 
@@ -191,12 +222,17 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
                     setSelectedIds(ids);
                 }}
             />
-
+            
             {/* Button */}
             <div className="flex justify-end space-x-1 mt-2">
                 <button className="flex justify-center rounded bg-green-500 p-2 font-medium text-white hover:bg-green-600"
                     onClick={() => updateSelectedData(1)}>
                     Approve
+                </button>
+
+                <button className="flex justify-center rounded bg-red-500 p-2 font-medium text-white hover:bg-red-600"
+                    onClick={() => updateSelectedData(0)}>
+                    Reject
                 </button>
             </div>
 

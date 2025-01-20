@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import FormRegister from './Form/FormRegister';
 import { stagingURL } from '../utils/API'
+import CustomToast, { showToast } from '../components/Toast/CustomToast';
 
 interface IFormInput {
     ws_name: string;
@@ -14,7 +15,6 @@ interface IFormInput {
 const RegisterRetailer: React.FC = () => {
 
     const [voucherCode, setVoucherCode] = useState('');
-
     const postRetailerData = async (data: IFormInput) => {
         try {
             const formData = new FormData();
@@ -48,11 +48,17 @@ const RegisterRetailer: React.FC = () => {
             }
 
             const result = await response.json();
+
+            console.log('res_regis', result);
+
             setVoucherCode(result.voucher_code);
             return result;
 
         } catch (error) {
             console.error('Failed to register retailer:', error);
+
+            showToast(`Error: ${(error as Error).message}`)
+
             throw error;
         }
     };
@@ -202,8 +208,12 @@ const RegisterRetailer: React.FC = () => {
                     </div>
                 </div>
 
+
+
                 <div className="w-full xl:w-1/2 p-10">
                     <div className="p-10">
+
+                        <CustomToast />
 
                         {voucherCode && (
                             <div className="mb-5">

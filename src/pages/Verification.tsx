@@ -1,16 +1,23 @@
 // Verification.tsx
 import { useEffect, useState } from 'react';
-import { stagingURL } from '../utils/API'
+import { useNavigate } from 'react-router-dom';
+import { stagingURL, signOut } from '../utils'
 import DataTableComponent from '../components/Tables/DataTableComponent';
 import { photoRetailer } from '../types/photoRetailer';
+import Spinner from '../components/Spinner'
 
 const Verification = () => {
+  const navigate = useNavigate();
   const [dataPhoto, setDataPhoto] = useState<photoRetailer[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchData = () => {
+    setLoading(true);
     const token = localStorage.getItem('token');
+
     if (!token) {
       console.error('Token tidak ditemukan di localStorage');
+      setLoading(false);
       return;
     }
 
@@ -27,9 +34,16 @@ const Verification = () => {
       .then((response) => response.json())
       .then((result) => {
         setDataPhoto(result);
+        setLoading(false);
+        console.log('result', result.code);
+
+        if (result.code == "token_not_valid") {
+          signOut(navigate);
+        }
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
+        setLoading(false);
       });
   };
 
@@ -37,10 +51,18 @@ const Verification = () => {
     fetchData();
   }, []);
 
+  // Fungsi untuk memperbarui data setelah approval/reject
+  const handleDataUpdate = () => {
+    setLoading(true);
+    fetchData();
+  };
 
   return (
     <div>
-      <DataTableComponent dataPhoto={dataPhoto} />
+      {loading ? (
+        <Spinner />) : (
+        <DataTableComponent dataPhoto={dataPhoto} onUpdate={handleDataUpdate} />
+      )}
     </div>
   );
 };

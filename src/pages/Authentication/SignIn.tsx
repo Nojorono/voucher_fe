@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { stagingURL } from '../../utils/API'
+import { stagingURL } from '../../utils/index';
+
 
 const SignIn: React.FC = () => {
   const [username, setUsername] = useState('');
