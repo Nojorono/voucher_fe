@@ -23,7 +23,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     const [kota, setKota] = useState<string[]>([]);
     const [kecamatan, setKecamatan] = useState<string[]>([]);
     const [kelurahan, setKelurahan] = useState<string[]>([]);
-    const [kodepos, setKodepos] = useState<string[]>([]);
+    // const [kodepos, setKodepos] = useState<string[]>([]);
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoRemarks, setPhotoRemarks] = useState<string[]>([]);
 
@@ -32,7 +32,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
             try {
                 const response = await fetch(`${stagingURL}/api/provinsi`);
                 const data = await response.json();
-                // console.log('Data fetched:', data);
                 setProvinsi(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -44,7 +43,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
 
     const handleProvinsiChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedProvinsi = event.target.value;
-        console.log('Selected Provinsi:', selectedProvinsi);
         setKota([]);
         setKecamatan([]);
         setKelurahan([]);
@@ -54,8 +52,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     };
 
     const fetcKOta = async (provinsi: string) => {
-        console.log('Fetching Kota for Provinsi:', provinsi);
-
         if (!provinsi) return;
         try {
             const response = await fetch(`${stagingURL}/api/kota/?provinsi=${provinsi}`);
@@ -68,7 +64,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
 
     const handleKotaChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedKota = event.target.value;
-        console.log('Selected Kota:', selectedKota);
         setKecamatan([]);
         setKelurahan([]);
         if (selectedKota) {
@@ -77,7 +72,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     };
 
     const fetcKecamatan = async (kota: string) => {
-        console.log('Fetching Kecamatan for Kota:', kota);
         if (!kota) return;
         try {
             const response = await fetch(`${stagingURL}/api/kecamatan/?kota=${kota}`);
@@ -90,14 +84,12 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
 
     const handleKecamatanChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedKecamatan = event.target.value;
-        console.log('Selected Kecamatan:', selectedKecamatan);
         if (selectedKecamatan) {
             await fetcKelurahan(selectedKecamatan);
         }
     };
 
     const fetcKelurahan = async (kecamatan: string) => {
-        console.log('Fetching Kelurahan for Kecamatan:', kecamatan);
         if (!kecamatan) return;
         try {
             const response = await fetch(`${stagingURL}/api/kelurahan/?kecamatan=${kecamatan}`);
@@ -111,8 +103,12 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files) {
-            setUploadedPhotos(Array.from(files));
-            setPhotoRemarks(Array.from(files).map(() => ''));
+            const newPhotos = Array.from(files);
+            setUploadedPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
+            setPhotoRemarks((prevRemarks) => [
+                ...prevRemarks,
+                ...Array.from(files).map(() => ''),
+            ]);
         }
     };
 
@@ -120,6 +116,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         const remarksData = {
             ...data,
             photo_remarks: photoRemarks,
+            photos: uploadedPhotos,
         };
         onSubmit(remarksData);
     };
@@ -133,19 +130,17 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                     </label>
                     {field.type === 'file' ? (
                         <>
-                            <input
-                                id={String(field.name)}
-                                type="file"
-                                multiple
-                                {...register(field.name as any, { required: field.required, onChange: handleFileChange })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                            {uploadedPhotos.map((_, index) => (
-                                <div key={index} className="text-sm text-gray-600">
-                                    <span>Photo remark {index + 1}</span>
+                            {[0, 1, 2].map((index) => (
+                                <div key={index} className="mb-2">
+                                    <input
+                                        id={`${String(field.name)}_${index}`}
+                                        type="file"
+                                        {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: handleFileChange })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
                                     <input
                                         type="text"
-                                        value={photoRemarks[index]}
+                                        value={photoRemarks[index] || ''}
                                         onChange={(e) => {
                                             const newRemarks = [...photoRemarks];
                                             newRemarks[index] = e.target.value;
