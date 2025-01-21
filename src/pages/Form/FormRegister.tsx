@@ -2,7 +2,6 @@ import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { stagingURL } from '../../utils/API'
 
-
 interface FormProps<T extends FieldValues> {
     onSubmit: SubmitHandler<T>;
     fields: {
@@ -23,9 +22,9 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     const [kota, setKota] = useState<string[]>([]);
     const [kecamatan, setKecamatan] = useState<string[]>([]);
     const [kelurahan, setKelurahan] = useState<string[]>([]);
-    // const [kodepos, setKodepos] = useState<string[]>([]);
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoRemarks, setPhotoRemarks] = useState<string[]>([]);
+    // const [kodepos, setKodepos] = useState<string[]>([]);
 
     useEffect(() => {
         const fetcProvinsi = async () => {
@@ -105,10 +104,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         if (files) {
             const newPhotos = Array.from(files);
             setUploadedPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
-            setPhotoRemarks((prevRemarks) => [
-                ...prevRemarks,
-                ...Array.from(files).map(() => ''),
-            ]);
+            setPhotoRemarks(['Tampak Depan', 'Tampak Belakang', 'Tampak Samping'].slice(0, newPhotos.length));
         }
     };
 
@@ -132,22 +128,14 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                         <>
                             {[0, 1, 2].map((index) => (
                                 <div key={index} className="mb-2">
+                                    <label className="mt-1 block text-sm text-gray-600">
+                                        {index === 0 ? 'Upload Foto Tampak Depan' : index === 1 ? 'Upload Foto Tampak Belakang' : 'Upload Foto Tampak Samping'}
+                                    </label>
                                     <input
                                         id={`${String(field.name)}_${index}`}
                                         type="file"
                                         {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: handleFileChange })}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <input
-                                        type="text"
-                                        value={photoRemarks[index] || ''}
-                                        onChange={(e) => {
-                                            const newRemarks = [...photoRemarks];
-                                            newRemarks[index] = e.target.value;
-                                            setPhotoRemarks(newRemarks);
-                                        }}
-                                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder={`Remark for Photo ${index + 1}`}
                                     />
                                 </div>
                             ))}

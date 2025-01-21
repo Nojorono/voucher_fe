@@ -20,7 +20,7 @@ interface IFormInput {
 
 const RegisterRetailer: React.FC = () => {
 
-    const [voucherCode, setVoucherCode] = useState('');
+    // const [voucherCode, setVoucherCode] = useState('');
 
     const postRetailerData = async (data: IFormInput) => {
         try {
@@ -45,23 +45,23 @@ const RegisterRetailer: React.FC = () => {
                         formData.append(`${key}[${index}]`, item);
                     });
                 } else {
-                    formData.append(key, value);
+                    // formData.append(key, value);
                 }
-            }
-
-            // Tambahkan photo_remarks sebagai satu field
-            if (data.photo_remarks) {
-                data.photo_remarks.forEach((remark) => {
-                    formData.append(`photo_remarks`, remark);
-                });
             }
 
             // Add photos and corresponding remarks to FormData
             if (data.photos) {
-                Array.from(data.photos).forEach((photo) => {
-                    formData.append(`photos`, photo);
+                Array.from(data.photos).forEach((photo, index) => {
+                    formData.append(`photos`, photo); // Tambahkan foto ke dalam FormData
+                    const remark = index === 0 ? 'Tampak Depan' : index === 1 ? 'Tampak Belakang' : 'Tampak Samping';
+                    formData.append(`photo_remarks`, remark); // Tambahkan remark ke dalam FormData
                 });
             }
+
+            // Log FormData
+            formData.forEach((value, key) => {
+                console.log(`${key}:`, value);
+            });
 
             // Make API request
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
@@ -125,7 +125,7 @@ const RegisterRetailer: React.FC = () => {
                     <div className="p-10">
 
                         <CustomToast />
-                        {/* 
+{/* 
                         {voucherCode && (
                             <div className="mb-5">
                                 <h2 className="text-2xl font-bold mb-5 text-green-500">Voucher Code</h2>
