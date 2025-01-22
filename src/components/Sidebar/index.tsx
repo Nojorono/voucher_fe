@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../images/logo/logo.svg';
 import {
   HomeIcon, UserIcon, CheckCircleIcon, CogIcon,
-  NewspaperIcon, ChevronDownIcon, GiftIcon
+  NewspaperIcon, ChevronDownIcon, GiftIcon, UserPlusIcon
 } from '@heroicons/react/24/solid';
 
 interface SidebarProps {
@@ -14,6 +14,7 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { pathname } = location;
 
   const trigger = useRef<HTMLButtonElement>(null);
@@ -21,6 +22,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(storedSidebarExpanded === 'true');
+
+  const getUserRole = localStorage.getItem('is_staff') === 'true';
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const handleOutsideClick = ({ target }: MouseEvent) => {
@@ -47,6 +51,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     localStorage.setItem('sidebar-expanded', sidebarExpanded.toString());
     document.querySelector('body')?.classList.toggle('sidebar-expanded', sidebarExpanded);
   }, [sidebarExpanded]);
+
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      if (token) {
+        const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+        const isExpired = (tokenPayload.exp * 1000 < Date.now()) || (Date.now() - (tokenPayload.iat * 1000) > 2 * 60 * 60 * 1000);
+        if (isExpired) {
+          localStorage.removeItem('token');
+          navigate('/auth/signin');
+        }
+      }
+    };
+
+    checkTokenExpiration();
+  }, [token, navigate]);
 
   return (
     <aside
@@ -76,107 +95,128 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
-              <li>
-                <NavLink
-                  to="/dashboard"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('dashboard') && 'bg-graydark dark:bg-meta-4'}`}
-                >
-                  <HomeIcon className="h-6 w-6 text-white-500" />
-                  Dashboard
-                </NavLink>
-              </li>
-
-              <li>
-                <NavLink
-                  to="/profile"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'}`}
-                >
-                  <UserIcon className="h-6 w-6 text-white-500" />
-                  Profile
-                </NavLink>
-              </li>
-
-              <SidebarLinkGroup
-                activeCondition={pathname === '/forms' || pathname.includes('forms')}
-              >
-                {(handleClick, open) => (
-                  <React.Fragment>
+              {getUserRole ? (
+                <>
+                  <li>
                     <NavLink
-                      to="#"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/forms' || pathname.includes('forms') ? 'bg-graydark dark:bg-meta-4' : ''}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        sidebarExpanded ? handleClick() : setSidebarExpanded(true);
-                      }}
+                      to="/dashboard"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('dashboard') && 'bg-graydark dark:bg-meta-4'}`}
                     >
-                      <NewspaperIcon className="h-6 w-6 text-white-500" />
-                      Forms
-                      <ChevronDownIcon
-                        className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`}
-                        width={20}
-                        height={20}
-                      />
+                      <HomeIcon className="h-6 w-6 text-white-500" />
+                      Dashboard
                     </NavLink>
+                  </li>
 
-                    <div
-                      className={`translate transform overflow-hidden ${!open && 'hidden'}`}
-                    >
-                      <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                        <li>
-                          <NavLink
-                            to="/forms/form-elements"
-                            className={({ isActive }) => `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive && '!text-white'}`}
-                          >
-                            Form Elements
-                          </NavLink>
-                        </li>
-
-                        <li>
-                          <NavLink
-                            to="/forms/form-layout"
-                            className={({ isActive }) => `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive && '!text-white'}`}
-                          >
-                            Form Layout
-                          </NavLink>
-                        </li>
-                      </ul>
-                    </div>
-                  </React.Fragment>
-                )}
-              </SidebarLinkGroup>
-
-              <li>
-                <NavLink
-                  to="/verification"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
+                  <li>
+                    <NavLink
+                      to="/verification"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
                      text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('verification') && 'bg-graydark dark:bg-meta-4'}`}
-                >
-                  <CheckCircleIcon className="h-6 w-6 text-white-500" />
-                  Verification
-                </NavLink>
-              </li>
+                    >
+                      <CheckCircleIcon className="h-6 w-6 text-white-500" />
+                      Verification
+                    </NavLink>
+                  </li>
 
-              <li>
-                <NavLink
-                  to="/redeem"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 
-                    ${pathname.includes('redeem') && 'bg-graydark dark:bg-meta-4'}`}
-                >
-                  <GiftIcon className="h-6 w-6 text-white-500" />
-                  Redeem Voucher
-                </NavLink>
-              </li>
+                  <li>
+                    <NavLink
+                      to="/user_register"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
+                     text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('user_register') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <UserPlusIcon className="h-6 w-6 text-white-500" />
+                      User Register
+                    </NavLink>
+                  </li>
 
-              <li>
-                <NavLink
-                  to="/settings"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('settings') && 'bg-graydark dark:bg-meta-4'}`}
-                >
-                  <CogIcon className="h-6 w-6 text-white-500" />
-                  Settings
-                </NavLink>
-              </li>
+                  <li>
+                    <NavLink
+                      to="/profile"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
+                        font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <UserIcon className="h-6 w-6 text-white-500" />
+                      Profile
+                    </NavLink>
+                  </li>
 
+
+
+                  <SidebarLinkGroup
+                    activeCondition={pathname === '/master_data' || pathname.includes('master_data')}
+                  >
+                    {(handleClick, open) => (
+                      <React.Fragment>
+                        <NavLink
+                          to="#"
+                          className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 
+                            ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/master_data' || pathname.includes('master_data') ? 'bg-graydark dark:bg-meta-4' : ''}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            sidebarExpanded ? handleClick() : setSidebarExpanded(true);
+                          }}
+                        >
+                          <NewspaperIcon className="h-6 w-6 text-white-500" />
+                          Master Data
+                          <ChevronDownIcon
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`}
+                            width={20}
+                            height={20}
+                          />
+                        </NavLink>
+
+                        <div
+                          className={`translate transform overflow-hidden ${!open && 'hidden'}`}
+                        >
+                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                            <li>
+                              <NavLink
+                                to="/master_data/master_wholesale"
+                                className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
+                                  font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('/master_data/master_wholesale') && 'bg-graydark dark:bg-meta-4'}`}
+                              >
+                                Master Wholesale
+                              </NavLink>
+                            </li>
+                          </ul>
+                        </div>
+                      </React.Fragment>
+                    )}
+                  </SidebarLinkGroup>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <NavLink
+                      to="/dashboard"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('dashboard') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <HomeIcon className="h-6 w-6 text-white-500" />
+                      Dashboard
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink
+                      to="/profile"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <UserIcon className="h-6 w-6 text-white-500" />
+                      Profile
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink
+                      to="/redeem"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('redeem') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <GiftIcon className="h-6 w-6 text-white-500" />
+                      Redeem Voucher
+                    </NavLink>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </nav>

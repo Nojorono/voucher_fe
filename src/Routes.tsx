@@ -3,14 +3,16 @@ import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import ECommerce from './pages/Dashboard/ECommerce';
-import FormElements from './pages/Form/FormElements';
-import Profile from './pages/Profile';
+import FormElements from './components/Forms/FormRegister/FormElements';
+import Profile from './pages/Profile/Profile';
 import DefaultLayout from './layout/DefaultLayout';
-import FormLayout from './pages/Form/FormLayout';
-import RegisterRetailer from './pages/RegisterRetailer';
+import FormLayout from './components/Forms/FormRegister/FormLayout';
+import RegisterRetailer from './pages/RegisterRetailer/RegisterRetailer';
 import Settings from './pages/Settings';
-import Verification from './pages/Verification';
-import Redeem from './pages/Redeem';
+import Verification from './pages/VerificationRetailer/Verification';
+import Redeem from './pages/RedeemVoucher/Redeem';
+import UserRegister from './pages/UserRegister/UserRegister';
+import MasterWholesale from './pages/MasterData/MasterWholesale';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
 
@@ -21,7 +23,7 @@ const AppRoutes = () => (
             path="/auth/signin"
             element={
                 isAuthenticated() ? (
-                    <Navigate to="/profile" replace />
+                    <Navigate to="dashboard" replace />
                 ) : (
                     <>
                         <PageTitle title="Sign In" />
@@ -126,6 +128,26 @@ const AppRoutes = () => (
                                     <>
                                         <PageTitle title="Redeem" />
                                         <Redeem />
+                                    </>
+                                }
+                            />
+
+                            <Route
+                                path="user_register"
+                                element={
+                                    <>
+                                        <PageTitle title="User Register" />
+                                        <UserRegister />
+                                    </>
+                                }
+                            />
+
+                            <Route
+                                path="master_data/master_wholesale"
+                                element={
+                                    <>
+                                        <PageTitle title="Master Wholesale" />
+                                        <MasterWholesale />
                                     </>
                                 }
                             />

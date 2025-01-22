@@ -1,10 +1,12 @@
 // Verification.tsx
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { stagingURL, signOut } from '../utils'
-import DataTableComponent from '../components/Tables/DataTableComponent';
-import { photoRetailer } from '../types/photoRetailer';
-import Spinner from '../components/Spinner'
+import { stagingURL, signOut } from '../../utils'
+import DataTableComponent from '../../components/Tables/DataTableRetailer';
+import { photoRetailer } from '../../types/photoRetailer';
+import Spinner from '../../components/Spinner'
+import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
+
 
 const Verification = () => {
   const navigate = useNavigate();
@@ -33,16 +35,20 @@ const Verification = () => {
     fetch(`${stagingURL}/api/list_photos/`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        setDataPhoto(result);
-        setLoading(false);
-        console.log('result', result.code);
+        if (result.message === "No photos found") {
+          setLoading(true);
+        } else {
+          setDataPhoto(result);
+          setLoading(false);        
 
-        if (result.code == "token_not_valid") {
-          signOut(navigate);
+          if (result.code == "token_not_valid") {
+            signOut(navigate);
+          }
         }
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
+        showErrorToast('Error fetching data: ' + error);
         setLoading(false);
       });
   };
@@ -55,13 +61,20 @@ const Verification = () => {
   const handleDataUpdate = () => {
     setLoading(true);
     fetchData();
+    setTimeout(() => {
+      showSuccessToast('All photos for retailer verified successfully.');
+    }, 2000);
   };
 
   return (
     <div>
       {loading ? (
         <Spinner />) : (
-        <DataTableComponent dataPhoto={dataPhoto} onUpdate={handleDataUpdate} />
+        <>
+          <CustomToast />
+
+          <DataTableComponent dataPhoto={dataPhoto} onUpdate={handleDataUpdate} />
+        </>
       )}
     </div>
   );

@@ -42,7 +42,7 @@ const SignIn: React.FC = () => {
       localStorage.setItem('is_staff', is_staff);
 
       // Navigasi ke dashboard
-      navigate('/profile');
+      navigate('/dashboard');
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.detail || 'Invalid username or password.');

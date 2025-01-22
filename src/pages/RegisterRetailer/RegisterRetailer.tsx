@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
-import FormRegister from './Form/FormRegister';
-import { stagingURL } from '../utils/API'
-import CustomToast, { showErrorToast, showSuccessToast } from '../components/Toast/CustomToast';
+import FormRegister from '../../components/Forms/FormRegister/FormRegisterRetailer';
+import { stagingURL } from '../../utils/API'
+import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import { RocketLaunchIcon } from '@heroicons/react/24/outline';
 
 interface IFormInput {
@@ -26,6 +26,8 @@ const RegisterRetailer: React.FC = () => {
         try {
             const formData = new FormData();
 
+            console.log('data form', data);
+            
             // Map form fields to FormData
             const formFields = {
                 ws_name: data.ws_name,
@@ -45,7 +47,7 @@ const RegisterRetailer: React.FC = () => {
                         formData.append(`${key}[${index}]`, item);
                     });
                 } else {
-                    // formData.append(key, value);
+                    formData.append(key, value as string);
                 }
             }
 
@@ -58,11 +60,13 @@ const RegisterRetailer: React.FC = () => {
                 });
             }
 
-            // Log FormData
-            formData.forEach((value, key) => {
-                console.log(`${key}:`, value);
-            });
+            // // Log FormData
+            // formData.forEach((value, key) => {
+            //     console.log(`${key}:`, value);
+            // });
 
+            // console.log('formData', formData);
+            
             // Make API request
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
                 method: 'POST',
@@ -83,7 +87,7 @@ const RegisterRetailer: React.FC = () => {
             }
 
             const result = await response.json();
-            setVoucherCode(result.voucher_code);
+            // setVoucherCode(result.voucher_code);
             showSuccessToast(`${result.message}`);
             return result;
 
@@ -125,21 +129,6 @@ const RegisterRetailer: React.FC = () => {
                     <div className="p-10">
 
                         <CustomToast />
-{/* 
-                        {voucherCode && (
-                            <div className="mb-5">
-                                <h2 className="text-2xl font-bold mb-5 text-green-500">Voucher Code</h2>
-                                <label className="block mb-2 text-sm font-medium text-gray-700">
-                                    Lorem ipsum
-                                </label>
-                                <input
-                                    type="text"
-                                    defaultValue={voucherCode}
-                                    readOnly
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold text-lg"
-                                />
-                            </div>
-                        )} */}
 
                         <h2 className="text-2xl font-bold mb-5">Pendaftaran Retailer</h2>
                         <FormRegister<IFormInput>

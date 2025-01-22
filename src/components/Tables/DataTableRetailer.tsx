@@ -5,13 +5,14 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { stagingURL, signOut } from '../../utils';
 import { photoRetailer } from '../../types/photoRetailer';
-import Spinner from '../../components/Spinner'
+import Spinner from '../Spinner'
+import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
 
 const CustomLoader = () => (
     <Spinner />
 );
 
-const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetailer[]; onUpdate: () => void }) => {
+const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetailer[]; onUpdate: () => void }) => {
     const navigate = useNavigate();
 
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -40,9 +41,9 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
         })
             .then(response => response.json())
             .then(result => {
-                console.log('Update result:', result);
-                onUpdate(); // Memanggil fungsi untuk memperbarui data
-
+                console.log('Update result:', result.message);                
+                onUpdate(); 
+                
                 if (result.code == "token_not_valid") {
                     signOut(navigate);
                 }
@@ -170,6 +171,8 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
 
     return (
         <div>
+            <CustomToast />
+
             {/* Filter Buttons */}
             <div className="mb-2">
                 <select onChange={(e) => handleFilterChange(e.target.value ? e.target.value.split('&').map(Number) as [number, number] : null)} className="p-2 rounded">
@@ -210,4 +213,4 @@ const DataTableComponent = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoReta
     );
 });
 
-export default DataTableComponent;
+export default DataTableRetailer;

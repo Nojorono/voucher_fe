@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { stagingURL } from '../../utils/API'
+import { stagingURL } from '../../../utils/API'
+import Select from 'react-select';
 
 interface FormProps<T extends FieldValues> {
     onSubmit: SubmitHandler<T>;
@@ -18,20 +19,28 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         handleSubmit,
         formState: { errors },
     } = useForm<T>();
-    const [provinsi, setProvinsi] = useState<string[]>([]);
-    const [kota, setKota] = useState<string[]>([]);
-    const [kecamatan, setKecamatan] = useState<string[]>([]);
-    const [kelurahan, setKelurahan] = useState<string[]>([]);
+    
+    const [provinsi, setProvinsi] = useState<{ value: string; label: string }[]>([]);
+    const [kota, setKota] = useState<{ value: string; label: string }[]>([]);
+    const [kecamatan, setKecamatan] = useState<{ value: string; label: string }[]>([]);
+    const [kelurahan, setKelurahan] = useState<{ value: string; label: string }[]>([]);
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoRemarks, setPhotoRemarks] = useState<string[]>([]);
-    // const [kodepos, setKodepos] = useState<string[]>([]);
+    const [selectedProvinsi, setSelectedProvinsi] = useState<string | null>(null);
+    const [selectedKota, setSelectedKota] = useState<string | null>(null);
+    const [selectedKecamatan, setSelectedKecamatan] = useState<string | null>(null);
+    const [selectedKelurahan, setSelectedKelurahan] = useState<string | null>(null);
 
     useEffect(() => {
         const fetcProvinsi = async () => {
             try {
                 const response = await fetch(`${stagingURL}/api/provinsi`);
                 const data = await response.json();
-                setProvinsi(data);
+                const options = data.map((item: string) => ({
+                    value: item,
+                    label: item,
+                }));
+                setProvinsi(options);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -40,29 +49,31 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         fetcProvinsi();
     }, []);
 
-    const handleProvinsiChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedProvinsi = event.target.value;
+    const handleProvinsiChange = async (selectedProvinsi: string) => {
         setKota([]);
         setKecamatan([]);
         setKelurahan([]);
         if (selectedProvinsi) {
-            await fetcKOta(selectedProvinsi);
+            await fetchKota(selectedProvinsi);
         }
     };
 
-    const fetcKOta = async (provinsi: string) => {
+    const fetchKota = async (provinsi: string) => {
         if (!provinsi) return;
         try {
             const response = await fetch(`${stagingURL}/api/kota/?provinsi=${provinsi}`);
             const data = await response.json();
-            setKota(data);
+            const options = data.map((item: string) => ({
+                value: item,
+                label: item,
+            }));
+            setKota(options);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    const handleKotaChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedKota = event.target.value;
+    const handleKotaChange = async (selectedKota: string) => {
         setKecamatan([]);
         setKelurahan([]);
         if (selectedKota) {
@@ -75,14 +86,17 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         try {
             const response = await fetch(`${stagingURL}/api/kecamatan/?kota=${kota}`);
             const data = await response.json();
-            setKecamatan(data);
+            const options = data.map((item: string) => ({
+                value: item,
+                label: item,
+            }));
+            setKecamatan(options);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    const handleKecamatanChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedKecamatan = event.target.value;
+    const handleKecamatanChange = async (selectedKecamatan: string) => {
         if (selectedKecamatan) {
             await fetcKelurahan(selectedKecamatan);
         }
@@ -93,7 +107,11 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         try {
             const response = await fetch(`${stagingURL}/api/kelurahan/?kecamatan=${kecamatan}`);
             const data = await response.json();
-            setKelurahan(data);
+            const options = data.map((item: string) => ({
+                value: item,
+                label: item,
+            }));
+            setKelurahan(options);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -113,12 +131,16 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
             ...data,
             photo_remarks: photoRemarks,
             photos: uploadedPhotos,
+            provinsi: selectedProvinsi,
+            kota: selectedKota,
+            kecamatan: selectedKecamatan,
+            kelurahan: selectedKelurahan,
         };
         onSubmit(remarksData);
     };
 
     return (
-        <form onSubmit={handleSubmit(handleSubmitWithRemarks)} className="space-y-4">
+        <form onSubmit={handleSubmit(handleSubmitWithRemarks)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {fields.map((field) => (
                 <div className="mb-4" key={String(field.name)}>
                     <label htmlFor={String(field.name)} className="block mb-2 text-sm font-medium text-gray-700">
@@ -141,56 +163,51 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                             ))}
                         </>
                     ) : field.type === 'select' ? (
-                        <>
+                        <div>
                             {field.name === 'provinsi' && (
-                                <select
-                                    id={String(field.name)}
-                                    {...register(field.name as any, { required: field.required, onChange: handleProvinsiChange })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Pilih opsi</option>
-                                    {provinsi.map((option, index) => (
-                                        <option key={index} value={option}>{option}</option>
-                                    ))}
-                                </select>
+                                <Select
+                                    options={provinsi}
+                                    onChange={(selectedOption) => {
+                                        if (selectedOption) {
+                                            setSelectedProvinsi(selectedOption.value);
+                                            handleProvinsiChange(selectedOption.value);
+                                        }
+                                    }}
+                                />
                             )}
                             {field.name === 'kota' && (
-                                <select
-                                    id={String(field.name)}
-                                    {...register(field.name as any, { required: field.required, onChange: handleKotaChange })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Pilih Kota</option>
-                                    {kota.map((option, index) => (
-                                        <option key={index} value={option}>{option}</option>
-                                    ))}
-                                </select>
+                                <Select
+                                    options={kota}
+                                    onChange={(selectedOption) => {
+                                        if (selectedOption) {
+                                            setSelectedKota(selectedOption.value);
+                                            handleKotaChange(selectedOption.value);
+                                        }
+                                    }}
+                                />
                             )}
                             {field.name === 'kecamatan' && (
-                                <select
-                                    id={String(field.name)}
-                                    {...register(field.name as any, { required: field.required, onChange: handleKecamatanChange })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Pilih Kecamatan</option>
-                                    {kecamatan.map((option, index) => (
-                                        <option key={index} value={option}>{option}</option>
-                                    ))}
-                                </select>
+                                <Select
+                                    options={kecamatan}
+                                    onChange={(selectedOption) => {
+                                        if (selectedOption) {
+                                            setSelectedKecamatan(selectedOption.value);
+                                            handleKecamatanChange(selectedOption.value);
+                                        }
+                                    }}
+                                />
                             )}
                             {field.name === 'kelurahan' && (
-                                <select
-                                    id={String(field.name)}
-                                    {...register(field.name as any, { required: field.required })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Pilih Kelurahan</option>
-                                    {kelurahan.map((option, index) => (
-                                        <option key={index} value={option}>{option}</option>
-                                    ))}
-                                </select>
+                                <Select
+                                    options={kelurahan}
+                                    onChange={(selectedOption) => {
+                                        if (selectedOption) {
+                                            setSelectedKelurahan(selectedOption.value);
+                                        }
+                                    }}
+                                />
                             )}
-                        </>
+                        </div>
                     ) : (
                         <input
                             id={String(field.name)}
@@ -204,12 +221,14 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                     )}
                 </div>
             ))}
-            <button
-                type="submit"
-                className="col-span-2 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
-            >
-                Submit
-            </button>
+            <div className="col-span-1 md:col-span-2">
+                <button
+                    type="submit"
+                    className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+                >
+                    Submit
+                </button>
+            </div>
         </form>
     );
 };
