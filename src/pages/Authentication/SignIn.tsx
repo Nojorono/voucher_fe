@@ -20,6 +20,9 @@ const SignIn: React.FC = () => {
         password,
       });
 
+      console.log('res', response.data);
+      
+
       const {
         access,
         refresh,
@@ -28,7 +31,8 @@ const SignIn: React.FC = () => {
         wholesale,
         name,
         phone_number,
-        is_staff
+        is_staff, 
+        id
       } = response.data;
 
       // Simpan data pengguna dan wholesale di localStorage
@@ -40,9 +44,10 @@ const SignIn: React.FC = () => {
       localStorage.setItem('ws_name', name || '');
       localStorage.setItem('ws_phone_number', phone_number || '');
       localStorage.setItem('is_staff', is_staff);
+      localStorage.setItem('user_id', id);
 
       // Navigasi ke dashboard
-      navigate('/dashboard');
+      // navigate('/dashboard');
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.detail || 'Invalid username or password.');
