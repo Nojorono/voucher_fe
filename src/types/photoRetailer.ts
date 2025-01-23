@@ -1,4 +1,5 @@
 export type photoRetailer = {
+    id: any;
     retailer_id: number;
     retailer_name: string;
     retailer_phone_number: string

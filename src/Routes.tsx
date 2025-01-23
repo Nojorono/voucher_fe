@@ -2,7 +2,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import ECommerce from './pages/Dashboard/DashboardRetailer';
+import DashboardRetailer from './pages/Dashboard/DashboardRetailer';
 import FormElements from './components/Forms/FormRegister/FormElements';
 import Profile from './pages/Profile/Profile';
 import DefaultLayout from './layout/DefaultLayout';
@@ -13,6 +13,7 @@ import Verification from './pages/VerificationRetailer/Verification';
 import Redeem from './pages/RedeemVoucher/Redeem';
 import UserRegister from './pages/UserRegister/UserRegister';
 import MasterWholesale from './pages/MasterData/MasterWholesale';
+import DashboardVoucher from './pages/Dashboard/DashboardVoucher';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
 
@@ -58,21 +59,32 @@ const AppRoutes = () => (
                 isAuthenticated() ? (
                     <DefaultLayout>
                         <Routes>
-                            <Route
+                            {/* <Route
                                 index
                                 element={
                                     <>
                                         <PageTitle title="Dashboard" />
-                                        <ECommerce />
+                                        <DashboardRetailer />
+                                    </>
+                                }
+                            /> */}
+                            <Route
+                                index
+                                path="dashboard/dashboard_retailer"
+                                element={
+                                    <>
+                                        <PageTitle title="Dashboard Retailer" />
+                                        <DashboardRetailer />
                                     </>
                                 }
                             />
                             <Route
-                                path="dashboard"
+                                index
+                                path="dashboard/dashboard_voucher"
                                 element={
                                     <>
-                                        <PageTitle title="Dashboard" />
-                                        <ECommerce />
+                                        <PageTitle title="Dashboard Voucher" />
+                                        <DashboardVoucher />
                                     </>
                                 }
                             />
@@ -151,6 +163,8 @@ const AppRoutes = () => (
                                     </>
                                 }
                             />
+
+
                             {/* Redirect to dashboard if path is not found */}
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>

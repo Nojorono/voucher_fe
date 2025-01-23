@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { stagingURL, signOut } from '../../utils'
-import DataTableComponent from '../../components/Tables/DataTableRetailer';
+import DataTableComponent from '../../components/Tables/DataTableApproval';
 import { photoRetailer } from '../../types/photoRetailer';
 import Spinner from '../../components/Spinner'
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
@@ -39,9 +39,9 @@ const Verification = () => {
           setLoading(true);
         } else {
           console.log('result', result);
-          
+
           setDataPhoto(result);
-          setLoading(false);        
+          setLoading(false);
 
           if (result.code == "token_not_valid") {
             signOut(navigate);
@@ -65,7 +65,7 @@ const Verification = () => {
     fetchData();
     setTimeout(() => {
       showSuccessToast('All photos for retailer verified successfully.');
-    }, 2000);
+    }, 1000);
   };
 
   return (

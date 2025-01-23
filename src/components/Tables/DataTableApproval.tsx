@@ -12,7 +12,7 @@ const CustomLoader = () => (
     <Spinner />
 );
 
-const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetailer[]; onUpdate: () => void }) => {
+const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetailer[]; onUpdate: () => void }) => {
     const navigate = useNavigate();
 
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -20,6 +20,7 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState<string | null>(null);
     const [filter, setFilter] = useState<[number, number] | null>(null);
+    const [selectedData, setSelectedData] = useState<any[]>([]);
 
     // Fungsi untuk menangani pembaruan data
     const approveData = (id: number) => {
@@ -31,7 +32,6 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
 
         const myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${token}`);
-
         const API = `${stagingURL}/api/retailers/${id}/verify_photos/`;
 
         // Kirim request ke backend untuk memperbarui berdasarkan retailer_id
@@ -39,12 +39,17 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             method: 'POST', // atau metode yang sesuai
             headers: myHeaders,
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
             .then(result => {
-                console.log('Update result:', result.message);
                 onUpdate();
 
-                if (result.code == "token_not_valid") {
+                if (result.code === "token_not_valid") {
                     signOut(navigate);
                 }
             })
@@ -54,10 +59,25 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     };
 
     // Fungsi untuk memperbarui semua ID yang dipilih
-    const updateSelectedData = (flag: number) => {
+    const updateSelectedData = () => {
+        if (selectedIds.length === 0) {
+            showErrorToast('Tidak ada data yang dipilih!');
+            return;
+        }
+
         selectedIds.forEach((id) => {
-            if (flag === 1) {
-                approveData(id); 
+            const retailer = selectedData.find(data => data.retailer_id === id);
+            const retailer_name = retailer?.retailer_name || '';
+
+            if (retailer) {
+                if (retailer.is_verified === 0) {
+                    approveData(id);
+                } else {
+                    showErrorToast(`Retailer ${retailer_name} sudah diverifikasi!`);
+                }
+            } else {
+                console.error(`Retailer with ID ${retailer_name} not found in selectedData`);
+                showErrorToast(`Retailer with ID ${retailer_name} not found in selectedData`);
             }
         });
     };
@@ -74,7 +94,7 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     const transformedData = useMemo(() => {
         return Object.entries(groupedData).map(([retailer_id, images]) => {
             const retailer = dataPhoto.find(r => r.retailer_id === Number(retailer_id));
-            const is_verified = retailer?.photos.some(photo => photo.is_verified) ? 1 : 0;
+            const is_verified = retailer?.photos.every(photo => photo.is_verified) ? 1 : 0;
 
             let status;
             let statusColor = 'text-black'; // Default color
@@ -193,13 +213,14 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 onSelectedRowsChange={({ selectedRows }) => {
                     const ids = selectedRows.map((row) => row.retailer_id);
                     setSelectedIds(ids);
+                    setSelectedData(selectedRows);
                 }}
             />
 
             {/* Button */}
             <div className="flex justify-end space-x-1 mt-2">
                 <button className="flex justify-center rounded bg-green-500 p-2 font-medium text-white hover:bg-green-600"
-                    onClick={() => updateSelectedData(1)}>
+                    onClick={() => updateSelectedData()}>
                     Approve
                 </button>
             </div>
@@ -214,4 +235,4 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     );
 });
 
-export default DataTableRetailer;
+export default DataTableApproval;

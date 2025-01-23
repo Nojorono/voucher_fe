@@ -41,7 +41,8 @@ const Profile: React.FC = () => {
           type={field === 'password' && !showPassword ? 'password' : type}
           onChange={e => handleInputChange(e, field)}
           readOnly={!isEditing}
-          className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+          className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition
+             focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${!isEditing ? 'bg-gray-200' : ''}`}
         />
         {field === 'password' && (
           <button
@@ -49,7 +50,7 @@ const Profile: React.FC = () => {
             onClick={togglePasswordVisibility}
             className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 dark:text-gray-400"
           >
-            {showPassword ? 'Hide' : 'Show'}
+            {showPassword ? '👁️' : '👁️‍🗨️'}
           </button>
         )}
       </div>
@@ -171,19 +172,19 @@ const Profile: React.FC = () => {
               {renderInput('Email', userProfile.email, 'email', 'email')}
               {isEditing && renderInput('Password', userProfile.password, 'text', 'password')}
 
-                <button
+              <button
                 type="button"
                 onClick={() => {
                   if (isEditing) {
-                  setUserProfile(userProfileOriginal);
-                  setShowPassword(false); // Hide the password
+                    setUserProfile(userProfileOriginal);
+                    setShowPassword(false); // Hide the password
                   }
                   setIsEditing(prev => !prev);
                 }}
-                className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-                >
+                className={`flex w-full justify-center rounded p-3 font-medium text-gray hover:bg-opacity-90 ${isEditing ? 'bg-red-500' : 'bg-primary'}`}
+              >
                 {isEditing ? 'Cancel Editing' : 'Edit Profile'}
-                </button>
+              </button>
 
               {isEditing && (
                 <button
