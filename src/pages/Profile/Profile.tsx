@@ -122,6 +122,8 @@ const Profile: React.FC = () => {
 
     if (response.ok) {
       showSuccessToast('Password updated successfully');
+      console.log('Password updated successfully');
+      
     } else {
       const errorData = await response.json();
       if (errorData.new_password) {
