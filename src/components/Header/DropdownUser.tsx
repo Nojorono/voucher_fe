@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-06.png';
+import { signOut } from '../../utils';
+
 
 
 const DropdownUser = () => {
@@ -9,17 +11,7 @@ const DropdownUser = () => {
   const name = localStorage.getItem('ws_name') || 'Not Assigned';
 
   const handleLogout = () => {
-    // Hapus semua data yang tersimpan di localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('userid');
-    localStorage.removeItem('email');
-    localStorage.removeItem('ws_id');
-    localStorage.removeItem('ws_name');
-    localStorage.removeItem('ws_phone_number');
-
-    // Navigasi ke halaman login
-    navigate('/auth/signin', { replace: true });
+    signOut(navigate)
   };
 
 

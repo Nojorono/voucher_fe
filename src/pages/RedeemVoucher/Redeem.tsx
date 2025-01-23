@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { stagingURL } from '../../utils/API'
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 
-
-
 function Redeem() {
     const [voucherCode, setVoucherCode] = useState('');
     const [message, setMessage] = useState('');

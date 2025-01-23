@@ -2,7 +2,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import ECommerce from './pages/Dashboard/ECommerce';
+import ECommerce from './pages/Dashboard/DashboardRetailer';
 import FormElements from './components/Forms/FormRegister/FormElements';
 import Profile from './pages/Profile/Profile';
 import DefaultLayout from './layout/DefaultLayout';

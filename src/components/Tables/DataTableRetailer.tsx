@@ -41,9 +41,9 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         })
             .then(response => response.json())
             .then(result => {
-                console.log('Update result:', result.message);                
-                onUpdate(); 
-                
+                console.log('Update result:', result.message);
+                onUpdate();
+
                 if (result.code == "token_not_valid") {
                     signOut(navigate);
                 }
@@ -57,7 +57,7 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     const updateSelectedData = (flag: number) => {
         selectedIds.forEach((id) => {
             if (flag === 1) {
-                approveData(id); // Hanya mengirim retailer_id untuk approve
+                approveData(id); 
             }
         });
     };
@@ -95,6 +95,7 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 retailer_name: retailer?.retailer_name || '',
                 retailer_phone_number: retailer?.retailer_phone_number || '',
                 retailer_address: retailer?.retailer_address || '',
+                retailer_voucher_code: retailer?.retailer_voucher_code || '',
                 images,
                 is_verified,
                 status,
@@ -106,7 +107,7 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     // Definisi kolom untuk DataTable
     const columns: TableColumn<{
         retailer_id: number; retailer_name: string; retailer_phone_number: string;
-        retailer_address: string; images: string[]; status: string
+        retailer_address: string; retailer_voucher_code: string; images: string[]; status: string
     }>[] = useMemo(() => {
         const createColumn = (name: string, selector: (row: any) => any) => ({
             name: <span className="text-lg font-bold">{name}</span>,
@@ -117,10 +118,10 @@ const DataTableRetailer = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         });
 
         return [
-            // createColumn('Retailer Id', (row) => row.retailer_id),
             createColumn('Retailer Name', (row) => row.retailer_name),
             createColumn('Phone Number', (row) => row.retailer_phone_number),
             createColumn('Address', (row) => row.retailer_address),
+            createColumn('Voucher Code', (row) => row.retailer_voucher_code),
             createColumn('Status', (row) => (
                 <span className={row.statusColor}>{row.status}</span>
             )),

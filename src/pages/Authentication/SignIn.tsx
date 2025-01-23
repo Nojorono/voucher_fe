@@ -19,10 +19,7 @@ const SignIn: React.FC = () => {
         username,
         password,
       });
-
-      console.log('res', response.data);
-      
-
+     
       const {
         access,
         refresh,
@@ -32,7 +29,6 @@ const SignIn: React.FC = () => {
         name,
         phone_number,
         is_staff, 
-        id
       } = response.data;
 
       // Simpan data pengguna dan wholesale di localStorage
@@ -44,7 +40,8 @@ const SignIn: React.FC = () => {
       localStorage.setItem('ws_name', name || '');
       localStorage.setItem('ws_phone_number', phone_number || '');
       localStorage.setItem('is_staff', is_staff);
-      localStorage.setItem('user_id', id);
+      localStorage.setItem('username', username);
+      localStorage.setItem('password', password);
 
       // Navigasi ke dashboard
       navigate('/dashboard');
