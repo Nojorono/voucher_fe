@@ -76,7 +76,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         {/* <NavLink to="/profile">
           <img src={Logo} alt="Logo" />
         </NavLink> */}
-
         <button
           ref={trigger}
           onClick={() => setSidebarOpen(!sidebarOpen)}

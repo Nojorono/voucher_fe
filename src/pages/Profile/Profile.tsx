@@ -19,7 +19,6 @@ const Profile: React.FC = () => {
     password: localStorage.getItem('password') || 'Not Assigned',
   });
 
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const value = e.target.value;
     setUserProfile(prevProfile => ({ ...prevProfile, [field]: value }));
@@ -56,7 +55,6 @@ const Profile: React.FC = () => {
       </div>
     </div>
   );
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

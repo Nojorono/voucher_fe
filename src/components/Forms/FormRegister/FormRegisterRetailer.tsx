@@ -19,17 +19,22 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         handleSubmit,
         formState: { errors },
     } = useForm<T>();
-    
+
     const [provinsi, setProvinsi] = useState<{ value: string; label: string }[]>([]);
     const [kota, setKota] = useState<{ value: string; label: string }[]>([]);
     const [kecamatan, setKecamatan] = useState<{ value: string; label: string }[]>([]);
     const [kelurahan, setKelurahan] = useState<{ value: string; label: string }[]>([]);
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoRemarks, setPhotoRemarks] = useState<string[]>([]);
+    const [dataWholesale, setDataWholesale] = useState<{ value: string; label: string }[]>([]);
+
     const [selectedProvinsi, setSelectedProvinsi] = useState<string | null>(null);
     const [selectedKota, setSelectedKota] = useState<string | null>(null);
     const [selectedKecamatan, setSelectedKecamatan] = useState<string | null>(null);
     const [selectedKelurahan, setSelectedKelurahan] = useState<string | null>(null);
+    const [selectedWS, setSelectedWS] = useState<string | null>(null);
+
+
 
     useEffect(() => {
         const fetcProvinsi = async () => {
@@ -126,7 +131,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         }
     };
 
-    const handleSubmitWithRemarks = (data: T) => {
+    const handleSubmitRegister = (data: T) => {
         const remarksData = {
             ...data,
             photo_remarks: photoRemarks,
@@ -135,12 +140,51 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
             kota: selectedKota,
             kecamatan: selectedKecamatan,
             kelurahan: selectedKelurahan,
+            ws_name: selectedWS,
         };
         onSubmit(remarksData);
     };
 
+    const fetchDataWholesale = async () => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            console.error('Token tidak ditemukan di localStorage');
+            return;
+        }
+
+        const myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+
+        const requestOptions: RequestInit = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow"
+        };
+
+        try {
+            const response = await fetch(`${stagingURL}/api/wholesales/`, requestOptions);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            const options = data.map((item: { name: string, id: string }) => ({
+                value: item.id,
+                label: item.name,
+            }));
+            setDataWholesale(options);
+        } catch (error) {
+            console.log(error instanceof Error ? error.message : 'An unknown error occurred');
+        }
+    };
+
+    useEffect(() => {
+        fetchDataWholesale();
+    }, [])
+
+
     return (
-        <form onSubmit={handleSubmit(handleSubmitWithRemarks)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit(handleSubmitRegister)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {fields.map((field) => (
                 <div className="mb-4" key={String(field.name)}>
                     <label htmlFor={String(field.name)} className="block mb-2 text-sm font-medium text-gray-700">
@@ -203,6 +247,16 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                     onChange={(selectedOption) => {
                                         if (selectedOption) {
                                             setSelectedKelurahan(selectedOption.value);
+                                        }
+                                    }}
+                                />
+                            )}
+                            {field.name === 'ws_name' && (
+                                <Select
+                                    options={dataWholesale}
+                                    onChange={(selectedOption) => {
+                                        if (selectedOption) {
+                                            setSelectedWS(selectedOption.value);
                                         }
                                     }}
                                 />

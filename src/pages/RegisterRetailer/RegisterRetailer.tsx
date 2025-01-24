@@ -61,35 +61,35 @@ const RegisterRetailer: React.FC = () => {
             }
 
             // // Log FormData
-            // formData.forEach((value, key) => {
-            //     console.log(`${key}:`, value);
-            // });
+            formData.forEach((value, key) => {
+                console.log(`${key}:`, value);
+            });
 
             // console.log('formData', formData);
             
-            // Make API request
-            const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
-                method: 'POST',
-                body: formData
-            });
+            // // Make API request
+            // const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
+            //     method: 'POST',
+            //     body: formData
+            // });
 
-            if (!response.ok) {
-                const result = await response.json();
-                if (response.status === 400) {
-                    // Cek apakah ada non_field_errors dan pastikan itu adalah array
-                    if (Array.isArray(result.non_field_errors) && result.non_field_errors.length > 0) {
-                        showErrorToast(result.non_field_errors.join(', '));
-                    } else {
-                        showErrorToast('Terjadi kesalahan saat mengirim data.');
-                    }
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-            }
+            // if (!response.ok) {
+            //     const result = await response.json();
+            //     if (response.status === 400) {
+            //         // Cek apakah ada non_field_errors dan pastikan itu adalah array
+            //         if (Array.isArray(result.non_field_errors) && result.non_field_errors.length > 0) {
+            //             showErrorToast(result.non_field_errors.join(', '));
+            //         } else {
+            //             showErrorToast('Terjadi kesalahan saat mengirim data.');
+            //         }
+            //         throw new Error(`HTTP error! status: ${response.status}`);
+            //     }
+            // }
 
-            const result = await response.json();
-            // setVoucherCode(result.voucher_code);
-            showSuccessToast(`${result.message}`);
-            return result;
+            // const result = await response.json();
+            // // setVoucherCode(result.voucher_code);
+            // showSuccessToast(`${result.message}`);
+            // return result;
 
         } catch (error) {
             console.error(`Error: ${(error as Error).message}`);
@@ -103,9 +103,9 @@ const RegisterRetailer: React.FC = () => {
     };
 
     const fields: { name: keyof IFormInput; label: string; required: boolean; type?: string }[] = [
-        { name: 'ws_name', label: 'Kode Agen', required: true },
+        { name: 'ws_name', label: 'Nama Agen', required: true, type: 'select' },
         { name: 'username', label: 'Nama Toko/Pemilik', required: true },
-        { name: 'phone_number', label: 'Nomor Telepon', required: true },
+        { name: 'phone_number', label: 'Nomor Whatsapp', required: true },
         { name: 'address', label: 'Alamat', required: true },
         { name: 'provinsi', label: 'Provinsi', required: true, type: 'select' },
         { name: 'kota', label: 'Kota', required: true, type: 'select' },
