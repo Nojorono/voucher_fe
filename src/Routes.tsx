@@ -11,7 +11,7 @@ import RegisterRetailer from './pages/RegisterRetailer/RegisterRetailer';
 import Settings from './pages/Settings';
 import Verification from './pages/VerificationRetailer/Verification';
 import Redeem from './pages/RedeemVoucher/Redeem';
-import UserRegister from './pages/UserRegister/UserRegister';
+import UserRegister from './pages/RegisterUser/UserRegister';
 import MasterWholesale from './pages/MasterData/MasterWholesale';
 import DashboardVoucher from './pages/Dashboard/DashboardVoucher';
 

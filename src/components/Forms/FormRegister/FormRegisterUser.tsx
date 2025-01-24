@@ -32,6 +32,7 @@ const FormRegisterUser = <T extends FieldValues>({ onSubmit, fields, isReset }: 
     const [data, setData] = useState<{ value: string; label: string }[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [selectedWholesale, setSelectedWholesale] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
 
 
     const fetchData = async () => {
@@ -97,12 +98,28 @@ const FormRegisterUser = <T extends FieldValues>({ onSubmit, fields, isReset }: 
                                         }
                                     }}
                                 />
-
                             )}
 
                             {errors[field.name] && (
                                 <span className="text-sm text-red-500">This field is required</span>
                             )}
+                        </div>
+                    ) : field.name === 'password' ? (
+                        <div className="relative">
+                            <input
+                                id={String(field.name)}
+                                type={showPassword ? 'text' : 'password'}
+                                {...register(field.name as any, {
+                                    required: field.required,
+                                })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <span
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                            >
+                                {showPassword ? '👁️' : '👁️‍🗨️'}
+                            </span>
                         </div>
                     ) : (
                         <input
