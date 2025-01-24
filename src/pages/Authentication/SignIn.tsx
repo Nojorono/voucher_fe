@@ -9,6 +9,7 @@ const SignIn: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -205,17 +206,23 @@ const SignIn: React.FC = () => {
                 />
               </div>
 
-              <div className="mb-4">
+                <div className="mb-4 relative">
                 <label className="block mb-2 text-sm font-medium text-gray-700">Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter your password"
                   required
                 />
-              </div>
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-10 cursor-pointer"
+                >
+                  {showPassword ? '👁️' : '👁️‍🗨️'}
+                </span>
+                </div>
 
               <div className="flex justify-between items-center mb-6">
                 <label className="flex items-center">
