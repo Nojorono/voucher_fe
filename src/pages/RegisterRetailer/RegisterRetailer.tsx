@@ -4,6 +4,8 @@ import FormRegister from '../../components/Forms/FormRegister/FormRegisterRetail
 import { stagingURL } from '../../utils/API'
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import { RocketLaunchIcon } from '@heroicons/react/24/outline';
+import Spinner from '../../components/Spinner'
+
 
 interface IFormInput {
     ws_name: string;
@@ -21,13 +23,14 @@ interface IFormInput {
 const RegisterRetailer: React.FC = () => {
 
     // const [voucherCode, setVoucherCode] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const postRetailerData = async (data: IFormInput) => {
+        setLoading(true);
         try {
             const formData = new FormData();
 
-            console.log('data form', data);
-            
+            // console.log('data form', data);
             // Map form fields to FormData
             const formFields = {
                 ws_name: data.ws_name,
@@ -61,12 +64,12 @@ const RegisterRetailer: React.FC = () => {
             }
 
             // // Log FormData
-            formData.forEach((value, key) => {
-                console.log(`${key}:`, value);
-            });
+            // formData.forEach((value, key) => {
+            //     console.log(`${key}:`, value);
+            // });
 
             // console.log('formData', formData);
-            
+
             // Make API request
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
                 method: 'POST',
@@ -87,8 +90,11 @@ const RegisterRetailer: React.FC = () => {
             }
 
             const result = await response.json();
-            // setVoucherCode(result.voucher_code);
-            showSuccessToast(`${result.message}`);
+            // showSuccessToast(`${result.message}, berhasil mendaftar sebagai retailer.`);
+            showSuccessToast(`berhasil mendaftar sebagai retailer.`);
+            setTimeout(() => {
+                setLoading(false);
+            }, 2000);
             return result;
 
         } catch (error) {
@@ -125,18 +131,25 @@ const RegisterRetailer: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="w-full xl:w-1/2 p-10">
-                    <div className="p-10">
+                <CustomToast />
 
-                        <CustomToast />
+                {loading ? (
+                    <Spinner />) : (
+                    <>
+                        <div className="w-full xl:w-1/2 p-10">
+                            <div className="p-10">
 
-                        <h2 className="text-2xl font-bold mb-5">Pendaftaran Retailer</h2>
-                        <FormRegister<IFormInput>
-                            onSubmit={onSubmit}
-                            fields={fields}
-                        />
-                    </div>
-                </div>
+
+                                <h2 className="text-2xl font-bold mb-5">Pendaftaran Retailer</h2>
+                                <FormRegister<IFormInput>
+                                    onSubmit={onSubmit}
+                                    fields={fields}
+                                />
+                            </div>
+                        </div>
+                    </>
+                )}
+
             </div>
         </div >
     );

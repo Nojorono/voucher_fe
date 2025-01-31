@@ -169,7 +169,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
             }
             const data = await response.json();
             const options = data.map((item: { name: string, id: string }) => ({
-                value: item.id,
+                value: item.name,
                 label: item.name,
             }));
             setDataWholesale(options);
