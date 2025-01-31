@@ -67,29 +67,29 @@ const RegisterRetailer: React.FC = () => {
 
             // console.log('formData', formData);
             
-            // // Make API request
-            // const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
-            //     method: 'POST',
-            //     body: formData
-            // });
+            // Make API request
+            const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
+                method: 'POST',
+                body: formData
+            });
 
-            // if (!response.ok) {
-            //     const result = await response.json();
-            //     if (response.status === 400) {
-            //         // Cek apakah ada non_field_errors dan pastikan itu adalah array
-            //         if (Array.isArray(result.non_field_errors) && result.non_field_errors.length > 0) {
-            //             showErrorToast(result.non_field_errors.join(', '));
-            //         } else {
-            //             showErrorToast('Terjadi kesalahan saat mengirim data.');
-            //         }
-            //         throw new Error(`HTTP error! status: ${response.status}`);
-            //     }
-            // }
+            if (!response.ok) {
+                const result = await response.json();
+                if (response.status === 400) {
+                    // Cek apakah ada non_field_errors dan pastikan itu adalah array
+                    if (Array.isArray(result.non_field_errors) && result.non_field_errors.length > 0) {
+                        showErrorToast(result.non_field_errors.join(', '));
+                    } else {
+                        showErrorToast('Terjadi kesalahan saat mengirim data.');
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            }
 
-            // const result = await response.json();
-            // // setVoucherCode(result.voucher_code);
-            // showSuccessToast(`${result.message}`);
-            // return result;
+            const result = await response.json();
+            // setVoucherCode(result.voucher_code);
+            showSuccessToast(`${result.message}`);
+            return result;
 
         } catch (error) {
             console.error(`Error: ${(error as Error).message}`);

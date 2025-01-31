@@ -158,8 +158,8 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
 
         const requestOptions: RequestInit = {
             method: "GET",
-            // headers: myHeaders,
             redirect: "follow"
+            // headers: myHeaders,
         };
 
         try {
