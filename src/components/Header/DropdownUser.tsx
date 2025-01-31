@@ -8,7 +8,7 @@ import { signOut } from '../../utils';
 
 const DropdownUser = () => {
   const navigate = useNavigate();
-  const name = localStorage.getItem('ws_name') || 'Not Assigned';
+  const name = localStorage.getItem('username') || 'Not Assigned';
 
   const handleLogout = () => {
     signOut(navigate)

@@ -158,7 +158,7 @@ const Profile: React.FC = () => {
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
             <h2 className="font-bold text-black dark:text-white text-3xl">
-              {isEditing ? 'Update Profile' : 'Profile'}
+              {isEditing ? 'Update Profile' : 'My Profile'}
             </h2>
           </div>
 
