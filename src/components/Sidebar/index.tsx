@@ -4,7 +4,7 @@ import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../images/logo/logo.svg';
 import {
   HomeIcon, UserIcon, CheckCircleIcon, CogIcon,
-  NewspaperIcon, ChevronDownIcon, GiftIcon, UserPlusIcon
+  NewspaperIcon, ChevronDownIcon, GiftIcon, UserPlusIcon, ListBulletIcon
 } from '@heroicons/react/24/solid';
 
 interface SidebarProps {
@@ -90,76 +90,35 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-              MENU
+              {getUserRole ? 'ADMIN DASHBOARD' : 'DASHBOARD'}
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
               {getUserRole ? (
                 <>
-                  {/* <li>
+                  <li>
                     <NavLink
-                      to="/dashboard"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('dashboard') && 'bg-graydark dark:bg-meta-4'}`}
-                    >
-                      <HomeIcon className="h-6 w-6 text-white-500" />
-                      Dashboard
-                    </NavLink>
-                  </li> */}
-
-
-                  <SidebarLinkGroup
-                    activeCondition={pathname === '/dashboard' || pathname.includes('dashboard')}
-                  >
-                    {(handleClick, open) => (
-                      <React.Fragment>
-                        <NavLink
-                          to="#"
-                          className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 
-                            ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/dashboard' || pathname.includes('dashboard') ? 'bg-graydark dark:bg-meta-4' : ''}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            sidebarExpanded ? handleClick() : setSidebarExpanded(true);
-                          }}
-                        >
-                          <NewspaperIcon className="h-6 w-6 text-white-500" />
-                          Dashboard
-                          <ChevronDownIcon
-                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`}
-                            width={20}
-                            height={20}
-                          />
-                        </NavLink>
-
-                        <div
-                          className={`translate transform overflow-hidden ${!open && 'hidden'}`}
-                        >
-                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                            <li>
-                              <NavLink
-                                to="/dashboard/dashboard_retailer"
-                                className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
+                      to="/dashboard/all-retailers"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
                                   font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 
                                   ${pathname.includes('/dashboard/dashboard_retailer') && 'bg-graydark dark:bg-meta-4'}`}
-                              >
-                                Dashboard Retailer
-                              </NavLink>
-                            </li>
+                    >
+                      <ListBulletIcon className="h-6 w-6 text-white-500" />
+                      All Retailers
+                    </NavLink>
+                  </li>
 
-                            <li>
-                              <NavLink
-                                to="/dashboard/dashboard_voucher"
-                                className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
+                  <li>
+                    <NavLink
+                      to="/dashboard/all-vouchers"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
                                   font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 
                                   ${pathname.includes('/dashboard/dashboard_voucher') && 'bg-graydark dark:bg-meta-4'}`}
-                              >
-                                Dashboard Voucher
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </div>
-                      </React.Fragment>
-                    )}
-                  </SidebarLinkGroup>
+                    >
+                      <ListBulletIcon className="h-6 w-6 text-white-500" />
+                      All Vouchers
+                    </NavLink>
+                  </li>
 
                   <li>
                     <NavLink
@@ -240,16 +199,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </>
               ) : (
                 <>
-                  {/* <li>
-                    <NavLink
-                      to="/dashboard"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('dashboard') && 'bg-graydark dark:bg-meta-4'}`}
-                    >
-                      <HomeIcon className="h-6 w-6 text-white-500" />
-                      Dashboard
-                    </NavLink>
-                  </li> */}
-
                   <li>
                     <NavLink
                       to="/profile"
