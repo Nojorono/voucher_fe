@@ -146,19 +146,19 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     };
 
     const fetchDataWholesale = async () => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
 
-        if (!token) {
-            console.error('Token tidak ditemukan di localStorage');
-            return;
-        }
+        // if (!token) {
+        //     console.error('Token tidak ditemukan di localStorage');
+        //     return;
+        // }
 
-        const myHeaders = new Headers();
-        myHeaders.append('Authorization', `Bearer ${token}`);
+        // const myHeaders = new Headers();
+        // myHeaders.append('Authorization', `Bearer ${token}`);
 
         const requestOptions: RequestInit = {
             method: "GET",
-            headers: myHeaders,
+            // headers: myHeaders,
             redirect: "follow"
         };
 
