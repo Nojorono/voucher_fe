@@ -79,8 +79,13 @@ function Redeem() {
     };
 
     const handleRemoveSKU = (index: number) => {
-        const newSkuItems = skuItems.filter((_, i) => i !== index);
-        setSkuItems(newSkuItems);
+        if (skuItems.length > 1) {
+            const newSkuItems = skuItems.filter((_, i) => i !== index);
+            setSkuItems(newSkuItems);
+        } else {
+            showErrorToast('Minimal harus ada satu inputan SKU.');
+            return;
+        }
     };
 
     const handleSKUChange = (index: number, field: keyof SKUItem, value: string | number) => {
@@ -206,8 +211,14 @@ function Redeem() {
                                         type="number"
                                         placeholder="Enter quantity"
                                         value={item.qty}
+                                        min="1"
                                         onFocus={() => handleFocus(index, 'qty')}
-                                        onChange={(e) => handleSKUChange(index, 'qty', Number(e.target.value))}
+                                        onChange={(e) => {
+                                            const value = Number(e.target.value);
+                                            if (value > 0) {
+                                                handleSKUChange(index, 'qty', value);
+                                            }
+                                        }}
                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                     />
                                 </div>
@@ -223,7 +234,7 @@ function Redeem() {
                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                     />
                                 </div>
-                                 <button
+                                <button
                                     type="button"
                                     onClick={() => handleRemoveSKU(index)}
                                     className="text-red-500 py-5 px-2 rounded flex items-center"
