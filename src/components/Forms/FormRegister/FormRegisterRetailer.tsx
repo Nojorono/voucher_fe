@@ -127,7 +127,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         if (files) {
             const newPhotos = Array.from(files);
             setUploadedPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
-            setPhotoRemarks(['Tampak Depan', 'Tampak Belakang', 'Tampak Samping'].slice(0, newPhotos.length));
+            setPhotoRemarks(['Foto POSM', 'Foto Tester', 'Foto Kode Tester'].slice(0, newPhotos.length));
         }
     };
 
@@ -146,20 +146,9 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     };
 
     const fetchDataWholesale = async () => {
-        // const token = localStorage.getItem('token');
-
-        // if (!token) {
-        //     console.error('Token tidak ditemukan di localStorage');
-        //     return;
-        // }
-
-        // const myHeaders = new Headers();
-        // myHeaders.append('Authorization', `Bearer ${token}`);
-
         const requestOptions: RequestInit = {
             method: "GET",
             redirect: "follow"
-            // headers: myHeaders,
         };
 
         try {
@@ -195,7 +184,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                             {[0, 1, 2].map((index) => (
                                 <div key={index} className="mb-2">
                                     <label className="mt-1 block text-sm text-gray-600">
-                                        {index === 0 ? 'Upload Foto Tampak Depan' : index === 1 ? 'Upload Foto Tampak Belakang' : 'Upload Foto Tampak Samping'}
+                                        {index === 0 ? 'Upload Foto POSM' : index === 1 ? 'Upload Foto Tester' : 'Upload Foto Kode Tester'}
                                     </label>
                                     <input
                                         id={`${String(field.name)}_${index}`}

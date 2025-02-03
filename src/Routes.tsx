@@ -14,6 +14,7 @@ import Redeem from './pages/RedeemVoucher/Redeem';
 import UserRegister from './pages/RegisterUser/UserRegister';
 import MasterWholesale from './pages/MasterData/MasterWholesale';
 import DashboardVoucher from './pages/Dashboard/DashboardVoucher';
+import HowToClaim from './pages/RedeemVoucher/HowToClaim';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
 
@@ -59,15 +60,17 @@ const AppRoutes = () => (
                 isAuthenticated() ? (
                     <DefaultLayout>
                         <Routes>
-                            {/* <Route
-                                index
+
+                            <Route
+                                path="profile"
                                 element={
                                     <>
-                                        <PageTitle title="Dashboard" />
-                                        <DashboardRetailer />
+                                        <PageTitle title="Profile" />
+                                        <Profile />
                                     </>
                                 }
-                            /> */}
+                            />
+
                             <Route
                                 index
                                 path="dashboard/dashboard_retailer"
@@ -78,6 +81,7 @@ const AppRoutes = () => (
                                     </>
                                 }
                             />
+
                             <Route
                                 index
                                 path="dashboard/dashboard_voucher"
@@ -85,15 +89,6 @@ const AppRoutes = () => (
                                     <>
                                         <PageTitle title="Dashboard Voucher" />
                                         <DashboardVoucher />
-                                    </>
-                                }
-                            />
-                            <Route
-                                path="profile"
-                                element={
-                                    <>
-                                        <PageTitle title="Profile" />
-                                        <Profile />
                                     </>
                                 }
                             />
@@ -140,6 +135,16 @@ const AppRoutes = () => (
                                     <>
                                         <PageTitle title="Redeem" />
                                         <Redeem />
+                                    </>
+                                }
+                            />
+
+                            <Route
+                                path="how-to-claim"
+                                element={
+                                    <>
+                                        <PageTitle title="Claim Voucher" />
+                                        <HowToClaim />
                                     </>
                                 }
                             />

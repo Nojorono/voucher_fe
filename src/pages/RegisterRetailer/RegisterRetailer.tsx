@@ -117,7 +117,7 @@ const RegisterRetailer: React.FC = () => {
         { name: 'kota', label: 'Kota', required: true, type: 'select' },
         { name: 'kecamatan', label: 'Kecamatan', required: true, type: 'select' },
         { name: 'kelurahan', label: 'Kelurahan', required: true, type: 'select' },
-        { name: 'photos', label: 'Upload Photo', required: true, type: 'file' },
+        { name: 'photos', label: 'Upload Foto', required: true, type: 'file' },
     ];
 
 
