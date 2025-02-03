@@ -1,9 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
+import Logo from '../../images/logo/logo.svg';
 import {
-  UserIcon, CheckCircleIcon,
-  NewspaperIcon, ChevronDownIcon, GiftIcon, UserPlusIcon, ListBulletIcon, TicketIcon
+  HomeIcon,
+  UserIcon,
+  CheckCircleIcon,
+  CogIcon,
+  NewspaperIcon,
+  ChevronDownIcon,
+  GiftIcon,
+  TicketIcon,
+  UserPlusIcon,
 } from '@heroicons/react/24/solid';
 
 interface SidebarProps {
@@ -20,7 +28,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const sidebar = useRef<HTMLDivElement>(null);
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
-  const [sidebarExpanded, setSidebarExpanded] = useState(storedSidebarExpanded === 'true');
+  const [sidebarExpanded, setSidebarExpanded] = useState(
+    storedSidebarExpanded === 'true',
+  );
 
   const getUserRole = localStorage.getItem('is_staff') === 'true';
   const token = localStorage.getItem('token');
@@ -28,7 +38,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   useEffect(() => {
     const handleOutsideClick = ({ target }: MouseEvent) => {
       if (!sidebar.current || !trigger.current) return;
-      if (!sidebarOpen || sidebar.current.contains(target as Node) || trigger.current.contains(target as Node)) return;
+      if (
+        !sidebarOpen ||
+        sidebar.current.contains(target as Node) ||
+        trigger.current.contains(target as Node)
+      )
+        return;
       setSidebarOpen(false);
     };
 
@@ -48,14 +63,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   useEffect(() => {
     localStorage.setItem('sidebar-expanded', sidebarExpanded.toString());
-    document.querySelector('body')?.classList.toggle('sidebar-expanded', sidebarExpanded);
+    document
+      .querySelector('body')
+      ?.classList.toggle('sidebar-expanded', sidebarExpanded);
   }, [sidebarExpanded]);
 
   useEffect(() => {
     const checkTokenExpiration = () => {
       if (token) {
         const tokenPayload = JSON.parse(atob(token.split('.')[1]));
-        const isExpired = (tokenPayload.exp * 1000 < Date.now()) || (Date.now() - (tokenPayload.iat * 1000) > 2 * 60 * 60 * 1000);
+        const isExpired =
+          tokenPayload.exp * 1000 < Date.now() ||
+          Date.now() - tokenPayload.iat * 1000 > 2 * 60 * 60 * 1000;
         if (isExpired) {
           localStorage.removeItem('token');
           navigate('/auth/signin');
@@ -75,21 +94,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         {/* <NavLink to="/profile">
           <img src={Logo} alt="Logo" />
         </NavLink> */}
+
         <button
           ref={trigger}
           onClick={() => setSidebarOpen(!sidebarOpen)}
           aria-controls="sidebar"
           aria-expanded={sidebarOpen}
           className="block lg:hidden"
-        >
-        </button>
+        ></button>
       </div>
 
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-              {getUserRole ? 'ADMIN DASHBOARD' : 'DASHBOARD'}
+              {getUserRole ? 'ADMIN DASHBOARD' : 'AGEN DASHBOARD'}
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
@@ -106,45 +125,43 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
+                  <li>
+                    <NavLink
+                      to="/voucher-verification"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
+                     text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('verification') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <CheckCircleIcon className="h-6 w-6 text-white-500" />
+                      Verify Voucher
+                    </NavLink>
+                  </li>
 
                   <li>
                     <NavLink
-                      to="/dashboard/dashboard_retailer"
+                      to="/voucher-verification"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
+                     text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('verification') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <CheckCircleIcon className="h-6 w-6 text-white-500" />
+                      Reimburse Agen
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink
+                      to="/dashboard/all-retailers"
                       className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
                                   font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 
                                   ${pathname.includes('/dashboard/dashboard_retailer') && 'bg-graydark dark:bg-meta-4'}`}
                     >
-                      <ListBulletIcon className="h-6 w-6 text-white-500" />
+                      <NewspaperIcon className="h-6 w-6 text-white-500" />
                       All Retailers
                     </NavLink>
                   </li>
 
                   <li>
                     <NavLink
-                      to="/dashboard/all-vouchers"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
-                                  font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 
-                                  ${pathname.includes('/dashboard/dashboard_voucher') && 'bg-graydark dark:bg-meta-4'}`}
-                    >
-                      <ListBulletIcon className="h-6 w-6 text-white-500" />
-                      All Vouchers
-                    </NavLink>
-                  </li>
-
-                  <li>
-                    <NavLink
-                      to="/verification"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
-                     text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('verification') && 'bg-graydark dark:bg-meta-4'}`}
-                    >
-                      <CheckCircleIcon className="h-6 w-6 text-white-500" />
-                      Verification Photo
-                    </NavLink>
-                  </li>
-
-                  <li>
-                    <NavLink
-                      to="/user_register"
+                      to="/add-user"
                       className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
                      text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('user_register') && 'bg-graydark dark:bg-meta-4'}`}
                     >
@@ -153,11 +170,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
-
-
-
                   <SidebarLinkGroup
-                    activeCondition={pathname === '/master_data' || pathname.includes('master_data')}
+                    activeCondition={
+                      pathname === '/master_data' ||
+                      pathname.includes('master_data')
+                    }
                   >
                     {(handleClick, open) => (
                       <React.Fragment>
@@ -167,7 +184,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/master_data' || pathname.includes('master_data') ? 'bg-graydark dark:bg-meta-4' : ''}`}
                           onClick={(e) => {
                             e.preventDefault();
-                            sidebarExpanded ? handleClick() : setSidebarExpanded(true);
+                            sidebarExpanded
+                              ? handleClick()
+                              : setSidebarExpanded(true);
                           }}
                         >
                           <NewspaperIcon className="h-6 w-6 text-white-500" />
@@ -189,7 +208,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
                                   font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('/master_data/master_wholesale') && 'bg-graydark dark:bg-meta-4'}`}
                               >
-                                Master Wholesale
+                                Master Agen
                               </NavLink>
                             </li>
                           </ul>
@@ -212,17 +231,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
                   <li>
                     <NavLink
-                      to="/how-to-claim"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('how-to-claim') && 'bg-graydark dark:bg-meta-4'}`}
+                      to="/claim-voucher"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('redeem') && 'bg-graydark dark:bg-meta-4'}`}
                     >
                       <TicketIcon className="h-6 w-6 text-white-500" />
-                      Cara Claim Voucher
+                      Claim Voucher
                     </NavLink>
                   </li>
 
                   <li>
                     <NavLink
-                      to="/redeem"
+                      to="/redeem-voucher"
                       className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('redeem') && 'bg-graydark dark:bg-meta-4'}`}
                     >
                       <GiftIcon className="h-6 w-6 text-white-500" />

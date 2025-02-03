@@ -1,0 +1,21 @@
+import React from 'react'
+
+export default function HowToClaim() {
+    return (
+        <div className="p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-4">CARA RETAILER MENDAPATKAN VOUCHER:</h2>
+            <ol className="list-decimal list-inside mb-6">
+                <li className="mb-2">Toko/retailer diwajibkan memasang sticker POSM dan menyediakan tester di tempat yang telah disediakan di tempat yang strategis di dalam toko.</li>
+                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href="http://10.0.29.49:81/register/retailer" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
+                <li className="mb-2">Setelah formulir diappove, toko/retailer akan menerima kode voucher melalui WhatsApp untuk mendapatkan potongan Rp 20.000 yang berlaku untuk pembelian berikutnya.</li>
+            </ol>
+            <h2 className="text-2xl font-bold mb-4">CARA RETAILER CLAIM VOUCHER:</h2>
+            <ol className="list-decimal list-inside">
+                <li className="mb-2">Saat toko/retailer mau melakukan pembelian berikutnya, bisa menunjukkan kode voucher ke Agen untuk mendapatkan potongan Rp. 20.000 dari total nilai pembelian mereka.</li>
+                <li className="mb-2">Total nilai pembelian produk harus diatas nilai voucher (Rp. 20,000)</li>
+                <li className="mb-2">Agen diwajibkan mengisi formulir "Redeem Voucher" dengan detail pembelian.</li>
+                <li className="mb-2">NNA akan mengganti biaya Rp. 20.000 kepada Agen sesuai dengan jumlah yang telah digunakan.</li>
+            </ol>
+        </div>
+    )
+}
