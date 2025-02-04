@@ -3,6 +3,8 @@ import FormRegisterUser from '../../components/Forms/FormRegister/FormRegisterUs
 import { stagingURL } from '../../utils/API'
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import { SubmitHandler } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+
 // import { RocketLaunchIcon } from '@heroicons/react/24/outline';
 
 interface IFormInput {
@@ -14,6 +16,8 @@ interface IFormInput {
 
 const UserRegister: React.FC = () => {
   const [isReset, setIsReset] = useState(false);
+  const navigate = useNavigate();
+
 
   const postRegisterUser = async (data: IFormInput) => {
     try {
@@ -68,6 +72,9 @@ const UserRegister: React.FC = () => {
       }
       showSuccessToast("Sukses Register User!");
       setIsReset(true);
+      setTimeout(() => {
+        navigate('/master_data/user_register');
+      }, 2000);
 
     } catch (error) {
       console.error(`Error: ${(error as Error).message}`);
@@ -84,7 +91,7 @@ const UserRegister: React.FC = () => {
     { name: 'username', label: 'Username', required: true },
     { name: 'password', label: 'Password', required: true },
     { name: 'email', label: 'Email', required: true },
-    { name: 'wholesale', label: 'Wholesale', required: true, type: 'select' },
+    { name: 'wholesale', label: 'Agen', required: true, type: 'select' },
   ];
 
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DataTableAgen from '../../components/Tables/DataTableAgen';
+import DataTableUser from '../../components/Tables/DataTableUser';
 import { stagingURL, signOut } from '../../utils';
 
-const MasterWholesale = () => {
+const MasterUser = () => {
     const navigate = useNavigate();
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -29,9 +29,10 @@ const MasterWholesale = () => {
             redirect: 'follow' as RequestRedirect,
         };
 
-        fetch(`${stagingURL}/api/wholesales/`, requestOptions)
+        fetch(`${stagingURL}/api/user/`, requestOptions)
             .then((response) => response.json())
             .then((result) => {
+                
                 // Filter data untuk hanya menampilkan yang is_active = true
                 const filteredData = result.filter((item: any) => item.is_active === true);
 
@@ -62,17 +63,23 @@ const MasterWholesale = () => {
     // Definisikan kolom untuk DataTable
     const columns = [
         {
-            name: <div className="text-xl font-bold"> Nama Agen </div>,
-            selector: (row: any) => row.name,
+            name: <div className="text-xl font-bold"> Username </div>,
+            selector: (row: any) => row.username,
             sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.name}</div>,
+            cell: (row: any) => <div className="text-lg">{row.username}</div>, // Styling dengan kelas CSS dan ukuran teks diperbesar
         },
         {
-            name: <div className="text-xl font-bold"> Telepon </div>,
-            selector: (row: any) => row.phone_number,
+            name: <div className="text-xl font-bold"> Email </div>,
+            selector: (row: any) => row.email,
             sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.phone_number}</div>,
+            cell: (row: any) => <div className="text-lg">{row.email}</div>, // Styling dengan kelas CSS
         },
+        {
+            name: <div className="text-xl font-bold"> Agen </div>,
+            selector: (row: any) => row.wholesale,
+            sortable: true,
+            cell: (row: any) => <div className="text-lg">{row.wholesale}</div>, // Styling dengan kelas CSS
+        },  
     ];
 
     if (loading) {
@@ -85,9 +92,9 @@ const MasterWholesale = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-5">Master Wholesale</h1>
+            <h1 className="text-2xl font-bold mb-5">Master User</h1>
 
-            <DataTableAgen
+            <DataTableUser
                 columns={columns}
                 data={data}
                 selectableRows={false}
@@ -98,4 +105,4 @@ const MasterWholesale = () => {
     );
 };
 
-export default MasterWholesale;
+export default MasterUser;

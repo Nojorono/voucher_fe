@@ -15,6 +15,7 @@ import UserRegister from './pages/RegisterUser/UserRegister';
 import MasterWholesale from './pages/MasterData/MasterWholesale';
 import DashboardVoucher from './pages/Dashboard/DashboardVoucher';
 import HowToClaim from './pages/RedeemVoucher/HowToClaim';
+import MasterUser from './pages/MasterData/MasterUser';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
 
@@ -150,7 +151,18 @@ const AppRoutes = () => (
                             />
 
                             <Route
-                                path="user_register"
+                                path="master_data/user_register"
+                                element={
+                                    <>
+                                        <PageTitle title="Master Register" />
+                                        <MasterUser />
+                                    </>
+                                }
+                            />
+
+
+                            <Route
+                                path="/user_register"
                                 element={
                                     <>
                                         <PageTitle title="User Register" />

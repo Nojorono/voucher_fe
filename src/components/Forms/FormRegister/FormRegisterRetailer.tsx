@@ -127,7 +127,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         if (files) {
             const newPhotos = Array.from(files);
             setUploadedPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
-            setPhotoRemarks(['Foto POSM', 'Foto Tester', 'Foto Kode Tester'].slice(0, newPhotos.length));
+            setPhotoRemarks(['Foto Stiker POSM', 'Foto Tester', 'Foto Kode Tester'].slice(0, newPhotos.length));
         }
     };
 
@@ -184,7 +184,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                             {[0, 1, 2].map((index) => (
                                 <div key={index} className="mb-2">
                                     <label className="mt-1 block text-sm text-gray-600">
-                                        {index === 0 ? 'Upload Foto POSM' : index === 1 ? 'Upload Foto Tester' : 'Upload Foto Kode Tester'}
+                                        {index === 0 ? 'Upload Foto Stiker POSM' : index === 1 ? 'Upload Foto Tester' : 'Upload Foto Kode Tester'}
                                     </label>
                                     <input
                                         id={`${String(field.name)}_${index}`}

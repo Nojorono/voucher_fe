@@ -142,7 +142,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
-                  <li>
+                  {/* <li>
                     <NavLink
                       to="/user_register"
                       className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
@@ -151,7 +151,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       <UserPlusIcon className="h-6 w-6 text-white-500" />
                       Add Agen User
                     </NavLink>
-                  </li>
+                  </li> */}
 
 
 
@@ -182,7 +182,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <div
                           className={`translate transform overflow-hidden ${!open && 'hidden'}`}
                         >
-                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <ul className="mt-4 flex flex-col gap-2.5 pl-6">
                             <li>
                               <NavLink
                                 to="/master_data/master_wholesale"
@@ -190,6 +190,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                   font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('/master_data/master_wholesale') && 'bg-graydark dark:bg-meta-4'}`}
                               >
                                 Master Wholesale
+                              </NavLink>
+                            </li>
+                          </ul>
+
+
+                          <ul className="mt-2 flex flex-col gap-2.5 pl-6">
+                            <li>
+                              <NavLink
+                                to="/master_data/user_register"
+                                className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
+                                  font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('/master_data/user_register') && 'bg-graydark dark:bg-meta-4'}`}
+                              >
+                                Master User
                               </NavLink>
                             </li>
                           </ul>

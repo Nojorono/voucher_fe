@@ -1,7 +1,7 @@
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { memo, useState, useEffect } from 'react';
 import "yet-another-react-lightbox/styles.css";
-import Spinner from '../../components/Spinner'
+import Spinner from '../Spinner'
 import { stagingURL, signOut } from '../../utils';
 import {
     Button,
@@ -10,11 +10,10 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
-import ModalFormWholesale from '../../components/Forms/ModalFormWholesale';
+import ModalFormWholesale from '../Forms/ModalFormWholesale';
 import { FaTrash, FaPlus, FaEdit } from 'react-icons/fa';
-import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
-
-
+import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
+import { useNavigate } from 'react-router-dom';
 
 const CustomLoader = () => (
     <Spinner />
@@ -28,7 +27,9 @@ interface DataTableProps {
     onRefresh: () => void;
 }
 
-const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSelected, onRefresh }: DataTableProps) => {
+const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelected, onRefresh }: DataTableProps) => {
+    const navigate = useNavigate();
+
     const [pending, setPending] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [rowToDelete, setRowToDelete] = useState<any>(null);
@@ -36,7 +37,7 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
     const [method, setMethod] = useState('POST');
     const [IdUpdate, setIdUpdate] = useState(null);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const [updateData, setUpdateData] = useState({ id: '', name: '', phone_number: '' });
+    const [updateData, setUpdateData] = useState({ id: '', username: '', email: '' });
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -54,15 +55,15 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
     const columnsWithActions = [
         ...columns,
         {
-            name: 'Action',
+            name: <div className="text-xl font-bold"> Action </div>,
             cell: (row: any) => (
                 <div className="flex items-center">
                     <button onClick={() => handleSoftDelete(row)} className="bg-red-500 text-white py-2 px-4 rounded flex items-center mr-2">
-                        <FaTrash className="mr-2" />
-                        Delete
+                        {/* <FaTrash className="mr-2" /> */}
+                        Nonaktifkan User
                     </button>
                     <button onClick={() => handleUpdate(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center">
-                        <FaEdit className="mr-2" />
+                        {/* <FaEdit className="mr-2" /> */}
                         Update
                     </button>
                 </div>
@@ -88,13 +89,13 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
                 method: 'PUT',
                 headers: myHeaders,
                 body: JSON.stringify({
-                    name: rowToDelete.name,
-                    phone_number: rowToDelete.phone_number,
+                    // name: rowToDelete.name,
+                    // phone_number: rowToDelete.phone_number,
                     is_active: false
                 }),
             };
 
-            fetch(`${stagingURL}/api/wholesales/${rowToDelete.id}/`, requestOptions)
+            fetch(`${stagingURL}/api/user/update/${rowToDelete.id}/`, requestOptions)
                 .then((response) => {
                     if (response.ok) {
                         onRefresh();
@@ -114,9 +115,7 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
     };
 
     const handleAdd = () => {
-        setOpen(true);
-        setMethod('POST');
-        setIdUpdate(null);
+        navigate('/user_register');
     };
 
     const postData = (formData: any) => {
@@ -152,7 +151,7 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
     };
 
     const handleUpdate = (row: any) => {
-        setUpdateData({ id: row.id, name: row.name, phone_number: row.phone_number });
+        setUpdateData({ id: row.id, username: row.username, email: row.email });
         setOpenUpdateModal(true);
     };
 
@@ -166,13 +165,12 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
             method: 'PUT',
             headers: myHeaders,
             body: JSON.stringify({
-                name: updateData.name,
-                phone_number: updateData.phone_number,
-                is_active: true // Atur sesuai kebutuhan
+                username: updateData.username,
+                email: updateData.email,
             }),
         };
 
-        fetch(`${stagingURL}/api/wholesales/${updateData.id}/`, requestOptions)
+        fetch(`${stagingURL}/api/user/update/${updateData.id}/`, requestOptions)
             .then((response) => {
                 if (response.ok) {
                     setOpenUpdateModal(false);
@@ -195,7 +193,7 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
 
             <button onClick={handleAdd} className="mb-4 bg-green-500 text-white py-2 px-4 rounded flex items-center">
                 <FaPlus className="mr-2" />
-                Tambah Data
+                Tambah User
             </button>
 
             <ModalFormWholesale open={open} handleOpen={() => setOpen(false)} onSubmit={onSubmit} method={method} IdUpdate={IdUpdate} />
@@ -211,9 +209,9 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
             />
 
             <Dialog open={openDialog} handler={() => setOpenDialog(false)}>
-                <DialogHeader>Konfirmasi Hapus</DialogHeader>
+                <DialogHeader>Konfirmasi</DialogHeader>
                 <DialogBody>
-                    Apakah Anda yakin ingin menghapus pengguna ini?
+                    Apakah Anda yakin ingin menonaktifkan user ini?
                 </DialogBody>
                 <DialogFooter>
                     <Button variant="text" color="red" onClick={() => setOpenDialog(false)}>
@@ -229,21 +227,22 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
                 <DialogHeader>Update Data</DialogHeader>
                 <DialogBody>
                     <div>
-                        <label>Nama Agen</label>
+                        <label>Username</label>
                         <input
                             type="text"
-                            value={updateData.name}
-                            onChange={(e) => setUpdateData({ ...updateData, name: e.target.value })}
-                            placeholder="Nama"
+                            value={updateData.username}
+                            onChange={(e) => setUpdateData({ ...updateData, username: e.target.value })}
+                            placeholder="Username"
                             className="border p-2 w-full"
                         />
                     </div>
-                    <div>
-                        <label>Nomor Telepon</label>
+
+                    <div className='mt-2'>
+                        <label>Email</label>
                         <input
-                            value={updateData.phone_number}
-                            onChange={(e) => setUpdateData({ ...updateData, phone_number: e.target.value })}
-                            placeholder="Nomor Telepon"
+                            value={updateData.email}
+                            onChange={(e) => setUpdateData({ ...updateData, email: e.target.value })}
+                            placeholder="Email"
                             className="border p-2 w-full mt-2"
                             type="tel"
                             inputMode="numeric"
@@ -263,4 +262,4 @@ const DataTableComponent = memo(({ columns, data, selectableRows = true, onRowSe
     );
 });
 
-export default DataTableComponent;
+export default DataTableUser;
