@@ -32,7 +32,7 @@ const MasterUser = () => {
         fetch(`${stagingURL}/api/user/`, requestOptions)
             .then((response) => response.json())
             .then((result) => {
-                
+
                 // Filter data untuk hanya menampilkan yang is_active = true
                 const filteredData = result.filter((item: any) => item.is_active === true);
 
@@ -66,20 +66,20 @@ const MasterUser = () => {
             name: <div className="text-xl font-bold"> Username </div>,
             selector: (row: any) => row.username,
             sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.username}</div>, // Styling dengan kelas CSS dan ukuran teks diperbesar
+            cell: (row: any) => <div className="text-lg">{row.username}</div>,
         },
         {
             name: <div className="text-xl font-bold"> Email </div>,
             selector: (row: any) => row.email,
-            sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.email}</div>, // Styling dengan kelas CSS
+            sortable: false,
+            cell: (row: any) => <div className="text-lg">{row.email}</div>,
         },
         {
             name: <div className="text-xl font-bold"> Agen </div>,
-            selector: (row: any) => row.wholesale,
+            selector: (row: any) => row.wholesale_name,
             sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.wholesale}</div>, // Styling dengan kelas CSS
-        },  
+            cell: (row: any) => <div className="text-lg">{row.wholesale_name}</div>,
+        },
     ];
 
     if (loading) {
