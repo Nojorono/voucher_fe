@@ -8,6 +8,8 @@ const Profile: React.FC = () => {
   const [userProfile, setUserProfile] = useState({
     userId: localStorage.getItem('userid') || 'Not Assigned',
     email: localStorage.getItem('email') || 'Not Assigned',
+    ws_name: localStorage.getItem('ws_name') || 'Not Assigned',
+
     username: localStorage.getItem('username') || 'Not Assigned',
     password: localStorage.getItem('password') || 'Not Assigned',
   });
@@ -15,6 +17,8 @@ const Profile: React.FC = () => {
   const [userProfileOriginal, setUserProfileOriginal] = useState({
     userId: localStorage.getItem('userid') || 'Not Assigned',
     email: localStorage.getItem('email') || 'Not Assigned',
+    ws_name: localStorage.getItem('ws_name') || 'Not Assigned',
+
     username: localStorage.getItem('username') || 'Not Assigned',
     password: localStorage.getItem('password') || 'Not Assigned',
   });
@@ -31,30 +35,33 @@ const Profile: React.FC = () => {
     setShowPassword(prevShowPassword => !prevShowPassword);
   };
 
-  const renderInput = (label: string, value: string, type: string = 'text', field: string) => (
-    <div className="mb-4.5">
-      <label className="mb-2.5 block text-black dark:text-white">{label}</label>
-      <div className="relative">
-        <input
-          value={value}
-          type={field === 'password' && !showPassword ? 'password' : type}
-          onChange={e => handleInputChange(e, field)}
-          readOnly={!isEditing}
-          className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition
-             focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${!isEditing ? 'bg-gray-200' : ''}`}
-        />
-        {field === 'password' && (
-          <button
-            type="button"
-            onClick={togglePasswordVisibility}
-            className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 dark:text-gray-400"
-          >
-            {showPassword ? '👁️' : '👁️‍🗨️'}
-          </button>
-        )}
+  const renderInput = (label: string, value: string, type: string = 'text', field: string) => {
+    if (isEditing && field === 'ws_name') return null;
+    return (
+      <div className="mb-4.5">
+        <label className="mb-2.5 block text-black dark:text-white">{label}</label>
+        <div className="relative">
+          <input
+            value={value}
+            type={field === 'password' && !showPassword ? 'password' : type}
+            onChange={e => handleInputChange(e, field)}
+            readOnly={!isEditing || field === 'ws_name'}
+            className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition
+               focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${(!isEditing || field === 'ws_name') ? 'bg-gray-200' : ''}`}
+          />
+          {field === 'password' && (
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 dark:text-gray-400"
+            >
+              {showPassword ? '👁️' : '👁️‍🗨️'}
+            </button>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,8 +173,10 @@ const Profile: React.FC = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="p-6.5">
+              {renderInput('Nama Agen', userProfile.ws_name, 'ws_name', 'ws_name')}
               {renderInput('Username', userProfile.username, 'text', 'username')}
               {renderInput('Email', userProfile.email, 'email', 'email')}
+
               {isEditing && renderInput('Password', userProfile.password, 'text', 'password')}
 
               <button

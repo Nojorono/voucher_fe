@@ -7,7 +7,7 @@ import AppRoutes from './Routes';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token');  
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,6 +32,7 @@ function App() {
   if (token && pathname !== '/auth/signin') {
     return <AppRoutes />; // Pastikan tetap di halaman yang sama
   }
+  
 
   return <AppRoutes />;
 }
