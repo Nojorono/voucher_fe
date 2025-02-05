@@ -16,6 +16,7 @@ import MasterWholesale from './pages/MasterData/MasterWholesale';
 import DashboardVoucher from './pages/Dashboard/DashboardVoucher';
 import HowToClaim from './pages/RedeemVoucher/HowToClaim';
 import MasterUser from './pages/MasterData/MasterUser';
+import Reimbursement from './pages/Reimburse/Reimbursement';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
 
@@ -177,6 +178,16 @@ const AppRoutes = () => (
                                     <>
                                         <PageTitle title="Master Wholesale" />
                                         <MasterWholesale />
+                                    </>
+                                }
+                            />
+
+                            <Route
+                                path="/reimbursement"
+                                element={
+                                    <>
+                                        <PageTitle title="Reimbursement" />
+                                        <Reimbursement />
                                     </>
                                 }
                             />

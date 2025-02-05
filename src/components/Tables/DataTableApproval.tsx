@@ -126,11 +126,12 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
 
     // Definisi kolom untuk DataTable
     const columns: TableColumn<{
+        is_verified: number;
         retailer_id: number; retailer_name: string; retailer_phone_number: string;
         retailer_address: string; retailer_voucher_code: string; images: string[]; status: string
     }>[] = useMemo(() => {
         const createColumn = (name: string, selector: (row: any) => any) => ({
-            name: <span className="text-lg font-bold">{name}</span>,
+            name: <span className="font-bold">{name}</span>,
             selector,
             sortable: true,
             cell: (row: any) => <span>{selector(row)}</span>,
@@ -138,31 +139,70 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         });
 
         return [
-            createColumn('Retailer Name', (row) => row.retailer_name),
-            createColumn('Phone Number', (row) => row.retailer_phone_number),
-            createColumn('Address', (row) => row.retailer_address),
-            createColumn('Voucher Code', (row) => row.retailer_voucher_code),
+            createColumn('Nama Retailer', (row) => row.retailer_name),
+            createColumn('No Whatsapp', (row) => row.retailer_phone_number),
+            createColumn('Alamat', (row) => row.retailer_address),
             createColumn('Status', (row) => (
                 <span className={row.statusColor}>{row.status}</span>
             )),
             {
-                name: <span className="text-lg font-bold">Image</span>,
+                name: <span className="font-bold">Voucher Code</span>,
                 cell: (row) => (
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        {row.images.map((image, index) => (
-                            <img
-                                key={index}
-                                loading="lazy"
-                                src={`${stagingURL}${image}`}
-                                alt="Retailer"
-                                style={{ width: '50px', height: '50px', cursor: 'pointer' }}
-                                onClick={() => {
-                                    setCurrentImage(`${stagingURL}${image}`);
-                                    setLightboxOpen(true);
-                                }}
-                            />
-                        ))}
-                    </div>
+                    row.is_verified === 1 ? <span>{row.retailer_voucher_code}</span> : null
+                ),
+                sortable: true,
+            },
+            {
+                name: <span className="font-bold">Foto POSM</span>,
+                cell: (row) => (
+                    row.images[0] ? (
+                        <img
+                            loading="lazy"
+                            src={`${stagingURL}${row.images[0]}`}
+                            alt="Retailer"
+                            style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                            onClick={() => {
+                                setCurrentImage(`${stagingURL}${row.images[0]}`);
+                                setLightboxOpen(true);
+                            }}
+                        />
+                    ) : null
+                ),
+                sortable: false,
+            },
+            {
+                name: <span className="font-bold">Foto Tester</span>,
+                cell: (row) => (
+                    row.images[1] ? (
+                        <img
+                            loading="lazy"
+                            src={`${stagingURL}${row.images[1]}`}
+                            alt="Retailer"
+                            style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                            onClick={() => {
+                                setCurrentImage(`${stagingURL}${row.images[1]}`);
+                                setLightboxOpen(true);
+                            }}
+                        />
+                    ) : null
+                ),
+                sortable: false,
+            },
+            {
+                name: <span className="font-bold">Foto Kode Tester</span>,
+                cell: (row: { images: any[]; }) => (
+                    row.images[2] ? (
+                        <img
+                            loading="lazy"
+                            src={`${stagingURL}${row.images[2]}`}
+                            alt="Retailer"
+                            style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                            onClick={() => {
+                                setCurrentImage(`${stagingURL}${row.images[2]}`);
+                                setLightboxOpen(true);
+                            }}
+                        />
+                    ) : null
                 ),
                 sortable: false,
             },
@@ -184,8 +224,9 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     // Transformasi data untuk DataTable dengan filter
     const filteredData = useMemo(() => {
         return transformedData.filter(item => {
-            if (filter === null) return true; // Tampilkan semua
+            if (filter === null) return item.is_verified === 0; // Default tampilkan data yang belum diverifikasi
             const [verified] = filter; // Mengambil nilai filter
+            if (verified === 2) return true; // Tampilkan semua data jika filter == 2
             return item.is_verified === verified; // Filter berdasarkan is_verified
         });
     }, [transformedData, filter]);
@@ -196,8 +237,8 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
 
             {/* Filter Buttons */}
             <div className="mb-2">
-                <select onChange={(e) => handleFilterChange(e.target.value ? e.target.value.split('&').map(Number) as [number, number] : null)} className="p-2 rounded">
-                    <option value="">Semua</option>
+                <select onChange={(e) => handleFilterChange(e.target.value ? e.target.value.split('&').map(Number) as [number, number] : null)} className="p-2 rounded" defaultValue="0">
+                    <option value="2">Semua</option>
                     <option value="1">Sudah Diverifikasi</option>
                     <option value="0">Belum Diverifikasi</option>
                 </select>

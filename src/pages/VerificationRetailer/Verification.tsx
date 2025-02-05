@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { stagingURL, signOut } from '../../utils'
-import DataTableComponent from '../../components/Tables/DataTableApproval';
+import DataTableApproval from '../../components/Tables/DataTableApproval';
 import { photoRetailer } from '../../types/photoRetailer';
 import Spinner from '../../components/Spinner'
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
@@ -75,7 +75,7 @@ const Verification = () => {
         <>
           <CustomToast />
 
-          <DataTableComponent dataPhoto={dataPhoto} onUpdate={handleDataUpdate} />
+          <DataTableApproval dataPhoto={dataPhoto} onUpdate={handleDataUpdate} />
         </>
       )}
     </div>

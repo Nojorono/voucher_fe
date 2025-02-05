@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import {
-  UserIcon, CheckCircleIcon,
-  NewspaperIcon, ChevronDownIcon, GiftIcon, UserPlusIcon, ListBulletIcon, TicketIcon
+  CurrencyDollarIcon, CheckCircleIcon,
+  NewspaperIcon, ChevronDownIcon, GiftIcon, ListBulletIcon, TicketIcon
 } from '@heroicons/react/24/solid';
 
 interface SidebarProps {
@@ -95,17 +95,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ul className="mb-6 flex flex-col gap-1.5">
               {getUserRole ? (
                 <>
-                  <li>
-                    <NavLink
-                      to="/profile"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
-                        font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'}`}
-                    >
-                      <UserIcon className="h-6 w-6 text-white-500" />
-                      Profile
-                    </NavLink>
-                  </li>
-
 
                   <li>
                     <NavLink
@@ -141,20 +130,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       Verification Photo
                     </NavLink>
                   </li>
-
-                  {/* <li>
-                    <NavLink
-                      to="/user_register"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium
-                     text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('user_register') && 'bg-graydark dark:bg-meta-4'}`}
-                    >
-                      <UserPlusIcon className="h-6 w-6 text-white-500" />
-                      Add Agen User
-                    </NavLink>
-                  </li> */}
-
-
-
 
                   <SidebarLinkGroup
                     activeCondition={pathname === '/master_data' || pathname.includes('master_data')}
@@ -215,16 +190,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <>
                   <li>
                     <NavLink
-                      to="/profile"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'}`}
-                    >
-                      <UserIcon className="h-6 w-6 text-white-500" />
-                      Profile
-                    </NavLink>
-                  </li>
-
-                  <li>
-                    <NavLink
                       to="/how-to-claim"
                       className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('how-to-claim') && 'bg-graydark dark:bg-meta-4'}`}
                     >
@@ -240,6 +205,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     >
                       <GiftIcon className="h-6 w-6 text-white-500" />
                       Redeem Voucher
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink
+                      to="/reimbursement"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('reimbursement') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <CurrencyDollarIcon className="h-6 w-6 text-white-500" />
+                      Reimbursement
                     </NavLink>
                   </li>
                 </>

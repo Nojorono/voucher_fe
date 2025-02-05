@@ -58,7 +58,7 @@ const RegisterRetailer: React.FC = () => {
             if (data.photos) {
                 Array.from(data.photos).forEach((photo, index) => {
                     formData.append(`photos`, photo); // Tambahkan foto ke dalam FormData
-                    const remark = index === 0 ? 'Tampak Depan' : index === 1 ? 'Tampak Belakang' : 'Tampak Samping';
+                    const remark = index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester';
                     formData.append(`photo_remarks`, remark); // Tambahkan remark ke dalam FormData
                 });
             }
