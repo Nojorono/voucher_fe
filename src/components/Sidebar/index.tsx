@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import {
   CurrencyDollarIcon, CheckCircleIcon,
-  NewspaperIcon, ChevronDownIcon, GiftIcon, ListBulletIcon, TicketIcon
+  NewspaperIcon, ChevronDownIcon, GiftIcon, ListBulletIcon, TicketIcon, DocumentCurrencyDollarIcon
 } from '@heroicons/react/24/solid';
 
 interface SidebarProps {
@@ -22,7 +22,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(storedSidebarExpanded === 'true');
 
-  const getUserRole = localStorage.getItem('is_staff') === 'true';
+  const adminRole = localStorage.getItem('is_staff') === 'true';
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -89,11 +89,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-              {getUserRole ? 'ADMIN DASHBOARD' : 'DASHBOARD'}
+              {adminRole ? 'ADMIN DASHBOARD' : 'AGEN DASHBOARD'}
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
-              {getUserRole ? (
+              {adminRole ? (
                 <>
 
                   <li>
@@ -127,7 +127,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                      text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('verification') && 'bg-graydark dark:bg-meta-4'}`}
                     >
                       <CheckCircleIcon className="h-6 w-6 text-white-500" />
-                      Verification Photo
+                       Photo Verification
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink
+                      to="reimburse_checking"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
+                                  font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 
+                                  ${pathname.includes('reimburse_checking') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <DocumentCurrencyDollarIcon className="h-6 w-6 text-white-500" />
+                      Reimburse Verification
                     </NavLink>
                   </li>
 
@@ -164,7 +176,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
                                   font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('/master_data/master_wholesale') && 'bg-graydark dark:bg-meta-4'}`}
                               >
-                                Master Wholesale
+                                Master Agen
                               </NavLink>
                             </li>
                           </ul>

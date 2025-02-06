@@ -3,15 +3,7 @@ import { memo, useState, useEffect } from 'react';
 import "yet-another-react-lightbox/styles.css";
 import Spinner from '../Spinner'
 import { stagingURL, signOut } from '../../utils';
-import {
-    Button,
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-} from "@material-tailwind/react";
-import ModalFormWholesale from '../Forms/ModalFormWholesale';
-import { FaTrash, FaPlus, FaEdit, FaDonate } from 'react-icons/fa';
+
 import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
 
 const CustomLoader = () => (
@@ -28,11 +20,7 @@ interface DataTableProps {
 
 const DataTableReimburse = memo(({ columns, data, selectableRows = true, onRowSelected, onRefresh }: DataTableProps) => {
     const [pending, setPending] = useState(true);
-    const [open, setOpen] = useState(false);
-    const [method, setMethod] = useState('POST');
-    const [IdUpdate, setIdUpdate] = useState(null);
-    const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const [updateData, setUpdateData] = useState({ id: '', username: '', email: '' });
+    const [selectedRow, setSelectedRow] = useState<any>(null);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -44,98 +32,55 @@ const DataTableReimburse = memo(({ columns, data, selectableRows = true, onRowSe
 
     const columnsWithActions = [
         ...columns,
-        {
-            name: <div className="text-xl font-bold"> Action </div>,
-            cell: (row: any) => (
-                <div className="flex items-center">
-                    {row.status === "Belum Ada Status" && (
-                        <button onClick={() => onSubmit(row)} className="bg-green-500 text-white py-2 px-4 rounded flex items-center mr-2">
-                            <FaDonate className="mr-2" />
-                            Ajukan Reimburse
-                        </button>
-                    )}
-                </div>
-            ),
-        },
     ];
 
-    const handleOpen = () => setOpen(!open);
+    const postData = () => {
+        if (!selectedRow || selectedRow.length === 0) {
+            showErrorToast('No rows selected');
+            return;
+        }
 
-    const handleConfirm = (row: any) => {
-        setOpen(false);
-        // postData(row);
-        alert('Reimburse berhasil diajukan');
-    };
+        const voucherCodes = selectedRow.map((row: any) => row.voucher_code);
 
-    const renderDialog = () => (
-        <Dialog open={open} handler={handleOpen}>
-            <DialogHeader>Confirm Action</DialogHeader>
-            <DialogBody divider>
-                Are you sure you want to submit this reimbursement?
-            </DialogBody>
-            <DialogFooter>
-                <Button variant="text" color="red" onClick={handleOpen}>
-                    No
-                </Button>
-                <Button variant="gradient" color="green" onClick={() => handleConfirm(selectedRow)}>
-                    Yes
-                </Button>
-            </DialogFooter>
-        </Dialog>
-    );
+        const formData = {
+            voucher_codes: voucherCodes,
+        };
 
-    const [selectedRow, setSelectedRow] = useState<any>(null);
+        const token = localStorage.getItem('token');
+        const myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+        myHeaders.append('Content-Type', 'application/json');
 
-    const onSubmit = (row: any) => {
-        setSelectedRow(row);
-        setOpen(true);
-    };
+        const raw = JSON.stringify(formData);
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
 
-    return (
-        <div>
-            <CustomToast />
-            {renderDialog()}
-            <DataTable
-                columns={columnsWithActions}
-                data={data}
-                selectableRows={selectableRows}
-                pagination
-                progressPending={pending}
-                progressComponent={<CustomLoader />}
-                onSelectedRowsChange={({ selectedRows }) => {
-                    console.log('selectedRows', selectedRows);
-                }}
-            />
-        </div>
-    );
+        const url = `${stagingURL}/api/submit_reimburse/`;
 
+        fetch(url, requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                console.log('res_Post', result[0].status);
 
-    const postData = (data: any) => {
-        console.log('data', data);
-
-        // const token = localStorage.getItem('token');
-        // const myHeaders = new Headers();
-        // myHeaders.append('Authorization', `Bearer ${token}`);
-        // myHeaders.append('Content-Type', 'application/json');
-
-        // const requestOptions: RequestInit = {
-        //     method: method,
-        //     headers: myHeaders,
-        //     body: JSON.stringify(formData),
-        // };
-
-        // const url = `${stagingURL}/api/wholesales/`;
-
-        // fetch(url, requestOptions)
-        //     .then((response) => response.json())
-        //     .then((result) => {
-        //         console.log('res_Post', result);
-        //         setOpen(false);
-        //         onRefresh();
-        //     })
-        //     .catch((error) => {
-        //         console.error('Error posting/updating data:', error);
-        //     });
+                if (Array.isArray(result) && result[0]?.error) {
+                    const errorCodes = result.filter((item: any) => item.error).map((item: any) => item.voucher_code);
+                    showErrorToast(`${errorCodes.join(', ')} ${result[0].error}`);
+                } else if (result.error) {
+                    showErrorToast(result.error);
+                } else {
+                    onRefresh();
+                    setTimeout(() => {
+                        showSuccessToast(`${result[0].status}`);
+                    }, 2000);
+                }
+            })
+            .catch((error) => {
+                console.error('Error posting/updating data:', error);
+                showErrorToast('Error submitting data');
+            });
     };
 
     return (
@@ -150,9 +95,17 @@ const DataTableReimburse = memo(({ columns, data, selectableRows = true, onRowSe
                 progressPending={pending}
                 progressComponent={<CustomLoader />}
                 onSelectedRowsChange={({ selectedRows }) => {
-                    console.log('selectedRows', selectedRows);
+                    setSelectedRow(selectedRows);
                 }}
             />
+
+            {/* Button */}
+            <div className="flex justify-end space-x-1 mt-2">
+                <button className="flex justify-center rounded bg-green-500 p-2 font-medium text-white hover:bg-green-600"
+                    onClick={() => postData()}>
+                    Submit Reimbursement
+                </button>
+            </div>
 
 
         </div>

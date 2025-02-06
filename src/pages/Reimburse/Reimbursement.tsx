@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import DataTableReimburse from '../../components/Tables/DataTableReimburse';
 import { stagingURL, signOut } from '../../utils';
 
 const Reimbursement = () => {
-  const navigate = useNavigate();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRowIds, setSelectedRowIds] = useState<any[]>([]);
-
 
   const fetchData = () => {
     setLoading(true);
@@ -32,10 +29,9 @@ const Reimbursement = () => {
       redirect: "follow"
     };
 
-    fetch(`${stagingURL}/api/list_vouchers/?ws_id=${ws_id}&redemeed=${redeemed}`, requestOptions)
+    fetch(`${stagingURL}/api/list_vouchers/?ws_id=${ws_id}&redeemed=${redeemed}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('res_Get', result);
         setData(result);
         setLoading(false);
       })
@@ -49,9 +45,8 @@ const Reimbursement = () => {
     fetchData();
   }, []);
 
-
   const handleRowSelected = (selectedRows: any[]) => {
-    setSelectedRowIds(selectedRows); // Simpan semua data dari baris yang dipilih ke dalam state
+    setSelectedRowIds(selectedRows);
   };
 
   // Definisikan kolom untuk DataTable
@@ -64,11 +59,21 @@ const Reimbursement = () => {
     },
     {
       name: <div className="text-xl"> Status Reimburse </div>,
-      selector: (row: any) => row.status,
+      selector: (row: any) => row.reimburse_status,
       sortable: true,
+
       cell: (row: any) => (
-        <div className={`text-lg font-bold ${row.status === 'Approved' ? 'text-green-500' : row.status === 'On Proses' ? 'text-orange-500' : ''}`}>
-          {row.status}
+        <div
+          className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${row.reimburse_status === 'closed'
+            ? 'bg-success text-success'
+            : row.reimburse_status === 'open'
+              ? 'bg-danger text-danger'
+              : row.reimburse_status === 'inprogress'
+                ? 'bg-warning text-warning'
+                : 'text-black'
+            }`}
+        >
+          {row.reimburse_status || 'No Status'}
         </div>
       ),
     },
@@ -81,25 +86,6 @@ const Reimbursement = () => {
   const onRefresh = () => {
     fetchData();
   };
-
-  const dummyData = [
-    { voucher_code: 'VC12345', status: 'Belum Ada Status' },
-    { voucher_code: 'VC67890', status: 'On Proses' },
-    { voucher_code: 'VC54321', status: 'Approved' },
-    { voucher_code: 'VC09876', status: 'Belum Ada Status' },
-    { voucher_code: 'VC11223', status: 'Approved' },
-    { voucher_code: 'VC33445', status: 'Belum Ada Status' },
-    { voucher_code: 'VC55667', status: 'On Proses' },
-    { voucher_code: 'VC77889', status: 'Approved' },
-    { voucher_code: 'VC99000', status: 'Belum Ada Status' },
-    { voucher_code: 'VC11122', status: 'Approved' },
-    { voucher_code: 'VC33344', status: 'Approved' },
-    { voucher_code: 'VC55566', status: 'Belum Ada Status' },
-    { voucher_code: 'VC77788', status: 'Approved' },
-    { voucher_code: 'VC99900', status: 'Approved' },
-    { voucher_code: 'VC12321', status: 'Belum Ada Status' }
-  ];
-
 
   return (
     <div>

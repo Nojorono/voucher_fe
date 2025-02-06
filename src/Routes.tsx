@@ -3,12 +3,8 @@ import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import DashboardRetailer from './pages/Dashboard/DashboardRetailer';
-import FormElements from './components/Forms/FormRegister/FormElements';
-import Profile from './pages/Profile/Profile';
 import DefaultLayout from './layout/DefaultLayout';
-import FormLayout from './components/Forms/FormRegister/FormLayout';
 import RegisterRetailer from './pages/RegisterRetailer/RegisterRetailer';
-import Settings from './pages/Settings';
 import Verification from './pages/VerificationRetailer/Verification';
 import Redeem from './pages/RedeemVoucher/Redeem';
 import UserRegister from './pages/RegisterUser/UserRegister';
@@ -17,11 +13,14 @@ import DashboardVoucher from './pages/Dashboard/DashboardVoucher';
 import HowToClaim from './pages/RedeemVoucher/HowToClaim';
 import MasterUser from './pages/MasterData/MasterUser';
 import Reimbursement from './pages/Reimburse/Reimbursement';
+import VerificationReimburse from './pages/VerificationReimburse/VerificationReimburse';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
+const adminRole = localStorage.getItem('is_staff') === 'true';
 
 const AppRoutes = () => (
     <Routes>
+
         {/* Public Routes */}
         <Route
             path="/auth/signin"
@@ -36,6 +35,8 @@ const AppRoutes = () => (
                 )
             }
         />
+
+
         <Route
             path="/auth/signup"
             element={
@@ -45,6 +46,7 @@ const AppRoutes = () => (
                 </>
             }
         />
+
         <Route
             path="/register/retailer"
             element={
@@ -62,16 +64,71 @@ const AppRoutes = () => (
                 isAuthenticated() ? (
                     <DefaultLayout>
                         <Routes>
+                            {adminRole ? (
+                                <>
+                                    <Route
+                                        path="verification"
+                                        element={
+                                            <>
+                                                <PageTitle title="Verification" />
+                                                <Verification />
+                                            </>
+                                        }
+                                    />
 
-                            <Route
-                                path="profile"
-                                element={
-                                    <>
-                                        <PageTitle title="Profile" />
-                                        <Profile />
-                                    </>
-                                }
-                            />
+                                    <Route
+                                        path="master_data/user_register"
+                                        element={
+                                            <>
+                                                <PageTitle title="Master Register" />
+                                                <MasterUser />
+                                            </>
+                                        }
+                                    />
+
+                                    <Route
+                                        path="/user_register"
+                                        element={
+                                            <>
+                                                <PageTitle title="User Register" />
+                                                <UserRegister />
+                                            </>
+                                        }
+                                    />
+
+                                    <Route
+                                        path="master_data/master_wholesale"
+                                        element={
+                                            <>
+                                                <PageTitle title="Master Agen" />
+                                                <MasterWholesale />
+                                            </>
+                                        }
+                                    />
+
+                                    <Route
+                                        path="reimburse_checking"
+                                        element={
+                                            <>
+                                                <PageTitle title="Reimburse Verification" />
+                                                <VerificationReimburse />
+                                            </>
+                                        }
+                                    />
+                                </>) : (
+                                // NON ADMIN ROUTES
+                                <>
+                                    <Route
+                                        path="*"
+                                        element={
+                                            <>
+                                                <PageTitle title="Page Not Found" />
+                                                <div>Halaman tidak tersedia</div>
+                                            </>
+                                        }
+                                    />
+                                </>
+                            )}
 
                             <Route
                                 index
@@ -94,42 +151,6 @@ const AppRoutes = () => (
                                     </>
                                 }
                             />
-                            <Route
-                                path="forms/form-elements"
-                                element={
-                                    <>
-                                        <PageTitle title="Form Elements" />
-                                        <FormElements />
-                                    </>
-                                }
-                            />
-                            <Route
-                                path="forms/form-layout"
-                                element={
-                                    <>
-                                        <PageTitle title="Form Layout" />
-                                        <FormLayout />
-                                    </>
-                                }
-                            />
-                            <Route
-                                path="settings"
-                                element={
-                                    <>
-                                        <PageTitle title="Settings" />
-                                        <Settings />
-                                    </>
-                                }
-                            />
-                            <Route
-                                path="verification"
-                                element={
-                                    <>
-                                        <PageTitle title="Verification" />
-                                        <Verification />
-                                    </>
-                                }
-                            />
 
                             <Route
                                 path="redeem"
@@ -147,37 +168,6 @@ const AppRoutes = () => (
                                     <>
                                         <PageTitle title="Claim Voucher" />
                                         <HowToClaim />
-                                    </>
-                                }
-                            />
-
-                            <Route
-                                path="master_data/user_register"
-                                element={
-                                    <>
-                                        <PageTitle title="Master Register" />
-                                        <MasterUser />
-                                    </>
-                                }
-                            />
-
-
-                            <Route
-                                path="/user_register"
-                                element={
-                                    <>
-                                        <PageTitle title="User Register" />
-                                        <UserRegister />
-                                    </>
-                                }
-                            />
-
-                            <Route
-                                path="master_data/master_wholesale"
-                                element={
-                                    <>
-                                        <PageTitle title="Master Wholesale" />
-                                        <MasterWholesale />
                                     </>
                                 }
                             />

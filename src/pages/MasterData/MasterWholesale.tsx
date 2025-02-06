@@ -85,7 +85,7 @@ const MasterWholesale = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-5">Master Wholesale</h1>
+            <h1 className="text-2xl font-bold mb-5">Master Agen</h1>
 
             <DataTableAgen
                 columns={columns}

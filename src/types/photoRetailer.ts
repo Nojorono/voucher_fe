@@ -3,6 +3,7 @@ export type photoRetailer = {
     retailer_id: number;
     retailer_name: string;
     retailer_phone_number: string
+    wholesale_name: string
     retailer_address: string
     retailer_voucher_code: string
     photos: {

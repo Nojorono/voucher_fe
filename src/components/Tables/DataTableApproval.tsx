@@ -100,20 +100,22 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             let statusColor = 'text-black'; // Default color
 
             if (is_verified === 0) {
-                status = 'Belum Diverifikasi'; // Belum diverifikasi
+                status = 'Not Verified'; // Belum diverifikasi
                 statusColor = 'text-black'; // Hitam
             } else if (is_verified === 1) {
-                status = 'Sudah Diverifikasi'; // Sudah diverifikasi
+                status = 'Verified'; // Sudah diverifikasi
                 statusColor = 'text-blue-500'; // Biru
             } else {
-                status = 'Status Tidak Diketahui'; // Status tidak terdefinisi
+                status = 'No Status'; // Status tidak terdefinisi
                 statusColor = 'text-black'; // Hitam
             }
+
 
             return {
                 retailer_id: Number(retailer_id),
                 retailer_name: retailer?.retailer_name || '',
                 retailer_phone_number: retailer?.retailer_phone_number || '',
+                wholesale_name: retailer?.wholesale_name || '',
                 retailer_address: retailer?.retailer_address || '',
                 retailer_voucher_code: retailer?.retailer_voucher_code || '',
                 images,
@@ -127,28 +129,44 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     // Definisi kolom untuk DataTable
     const columns: TableColumn<{
         is_verified: number;
-        retailer_id: number; retailer_name: string; retailer_phone_number: string;
-        retailer_address: string; retailer_voucher_code: string; images: string[]; status: string
+        retailer_id: number;
+        retailer_name: string;
+        wholesale_name: string;
+        retailer_phone_number: string;
+        retailer_address: string;
+        retailer_voucher_code: string;
+        images: string[];
+        status: string
     }>[] = useMemo(() => {
         const createColumn = (name: string, selector: (row: any) => any) => ({
-            name: <span className="font-bold">{name}</span>,
+            name: <span className="font-bold" style={{ fontSize: '12px' }}>{name}</span>,
             selector,
             sortable: true,
             cell: (row: any) => <span>{selector(row)}</span>,
-            style: { fontSize: '15px' },
+            style: { fontSize: '12px' },
         });
 
         return [
             createColumn('Nama Retailer', (row) => row.retailer_name),
-            createColumn('No Whatsapp', (row) => row.retailer_phone_number),
+            createColumn('Nama Agen', (row) => row.wholesale_name),
+            createColumn('Whatsapp', (row) => row.retailer_phone_number),
             createColumn('Alamat', (row) => row.retailer_address),
             createColumn('Status', (row) => (
-                <span className={row.statusColor}>{row.status}</span>
+                <div
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-2 text-xs ${row.is_verified === 1
+                        ? 'bg-success text-success'
+                        : row.is_verified === 0
+                            ? 'bg-danger text-danger'
+                            : 'bg-warning text-warning'
+                        }`}
+                >
+                    {row.status}
+                </div>
             )),
             {
-                name: <span className="font-bold">Voucher Code</span>,
+                name: <span className="font-bold">Kode Voucher</span>,
                 cell: (row) => (
-                    row.is_verified === 1 ? <span>{row.retailer_voucher_code}</span> : null
+                    row.is_verified === 1 ? <span style={{fontSize: '12px'}}>{row.retailer_voucher_code}</span> : null
                 ),
                 sortable: true,
             },
@@ -160,7 +178,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                             loading="lazy"
                             src={`${stagingURL}${row.images[0]}`}
                             alt="Retailer"
-                            style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                            style={{ width: '40px', height: '40px', cursor: 'pointer' }}
                             onClick={() => {
                                 setCurrentImage(`${stagingURL}${row.images[0]}`);
                                 setLightboxOpen(true);
@@ -178,7 +196,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                             loading="lazy"
                             src={`${stagingURL}${row.images[1]}`}
                             alt="Retailer"
-                            style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                            style={{ width: '40px', height: '40px', cursor: 'pointer' }}
                             onClick={() => {
                                 setCurrentImage(`${stagingURL}${row.images[1]}`);
                                 setLightboxOpen(true);
@@ -196,7 +214,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                             loading="lazy"
                             src={`${stagingURL}${row.images[2]}`}
                             alt="Retailer"
-                            style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                            style={{ width: '40px', height: '40px', cursor: 'pointer' }}
                             onClick={() => {
                                 setCurrentImage(`${stagingURL}${row.images[2]}`);
                                 setLightboxOpen(true);
@@ -226,7 +244,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         return transformedData.filter(item => {
             if (filter === null) return item.is_verified === 0; // Default tampilkan data yang belum diverifikasi
             const [verified] = filter; // Mengambil nilai filter
-            if (verified === 2) return true; // Tampilkan semua data jika filter == 2
+            if (verified === 99) return true; // Tampilkan semua data jika filter == 2
             return item.is_verified === verified; // Filter berdasarkan is_verified
         });
     }, [transformedData, filter]);
@@ -238,9 +256,9 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             {/* Filter Buttons */}
             <div className="mb-2">
                 <select onChange={(e) => handleFilterChange(e.target.value ? e.target.value.split('&').map(Number) as [number, number] : null)} className="p-2 rounded" defaultValue="0">
-                    <option value="2">Semua</option>
-                    <option value="1">Sudah Diverifikasi</option>
-                    <option value="0">Belum Diverifikasi</option>
+                    <option value="99">All</option>
+                    <option value="1">Verified</option>
+                    <option value="0">Not Verified</option>
                 </select>
             </div>
 

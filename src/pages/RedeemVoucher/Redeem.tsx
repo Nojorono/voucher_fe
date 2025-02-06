@@ -13,6 +13,8 @@ function Redeem() {
     const [voucherCode, setVoucherCode] = useState('');
     const [skuItems, setSkuItems] = useState<SKUItem[]>([{ sku: '', qty: 0, nominal: 0 }]);
     const [message, setMessage] = useState('');
+    const [errMessage, setErrMessage] = useState('');
+
     const [receiptImage, setReceiptImage] = useState<File | null>(null);
     const [items, setItems] = useState<{ sku: string; name: string; price: string; is_active: boolean }[]>([]);
     const [isVoucherValid, setIsVoucherValid] = useState(false);
@@ -73,7 +75,7 @@ function Redeem() {
                 return true;
             } else {
                 showErrorToast(verifyData.non_field_errors[0]);
-                setMessage(verifyData.non_field_errors[0]);
+                setErrMessage(verifyData.non_field_errors[0]);
                 return false;
             }
 
@@ -157,11 +159,11 @@ function Redeem() {
                     window.location.reload(); // Refresh the page
                 }, 2000); // 2 seconds delay
             } else {
-                setMessage(data.non_field_errors[0]);
+                setErrMessage(data.non_field_errors[0]);
                 showErrorToast(data.non_field_errors[0]);
             }
         } catch (error) {
-            setMessage('Terjadi kesalahan, silakan coba lagi.');
+            setErrMessage('Terjadi kesalahan, silakan coba lagi.');
             showErrorToast(String(error));
         }
     };
@@ -389,9 +391,9 @@ function Redeem() {
                                 </button>
                             </div>
 
-                            {message && (
-                                <div className="mt-4 p-4 border rounded text-center bg-gray-200 dark:bg-gray-700">
-                                    <p className="text-black dark:text-red-400">{message}</p>
+                            {(message || errMessage) && (
+                                <div className={`mt-4 p-4 border rounded text-center ${message ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
+                                    <p>{message || errMessage}</p>
                                 </div>
                             )}
 
