@@ -14,6 +14,7 @@ import HowToClaim from './pages/RedeemVoucher/HowToClaim';
 import MasterUser from './pages/MasterData/MasterUser';
 import Reimbursement from './pages/Reimburse/Reimbursement';
 import VerificationReimburse from './pages/VerificationReimburse/VerificationReimburse';
+import Profile from './pages/Profile/Profile';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
 const adminRole = localStorage.getItem('is_staff') === 'true';
@@ -129,6 +130,16 @@ const AppRoutes = () => (
                                     />
                                 </>
                             )}
+
+                            <Route
+                                path="profile"
+                                element={
+                                    <>
+                                        <PageTitle title="Profile" />
+                                        <Profile />
+                                    </>
+                                }
+                            />
 
                             <Route
                                 index
