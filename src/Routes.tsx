@@ -127,6 +127,28 @@ const AppRoutes = () => {
                                                 </>
                                             }
                                         />
+
+                                        <Route
+                                            index
+                                            path="dashboard/dashboard_retailer"
+                                            element={
+                                                <>
+                                                    <PageTitle title="Dashboard Retailer" />
+                                                    <DashboardRetailer />
+                                                </>
+                                            }
+                                        />
+
+                                        <Route
+                                            index
+                                            path="dashboard/dashboard_voucher"
+                                            element={
+                                                <>
+                                                    <PageTitle title="Dashboard Voucher" />
+                                                    <DashboardVoucher />
+                                                </>
+                                            }
+                                        />
                                     </>) : (
                                     // NON ADMIN ROUTES
                                     <>
@@ -148,28 +170,6 @@ const AppRoutes = () => {
                                         <>
                                             <PageTitle title="Profile" />
                                             <Profile />
-                                        </>
-                                    }
-                                />
-
-                                <Route
-                                    index
-                                    path="dashboard/dashboard_retailer"
-                                    element={
-                                        <>
-                                            <PageTitle title="Dashboard Retailer" />
-                                            <DashboardRetailer />
-                                        </>
-                                    }
-                                />
-
-                                <Route
-                                    index
-                                    path="dashboard/dashboard_voucher"
-                                    element={
-                                        <>
-                                            <PageTitle title="Dashboard Voucher" />
-                                            <DashboardVoucher />
                                         </>
                                     }
                                 />
