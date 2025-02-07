@@ -106,7 +106,7 @@ const DataTableVerifyReimburse = memo(({ columns, data, selectableRows = true, o
     const columnsWithActions = [
         ...columns,
         {
-            name: <div className="text-sm font-bold">Ubah Status</div>,
+            name: <div className="text-lg font-bold">Ubah Status</div>,
             cell: (row: any) => (
                 <button onClick={() => openModal(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center mr-2">
                     <FaChevronCircleDown className="mr-2" />
