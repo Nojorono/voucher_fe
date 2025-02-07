@@ -272,7 +272,6 @@ function Redeem() {
                     <div className="p-6.5">
 
 
-
                         <>
                             <button
                                 type='button'
@@ -321,18 +320,20 @@ function Redeem() {
                                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                         />
                                     </div>
+
                                     <div className="flex-1">
                                         <label className="mb-2.5 block text-black dark:text-white">
-                                            Total Harga
+                                            Harga
                                         </label>
                                         <input
-                                            type="number"
+                                            type="text"
                                             placeholder="Enter nominal value"
-                                            value={item.nominal}
+                                            value={item.nominal.toLocaleString('id-ID')}
                                             readOnly
                                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                         />
                                     </div>
+
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveSKU(index)}
@@ -364,7 +365,7 @@ function Redeem() {
                                 </label>
                                 <input
                                     type="text"
-                                    value={subTotal}
+                                    value={subTotal.toLocaleString('id-ID')}
                                     readOnly
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -403,7 +404,7 @@ function Redeem() {
                                 </label>
                                 <input
                                     type="text"
-                                    value={isVoucherValid ? 20000 : 0}
+                                    value={isVoucherValid ? `${(20000).toLocaleString('id-ID')}` : 0}
                                     readOnly
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -415,7 +416,7 @@ function Redeem() {
                                 </label>
                                 <input
                                     type="text"
-                                    value={grandTotalAfterDiscount}
+                                    value={grandTotalAfterDiscount.toLocaleString('id-ID')}
                                     readOnly
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
