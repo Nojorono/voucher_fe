@@ -62,16 +62,16 @@ const MasterWholesale = () => {
     // Definisikan kolom untuk DataTable
     const columns = [
         {
-            name: <div className="text-xl font-bold"> Nama Agen </div>,
+            name: <div className="text-lg font-bold"> Nama Agen </div>,
             selector: (row: any) => row.name,
             sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.name}</div>,
+            cell: (row: any) => <div className="text-sm">{row.name}</div>,
         },
         {
-            name: <div className="text-xl font-bold"> Telepon </div>,
+            name: <div className="text-lg font-bold"> Telepon </div>,
             selector: (row: any) => row.phone_number,
             sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.phone_number}</div>,
+            cell: (row: any) => <div className="text-sm">{row.phone_number}</div>,
         },
     ];
 

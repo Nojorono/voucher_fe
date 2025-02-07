@@ -63,22 +63,22 @@ const MasterUser = () => {
     // Definisikan kolom untuk DataTable
     const columns = [
         {
-            name: <div className="text-xl font-bold"> Username </div>,
+            name: <div className="text-lg font-bold"> Username </div>,
             selector: (row: any) => row.username,
             sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.username}</div>,
+            cell: (row: any) => <div className="text-sm">{row.username}</div>,
         },
         {
-            name: <div className="text-xl font-bold"> Email </div>,
+            name: <div className="text-lg font-bold"> Email </div>,
             selector: (row: any) => row.email,
             sortable: false,
-            cell: (row: any) => <div className="text-lg">{row.email}</div>,
+            cell: (row: any) => <div className="text-sm">{row.email}</div>,
         },
         {
-            name: <div className="text-xl font-bold"> Agen </div>,
+            name: <div className="text-lg font-bold"> Agen </div>,
             selector: (row: any) => row.wholesale_name,
             sortable: true,
-            cell: (row: any) => <div className="text-lg">{row.wholesale_name}</div>,
+            cell: (row: any) => <div className="text-sm">{row.wholesale_name}</div>,
         },
     ];
 
