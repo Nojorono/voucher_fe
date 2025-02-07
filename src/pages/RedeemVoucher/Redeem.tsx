@@ -321,7 +321,7 @@ function Redeem() {
 
                                     <div className="flex-1">
                                         <label className="mb-2.5 block text-black dark:text-white">
-                                            Harga
+                                            Total Harga
                                         </label>
                                         <input
                                             type="text"
