@@ -35,7 +35,7 @@ const VerificationReimburse = () => {
       .then((result) => {
         console.log('Data fetched:', result);
 
-        const filteredData = result.filter((item: any) => item.reimburse_status !== null);
+        const filteredData = result.filter((item: any) => item.status !== null);
         setData(filteredData);
         setLoading(false);
       })
@@ -91,14 +91,14 @@ const VerificationReimburse = () => {
       sortable: true,
       cell: (row: any) => (
         <div
-          className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${row.status === 'closed'
-            ? 'bg-success text-success'
-            : row.status === 'open'
-              ? 'bg-danger text-danger'
-              : row.status === 'inprogress'
-                ? 'bg-warning text-warning'
-                : ''
-            }`}
+        className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${row.status === 'completed'
+          ? 'bg-success text-success'
+          : row.status === 'open'
+            ? 'bg-danger text-danger'
+            : row.status === 'waiting'
+              ? 'bg-warning text-warning'
+              : 'text-black'
+          }`}
         >
           {row.status}
         </div>
@@ -116,7 +116,7 @@ const VerificationReimburse = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-5">Reimburse Verification</h1>
+      <h1 className="text-xl font-bold mb-5">Reimburse Verification</h1>
 
       <DataTableVerifyReimburse
         columns={columns}

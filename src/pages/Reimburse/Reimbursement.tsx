@@ -32,7 +32,9 @@ const Reimbursement = () => {
     fetch(`${stagingURL}/api/list_vouchers/?ws_id=${ws_id}&redeemed=${redeemed}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        setData(result);
+        setData(result);        
+        const filteredData = result.filter((item: any) => item.reimburse_status !== null);
+        setData(filteredData);
         setLoading(false);
       })
       .catch((error) => {
@@ -52,28 +54,27 @@ const Reimbursement = () => {
   // Definisikan kolom untuk DataTable
   const columns = [
     {
-      name: <div className="text-xl font-bold"> Voucher Code </div>,
+      name: <div className="text-lg font-bold"> Voucher Code </div>,
       selector: (row: any) => row.voucher_code,
       sortable: true,
-      cell: (row: any) => <div className="text-lg">{row.voucher_code}</div>,
+      cell: (row: any) => <div className="text-sm">{row.voucher_code}</div>,
     },
     {
-      name: <div className="text-xl"> Status Reimburse </div>,
+      name: <div className="text-lg font-bold"> Status Reimburse </div>,
       selector: (row: any) => row.reimburse_status,
       sortable: true,
-
       cell: (row: any) => (
         <div
-          className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${row.reimburse_status === 'closed'
+          className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${row.reimburse_status === 'completed'
             ? 'bg-success text-success'
             : row.reimburse_status === 'open'
               ? 'bg-danger text-danger'
-              : row.reimburse_status === 'inprogress'
+              : row.reimburse_status === 'waiting'
                 ? 'bg-warning text-warning'
                 : 'text-black'
             }`}
         >
-          {row.reimburse_status || 'No Status'}
+          {row.reimburse_status || ''}
         </div>
       ),
     },
@@ -89,12 +90,12 @@ const Reimbursement = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-5">Reimbursement</h1>
+      <h1 className="text-xl font-bold mb-5">Reimbursement Info</h1>
 
       <DataTableReimburse
         columns={columns}
         data={data}
-        selectableRows={true}
+        selectableRows={false}
         onRowSelected={handleRowSelected}
         onRefresh={onRefresh}
       />

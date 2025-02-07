@@ -46,6 +46,12 @@ function Redeem() {
     };
 
     const verifyVoucher = async () => {
+
+        if (subTotal < 20000) {
+            showErrorToast('Pembelian harus diatas 20,000 untuk redeem voucher.');
+            return false;
+        }
+
         const token = localStorage.getItem('token');
         const ws_name = localStorage.getItem('ws_name');
 
@@ -109,7 +115,6 @@ function Redeem() {
         const myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${token}`);
 
-        const formdata = new FormData();
 
         let rypQty = 0;
         let rysQty = 0;
@@ -125,6 +130,7 @@ function Redeem() {
             }
         });
 
+        const formdata = new FormData();
         formdata.append("voucher_code", voucherCode);
         formdata.append("wholesaler_id", `${ws_id}`);
         formdata.append("ryp_qty", rypQty.toString());
@@ -135,6 +141,12 @@ function Redeem() {
         if (receiptImage) {
             formdata.append("image", receiptImage);
         }
+
+        // Log each key/value pair in the FormData
+        for (let [key, value] of formdata.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
 
         const requestOptions = {
             method: "POST",
@@ -149,6 +161,8 @@ function Redeem() {
             if (response.ok) {
                 setMessage(data.message);
                 showSuccessToast(data.message);
+                reimburseVoucher();
+
                 // Clear form after a delay
                 setTimeout(() => {
                     setVoucherCode('');
@@ -157,7 +171,7 @@ function Redeem() {
                     setIsVoucherValid(false);
                     setMessage('');
                     window.location.reload(); // Refresh the page
-                }, 2000); // 2 seconds delay
+                }, 5000);
             } else {
                 setErrMessage(data.non_field_errors[0]);
                 showErrorToast(data.non_field_errors[0]);
@@ -258,20 +272,60 @@ function Redeem() {
         fetchItemSKU();
     }, []);
 
+
+    const reimburseVoucher = () => {
+
+        const formData = {
+            voucher_codes: [voucherCode],
+        };
+
+        const token = localStorage.getItem('token');
+        const myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+        myHeaders.append('Content-Type', 'application/json');
+
+        const raw = JSON.stringify(formData);
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+
+        const url = `${stagingURL}/api/submit_reimburse/`;
+
+        fetch(url, requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                console.log('res_Post', result[0].status);
+
+                if (Array.isArray(result) && result[0]?.error) {
+                    const errorCodes = result.filter((item: any) => item.error).map((item: any) => item.voucher_code);
+                    showErrorToast(`${errorCodes.join(', ')} ${result[0].error}`);
+                } else if (result.error) {
+                    showErrorToast(result.error);
+                } else {
+                    setTimeout(() => {
+                        showSuccessToast(`${result[0].status}`);
+                    }, 2000);
+                }
+            })
+            .catch((error) => {
+                console.error('Error posting/updating data:', error);
+                showErrorToast('Error submitting data');
+            });
+    };
+
     return (
         <div>
             <CustomToast />
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                 <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                    <h3 className="font-medium text-black dark:text-white">
-                        Redeem Voucher
-                    </h3>
+                <h1 className="text-xl font-bold">Reedem Voucher</h1>
+
                 </div>
 
                 <form action="#" onSubmit={handleRedeem}>
                     <div className="p-6.5">
-
-
                         <>
                             <button
                                 type='button'
@@ -284,6 +338,7 @@ function Redeem() {
 
                             {skuItems.map((item, index) => (
                                 <div key={index} className="mb-4.5 mt-10 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+
                                     <div className="flex-1">
                                         <label className="mb-2.5 block text-black dark:text-white">
                                             SKU
@@ -301,6 +356,7 @@ function Redeem() {
                                             ))}
                                         </select>
                                     </div>
+
                                     <div className="flex-1">
                                         <label className="mb-2.5 block text-black dark:text-white">
                                             Jumlah Beli
@@ -368,6 +424,7 @@ function Redeem() {
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>
+
                             <div className="mb-4.5 flex items-end space-x-4">
                                 <div className="flex-1">
                                     <label className="mb-2.5 block text-black dark:text-white">

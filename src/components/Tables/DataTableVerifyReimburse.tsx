@@ -59,10 +59,10 @@ const DataTableVerifyReimburse = memo(({ columns, data, selectableRows = true, o
             return;
         }
 
-        if (currentRow.status === 'closed') {
+        if (currentRow.status === 'completed') {
             setIsModalOpen(false);
 
-            showErrorToast('Status is already closed and cannot be changed');
+            showErrorToast('Status is already complete and cannot be changed');
             return;
         }
 
@@ -137,13 +137,12 @@ const DataTableVerifyReimburse = memo(({ columns, data, selectableRows = true, o
                 <DialogHeader>Ubah Status</DialogHeader>
                 <DialogBody>
                     <select
-                        value={newStatus}
+                        // value={newStatus}
                         onChange={(e) => setNewStatus(e.target.value)}
                         className="w-full p-2 border border-gray-300 rounded"
                     >
                         <option value="">---Pilih Status---</option>
-                        <option value="inprogress">In Progress</option>
-                        <option value="closed">Closed</option>
+                        <option value="completed">Completed</option>
                     </select>
                 </DialogBody>
                 <DialogFooter>
