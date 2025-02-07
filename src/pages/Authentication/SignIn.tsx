@@ -20,7 +20,7 @@ const SignIn: React.FC = () => {
         username,
         password,
       });
-     
+
       const {
         access,
         refresh,
@@ -29,7 +29,7 @@ const SignIn: React.FC = () => {
         wholesale,
         name,
         phone_number,
-        is_staff, 
+        is_staff,
       } = response.data;
 
       // Simpan data pengguna dan wholesale di localStorage
@@ -44,8 +44,13 @@ const SignIn: React.FC = () => {
       localStorage.setItem('username', username);
       localStorage.setItem('password', password);
 
-      // Navigasi ke dashboard
-      navigate('/dashboard');
+      localStorage.setItem('is_staff', is_staff);
+
+      if (is_staff === true) {
+        navigate('/verification');
+      } else {
+        navigate('/how-to-claim');
+      }
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.detail || 'Invalid username or password.');
@@ -206,7 +211,7 @@ const SignIn: React.FC = () => {
                 />
               </div>
 
-                <div className="mb-4 relative">
+              <div className="mb-4 relative">
                 <label className="block mb-2 text-sm font-medium text-gray-700">Password</label>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -222,7 +227,7 @@ const SignIn: React.FC = () => {
                 >
                   {showPassword ? '👁️' : '👁️‍🗨️'}
                 </span>
-                </div>
+              </div>
 
               <div className="flex justify-between items-center mb-6">
                 <label className="flex items-center">

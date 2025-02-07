@@ -1,4 +1,6 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
@@ -17,10 +19,21 @@ import VerificationReimburse from './pages/VerificationReimburse/VerificationRei
 import Profile from './pages/Profile/Profile';
 
 const isAuthenticated = () => !!localStorage.getItem('token');
-const adminRole = localStorage.getItem('is_staff') === 'true';
 
-const AppRoutes = () => (
-    <Routes>
+const AppRoutes = () => {
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const checkAdminRole = () => {
+            const isStaff = localStorage.getItem('is_staff') === 'true';
+            setIsAdmin(isStaff);
+        };
+
+        checkAdminRole();
+    }, []);
+
+    return (
+        <Routes>
 
         {/* Public Routes */}
         <Route
@@ -36,7 +49,6 @@ const AppRoutes = () => (
                 )
             }
         />
-
 
         <Route
             path="/auth/signup"
@@ -65,7 +77,7 @@ const AppRoutes = () => (
                 isAuthenticated() ? (
                     <DefaultLayout>
                         <Routes>
-                            {adminRole ? (
+                            {isAdmin ? (
                                 <>
                                     <Route
                                         path="verification"
@@ -203,7 +215,8 @@ const AppRoutes = () => (
                 )
             }
         />
-    </Routes>
-);
+        </Routes>
+    );
+};
 
 export default AppRoutes;
