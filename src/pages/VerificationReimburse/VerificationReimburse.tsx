@@ -67,13 +67,13 @@ const VerificationReimburse = () => {
       name: <div className="text-sm font-bold"> Voucher Code </div>,
       selector: (row: any) => row.voucher_code,
       sortable: true,
-      cell: (row: any) => <div className="text-lg">{row.voucher_code}</div>,
+      cell: (row: any) => <div className="text-sm">{row.voucher_code}</div>,
     },
     {
       name: <div className="text-sm font-bold"> Agen </div>,
       selector: (row: any) => row.wholesaler_name,
       sortable: true,
-      cell: (row: any) => <div className="text-lg">{row.wholesaler_name}</div>,
+      cell: (row: any) => <div className="text-sm">{row.wholesaler_name}</div>,
     },
     {
       name: <div className="text-sm font-bold"> Tanggal Reimburse </div>,
@@ -82,7 +82,7 @@ const VerificationReimburse = () => {
       cell: (row: any) => {
         const date = new Date(row.reimbursed_at);
         const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-        return <div className="text-lg">{formattedDate}</div>;
+        return <div className="text-sm">{formattedDate}</div>;
       },
     },
     {
