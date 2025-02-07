@@ -28,193 +28,192 @@ const AppRoutes = () => {
             const isStaff = localStorage.getItem('is_staff') === 'true';
             setIsAdmin(isStaff);
         };
-
         checkAdminRole();
     }, []);
 
     return (
         <Routes>
 
-        {/* Public Routes */}
-        <Route
-            path="/auth/signin"
-            element={
-                isAuthenticated() ? (
-                    <Navigate to="dashboard" replace />
-                ) : (
+            {/* Public Routes */}
+            <Route
+                path="/auth/signin"
+                element={
+                    isAuthenticated() ? (
+                        <Navigate to="dashboard" replace />
+                    ) : (
+                        <>
+                            <PageTitle title="Sign In" />
+                            <SignIn />
+                        </>
+                    )
+                }
+            />
+
+            <Route
+                path="/auth/signup"
+                element={
                     <>
-                        <PageTitle title="Sign In" />
-                        <SignIn />
+                        <PageTitle title="Sign Up" />
+                        <SignUp />
                     </>
-                )
-            }
-        />
+                }
+            />
 
-        <Route
-            path="/auth/signup"
-            element={
-                <>
-                    <PageTitle title="Sign Up" />
-                    <SignUp />
-                </>
-            }
-        />
+            <Route
+                path="/register/retailer"
+                element={
+                    <>
+                        <PageTitle title="Register Retailer" />
+                        <RegisterRetailer />
+                    </>
+                }
+            />
 
-        <Route
-            path="/register/retailer"
-            element={
-                <>
-                    <PageTitle title="Register Retailer" />
-                    <RegisterRetailer />
-                </>
-            }
-        />
-
-        {/* Protected Routes */}
-        <Route
-            path="*"
-            element={
-                isAuthenticated() ? (
-                    <DefaultLayout>
-                        <Routes>
-                            {isAdmin ? (
-                                <>
-                                    <Route
-                                        path="verification"
-                                        element={
-                                            <>
-                                                <PageTitle title="Verification" />
-                                                <Verification />
-                                            </>
-                                        }
-                                    />
-
-                                    <Route
-                                        path="master_data/user_register"
-                                        element={
-                                            <>
-                                                <PageTitle title="Master Register" />
-                                                <MasterUser />
-                                            </>
-                                        }
-                                    />
-
-                                    <Route
-                                        path="/user_register"
-                                        element={
-                                            <>
-                                                <PageTitle title="User Register" />
-                                                <UserRegister />
-                                            </>
-                                        }
-                                    />
-
-                                    <Route
-                                        path="master_data/master_wholesale"
-                                        element={
-                                            <>
-                                                <PageTitle title="Master Agen" />
-                                                <MasterWholesale />
-                                            </>
-                                        }
-                                    />
-
-                                    <Route
-                                        path="reimburse_checking"
-                                        element={
-                                            <>
-                                                <PageTitle title="Reimburse Verification" />
-                                                <VerificationReimburse />
-                                            </>
-                                        }
-                                    />
-                                </>) : (
-                                // NON ADMIN ROUTES
-                                <>
-                                    <Route
-                                        path="*"
-                                        element={
-                                            <>
-                                                <PageTitle title="Page Not Found" />
-                                                <div>Halaman tidak tersedia</div>
-                                            </>
-                                        }
-                                    />
-                                </>
-                            )}
-
-                            <Route
-                                path="profile"
-                                element={
+            {/* Protected Routes */}
+            <Route
+                path="*"
+                element={
+                    isAuthenticated() ? (
+                        <DefaultLayout>
+                            <Routes>
+                                {isAdmin ? (
                                     <>
-                                        <PageTitle title="Profile" />
-                                        <Profile />
-                                    </>
-                                }
-                            />
+                                        <Route
+                                            path="verification"
+                                            element={
+                                                <>
+                                                    <PageTitle title="Verification" />
+                                                    <Verification />
+                                                </>
+                                            }
+                                        />
 
-                            <Route
-                                index
-                                path="dashboard/dashboard_retailer"
-                                element={
+                                        <Route
+                                            path="master_data/user_register"
+                                            element={
+                                                <>
+                                                    <PageTitle title="Master Register" />
+                                                    <MasterUser />
+                                                </>
+                                            }
+                                        />
+
+                                        <Route
+                                            path="/user_register"
+                                            element={
+                                                <>
+                                                    <PageTitle title="User Register" />
+                                                    <UserRegister />
+                                                </>
+                                            }
+                                        />
+
+                                        <Route
+                                            path="master_data/master_wholesale"
+                                            element={
+                                                <>
+                                                    <PageTitle title="Master Agen" />
+                                                    <MasterWholesale />
+                                                </>
+                                            }
+                                        />
+
+                                        <Route
+                                            path="reimburse_checking"
+                                            element={
+                                                <>
+                                                    <PageTitle title="Reimburse Verification" />
+                                                    <VerificationReimburse />
+                                                </>
+                                            }
+                                        />
+                                    </>) : (
+                                    // NON ADMIN ROUTES
                                     <>
-                                        <PageTitle title="Dashboard Retailer" />
-                                        <DashboardRetailer />
+                                        <Route
+                                            path="*"
+                                            element={
+                                                <>
+                                                    <PageTitle title="Page Not Found" />
+                                                    <div>Halaman tidak tersedia</div>
+                                                </>
+                                            }
+                                        />
                                     </>
-                                }
-                            />
+                                )}
 
-                            <Route
-                                index
-                                path="dashboard/dashboard_voucher"
-                                element={
-                                    <>
-                                        <PageTitle title="Dashboard Voucher" />
-                                        <DashboardVoucher />
-                                    </>
-                                }
-                            />
+                                <Route
+                                    path="profile"
+                                    element={
+                                        <>
+                                            <PageTitle title="Profile" />
+                                            <Profile />
+                                        </>
+                                    }
+                                />
 
-                            <Route
-                                path="redeem"
-                                element={
-                                    <>
-                                        <PageTitle title="Redeem" />
-                                        <Redeem />
-                                    </>
-                                }
-                            />
+                                <Route
+                                    index
+                                    path="dashboard/dashboard_retailer"
+                                    element={
+                                        <>
+                                            <PageTitle title="Dashboard Retailer" />
+                                            <DashboardRetailer />
+                                        </>
+                                    }
+                                />
 
-                            <Route
-                                path="how-to-claim"
-                                element={
-                                    <>
-                                        <PageTitle title="Claim Voucher" />
-                                        <HowToClaim />
-                                    </>
-                                }
-                            />
+                                <Route
+                                    index
+                                    path="dashboard/dashboard_voucher"
+                                    element={
+                                        <>
+                                            <PageTitle title="Dashboard Voucher" />
+                                            <DashboardVoucher />
+                                        </>
+                                    }
+                                />
 
-                            <Route
-                                path="/reimbursement"
-                                element={
-                                    <>
-                                        <PageTitle title="Reimbursement" />
-                                        <Reimbursement />
-                                    </>
-                                }
-                            />
+                                <Route
+                                    path="redeem"
+                                    element={
+                                        <>
+                                            <PageTitle title="Redeem" />
+                                            <Redeem />
+                                        </>
+                                    }
+                                />
+
+                                <Route
+                                    path="how-to-claim"
+                                    element={
+                                        <>
+                                            <PageTitle title="Claim Voucher" />
+                                            <HowToClaim />
+                                        </>
+                                    }
+                                />
+
+                                <Route
+                                    path="/reimbursement"
+                                    element={
+                                        <>
+                                            <PageTitle title="Reimbursement" />
+                                            <Reimbursement />
+                                        </>
+                                    }
+                                />
 
 
-                            {/* Redirect to dashboard if path is not found */}
-                            <Route path="*" element={<Navigate to="/" replace />} />
-                        </Routes>
-                    </DefaultLayout>
-                ) : (
-                    <Navigate to="/auth/signin" replace />
-                )
-            }
-        />
+                                {/* Redirect to dashboard if path is not found */}
+                                <Route path="*" element={<Navigate to="/" replace />} />
+                            </Routes>
+                        </DefaultLayout>
+                    ) : (
+                        <Navigate to="/auth/signin" replace />
+                    )
+                }
+            />
         </Routes>
     );
 };
