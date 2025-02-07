@@ -220,7 +220,7 @@ function Redeem() {
         }
     };
 
-    const subTotal = skuItems.reduce((acc, item) => acc + (item.qty * item.nominal), 0);
+    const subTotal = skuItems.reduce((acc, item) => acc + item.nominal, 0);
     const discount = isVoucherValid ? 20000 : 0;
     const grandTotalAfterDiscount = subTotal === 0 ? 0 : subTotal - discount;
 
@@ -313,9 +313,7 @@ function Redeem() {
                                             onFocus={() => handleFocus(index, 'qty')}
                                             onChange={(e) => {
                                                 const value = Number(e.target.value);
-                                                if (value > 0) {
-                                                    handleSKUChange(index, 'qty', value);
-                                                }
+                                                handleSKUChange(index, 'qty', value);
                                             }}
                                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                         />
