@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import DataTableReimburse from '../../components/Tables/DataTableReimburse';
 import { stagingURL, signOut } from '../../utils';
+import { useNavigate } from 'react-router-dom';
 
 const Reimbursement = () => {
+  const navigate = useNavigate();
+
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRowIds, setSelectedRowIds] = useState<any[]>([]);
@@ -32,10 +35,14 @@ const Reimbursement = () => {
     fetch(`${stagingURL}/api/list_vouchers/?ws_id=${ws_id}&redeemed=${redeemed}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        setData(result);        
+        setData(result);
         const filteredData = result.filter((item: any) => item.reimburse_status !== null);
         setData(filteredData);
         setLoading(false);
+
+        if (result.code === "token_not_valid") {
+          signOut(navigate);
+        }
       })
       .catch((error) => {
         console.error('Error fetching data:', error);

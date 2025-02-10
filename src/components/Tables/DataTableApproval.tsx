@@ -142,8 +142,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             name: <span className="font-bold" style={{ fontSize: '12px' }}>{name}</span>,
             selector,
             sortable: true,
-            cell: (row: any) => <span>{selector(row)}</span>,
-            style: { fontSize: '11px' },
+            cell: (row: any) => <span className='text-sm'>{selector(row)}</span>,
         });
 
         return [
@@ -166,7 +165,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             {
                 name: <span className="font-bold">Kode Voucher</span>,
                 cell: (row) => (
-                    row.is_verified === 1 ? <span style={{fontSize: '11px'}}>{row.retailer_voucher_code}</span> : null
+                    row.is_verified === 1 ? <span style={{fontSize: '12px'}}>{row.retailer_voucher_code}</span> : null
                 ),
                 sortable: true,
             },

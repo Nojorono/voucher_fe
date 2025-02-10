@@ -3,16 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { stagingURL } from '../../utils/index';
 
-
-
 const SignIn: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +47,9 @@ const SignIn: React.FC = () => {
 
       if (is_staff === true) {
         navigate('/verification');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         navigate('/how-to-claim');
       }

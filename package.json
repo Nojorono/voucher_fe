@@ -18,6 +18,7 @@
     "@material-tailwind/react": "^2.1.10",
     "apexcharts": "^3.41.0",
     "axios": "^1.7.9",
+    "file-saver": "^2.0.5",
     "flatpickr": "^4.6.13",
     "headlessui": "^0.0.0",
     "jsvectormap": "^1.5.3",
@@ -33,10 +34,13 @@
     "react-select": "^5.9.0",
     "react-toastify": "^11.0.3",
     "sort-by": "^0.0.2",
+    "xlsx": "^0.18.5",
     "yet-another-react-lightbox": "^3.21.7"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/react": "^18.2.17",
+    "@types/react-csv": "^1.1.10",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.14",
