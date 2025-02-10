@@ -55,7 +55,7 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
     const columnsWithActions = [
         ...columns,
         {
-            name: <div className="text-xl font-bold"> Action </div>,
+            name: "Action",
             cell: (row: any) => (
                 <div className="flex items-center">
                     <button onClick={() => handleSoftDelete(row)} className="bg-red-500 text-white py-2 px-4 rounded flex items-center mr-2">
@@ -187,6 +187,30 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
             });
     };
 
+    const customStyles = {
+        rows: {
+            style: {
+                paddingLeft: '8px',
+                paddingRight: '8px',
+            },
+        },
+        headCells: {
+            style: {
+                fontSize: '16px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                backgroundColor: 'lightgrey',
+            },
+        },
+        cells: {
+            style: {
+                fontSize: '15px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+            },
+        },
+    };
+
     return (
         <div>
             <CustomToast />
@@ -206,6 +230,7 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
                 progressPending={pending}
                 progressComponent={<CustomLoader />}
                 onSelectedRowsChange={handleRowSelected}
+                customStyles={customStyles}
             />
 
             <Dialog open={openDialog} handler={() => setOpenDialog(false)}>

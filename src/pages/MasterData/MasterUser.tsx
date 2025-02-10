@@ -63,22 +63,22 @@ const MasterUser = () => {
     // Definisikan kolom untuk DataTable
     const columns = [
         {
-            name: <div className="text-lg font-bold"> Username </div>,
+            name: "Username",
             selector: (row: any) => row.username,
             sortable: true,
-            cell: (row: any) => <div className="text-sm">{row.username}</div>,
+            cell: (row: any) => row.username,
         },
         {
-            name: <div className="text-lg font-bold"> Email </div>,
+            name: "Email",
             selector: (row: any) => row.email,
             sortable: false,
-            cell: (row: any) => <div className="text-sm">{row.email}</div>,
+            cell: (row: any) => row.email,
         },
         {
-            name: <div className="text-lg font-bold"> Agen </div>,
+            name: "Agen",
             selector: (row: any) => row.wholesale_name,
             sortable: true,
-            cell: (row: any) => <div className="text-sm">{row.wholesale_name}</div>,
+            cell: (row: any) => row.wholesale_name,
         },
     ];
 
@@ -92,7 +92,7 @@ const MasterUser = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-5">Master User</h1>
+            <h1 className="text-lg font-bold mb-5">Master User</h1>
 
             <DataTableUser
                 columns={columns}

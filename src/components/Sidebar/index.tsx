@@ -23,8 +23,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(storedSidebarExpanded === 'true');
 
   const adminRole = localStorage.getItem('is_staff') === 'true';
-  const token = localStorage.getItem('token');
 
+  // State untuk mengecek apakah token kedaluwarsa
+  const [isTokenExpired, setIsTokenExpired] = useState(false);
+
+  // Handle click di luar sidebar dan tekan tombol Escape
   useEffect(() => {
     const handleOutsideClick = ({ target }: MouseEvent) => {
       if (!sidebar.current || !trigger.current) return;
@@ -46,25 +49,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     };
   }, [sidebarOpen]);
 
+  // Menyimpan status sidebar-expanded ke localStorage
   useEffect(() => {
     localStorage.setItem('sidebar-expanded', sidebarExpanded.toString());
     document.querySelector('body')?.classList.toggle('sidebar-expanded', sidebarExpanded);
   }, [sidebarExpanded]);
 
-  useEffect(() => {
-    const checkTokenExpiration = () => {
-      if (token) {
-        const tokenPayload = JSON.parse(atob(token.split('.')[1]));
-        const isExpired = (tokenPayload.exp * 1000 < Date.now()) || (Date.now() - (tokenPayload.iat * 1000) > 2 * 60 * 60 * 1000);
-        if (isExpired) {
-          localStorage.removeItem('token');
-          navigate('/auth/signin');
-        }
-      }
-    };
+  // Mengecek token dan apakah sudah kedaluwarsa
+  useEffect(() => {    
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      const tokenPayload = JSON.parse(atob(storedToken.split('.')[1]));
+      const isExpired = (tokenPayload.exp * 1000 < Date.now()) || (Date.now() - (tokenPayload.iat * 1000) > 2 * 60 * 60 * 1000);
+      setIsTokenExpired(isExpired); // Set apakah token kedaluwarsa
+    }
+  }, []);
 
-    checkTokenExpiration();
-  }, [token, navigate]);
+  // Redirect ke halaman SignIn jika token kedaluwarsa
+  useEffect(() => {
+    if (isTokenExpired) {
+      localStorage.removeItem('token');
+      navigate('/auth/signin');
+    }
+  }, [isTokenExpired, navigate]);
 
   return (
     <aside
@@ -93,7 +100,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ul className="mb-6 flex flex-col gap-1.5">
               {adminRole ? (
                 <>
-
                   <li>
                     <NavLink
                       to="/dashboard/dashboard_retailer"
@@ -103,18 +109,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     >
                       <ListBulletIcon className="h-6 w-6 text-white-500" />
                       All Retailers
-                    </NavLink>
-                  </li>
-
-                  <li>
-                    <NavLink
-                      to="/dashboard/all-vouchers"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
-                                  font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 
-                                  ${pathname.includes('/dashboard/dashboard_voucher') && 'bg-graydark dark:bg-meta-4'}`}
-                    >
-                      <ListBulletIcon className="h-6 w-6 text-white-500" />
-                      All Vouchers
                     </NavLink>
                   </li>
 
@@ -178,7 +172,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               </NavLink>
                             </li>
                           </ul>
-
 
                           <ul className="mt-2 flex flex-col gap-2.5 pl-6">
                             <li>

@@ -106,7 +106,7 @@ const DataTableVerifyReimburse = memo(({ columns, data, selectableRows = true, o
     const columnsWithActions = [
         ...columns,
         {
-            name: <div className="text-lg font-bold">Ubah Status</div>,
+            name: "Ubah Status",
             cell: (row: any) => (
                 <button onClick={() => openModal(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center mr-2">
                     <FaChevronCircleDown className="mr-2" />
@@ -116,6 +116,30 @@ const DataTableVerifyReimburse = memo(({ columns, data, selectableRows = true, o
             ignoreRowClick: true,
         }
     ];
+
+    const customStyles = {
+        rows: {
+            style: {
+                paddingLeft: '8px',
+                paddingRight: '8px',
+            },
+        },
+        headCells: {
+            style: {
+                fontSize: '15px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                backgroundColor: 'lightgrey',
+            },
+        },
+        cells: {
+            style: {
+                fontSize: '12px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+            },
+        },
+    };
 
     return (
         <div>
@@ -131,6 +155,7 @@ const DataTableVerifyReimburse = memo(({ columns, data, selectableRows = true, o
                 onSelectedRowsChange={({ selectedRows }) => {
                     setSelectedRow(selectedRows);
                 }}
+                customStyles={customStyles}
             />
 
             <Dialog open={isModalOpen} handler={closeModal}>

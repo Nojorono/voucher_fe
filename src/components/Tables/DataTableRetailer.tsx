@@ -28,12 +28,10 @@ const DataTableRetailer = memo(({ columns, data, selectableRows = true, }: DataT
 
   const customStyles = {
     rows: {
-      // style: {
-      //   minHeight: '72px',
-      //   '&:nth-of-type(odd)': {
-      //     backgroundColor: '#f3f3f3',
-      //   },
-      // },
+      style: {
+        paddingLeft: '8px',
+        paddingRight: '8px',
+      },
     },
     headCells: {
       style: {

@@ -62,16 +62,16 @@ const MasterWholesale = () => {
     // Definisikan kolom untuk DataTable
     const columns = [
         {
-            name: <div className="text-lg font-bold"> Nama Agen </div>,
+            name:  "Nama Agen" ,
             selector: (row: any) => row.name,
             sortable: true,
-            cell: (row: any) => <div className="text-sm">{row.name}</div>,
+            cell: (row: any) => row.name,
         },
         {
-            name: <div className="text-lg font-bold"> Telepon </div>,
+            name:  "Telepon" ,
             selector: (row: any) => row.phone_number,
             sortable: true,
-            cell: (row: any) => <div className="text-sm">{row.phone_number}</div>,
+            cell: (row: any) => row.phone_number,
         },
     ];
 
@@ -85,7 +85,7 @@ const MasterWholesale = () => {
 
     return (
         <div>
-            <h1 className="text-xl font-bold mb-5">Master Agen</h1>
+            <h1 className="text-lg font-bold mb-5">Master Agen</h1>
 
             <DataTableAgen
                 columns={columns}

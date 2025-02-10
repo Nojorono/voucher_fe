@@ -139,15 +139,15 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         status: string
     }>[] = useMemo(() => {
         const createColumn = (name: string, selector: (row: any) => any) => ({
-            name: <span className="font-bold" style={{ fontSize: '12px' }}>{name}</span>,
+            name:  name,
             selector,
             sortable: true,
             cell: (row: any) => <span className='text-sm'>{selector(row)}</span>,
         });
 
         return [
-            createColumn('Nama Retailer', (row) => row.retailer_name),
-            createColumn('Nama Agen', (row) => row.wholesale_name),
+            createColumn('Retailer', (row) => row.retailer_name),
+            createColumn('Agen', (row) => row.wholesale_name),
             createColumn('Whatsapp', (row) => row.retailer_phone_number),
             createColumn('Alamat', (row) => row.retailer_address),
             createColumn('Status', (row) => (
@@ -163,14 +163,14 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 </div>
             )),
             {
-                name: <span className="font-bold">Kode Voucher</span>,
+                name:  'Kode Voucher',
                 cell: (row) => (
-                    row.is_verified === 1 ? <span style={{fontSize: '12px'}}>{row.retailer_voucher_code}</span> : null
+                    row.is_verified === 1 ? <span style={{ fontSize: '12px' }}>{row.retailer_voucher_code}</span> : null
                 ),
                 sortable: true,
             },
             {
-                name: <span className="font-bold">Foto POSM</span>,
+                name: "Foto POSM",
                 cell: (row) => (
                     row.images[0] ? (
                         <img
@@ -188,7 +188,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 sortable: false,
             },
             {
-                name: <span className="font-bold">Foto Tester</span>,
+                name: "Foto Tester",
                 cell: (row) => (
                     row.images[1] ? (
                         <img
@@ -206,7 +206,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 sortable: false,
             },
             {
-                name: <span className="font-bold">Foto Kode Tester</span>,
+                name: "Foto Kode Tester",
                 cell: (row: { images: any[]; }) => (
                     row.images[2] ? (
                         <img
@@ -248,6 +248,30 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         });
     }, [transformedData, filter]);
 
+    const customStyles = {
+        rows: {
+            style: {
+                paddingLeft: '8px',
+                paddingRight: '8px',
+            },
+        },
+        headCells: {
+            style: {
+                fontSize: '15px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                backgroundColor: 'lightgrey',
+            },
+        },
+        cells: {
+            style: {
+                fontSize: '12px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+            },
+        },
+    };
+
     return (
         <div>
             <CustomToast />
@@ -268,6 +292,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 pagination
                 progressPending={pending}
                 progressComponent={<CustomLoader />}
+                customStyles={customStyles}
                 onSelectedRowsChange={({ selectedRows }) => {
                     const ids = selectedRows.map((row) => row.retailer_id);
                     setSelectedIds(ids);

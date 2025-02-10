@@ -64,19 +64,19 @@ const VerificationReimburse = () => {
   // Definisikan kolom untuk DataTable
   const columns = [
     {
-      name: <div className="text-lg font-bold"> Voucher Code </div>,
+      name: "Kode Voucher",
       selector: (row: any) => row.voucher_code,
       sortable: true,
       cell: (row: any) => <div className="text-sm">{row.voucher_code}</div>,
     },
     {
-      name: <div className="text-lg font-bold"> Agen </div>,
+      name: "Agen",
       selector: (row: any) => row.wholesaler_name,
       sortable: true,
       cell: (row: any) => <div className="text-sm">{row.wholesaler_name}</div>,
     },
     {
-      name: <div className="text-lg font-bold"> Tanggal Reimburse </div>,
+      name: "Tanggal Reimburse",
       selector: (row: any) => row.reimbursed_at,
       sortable: true,
       cell: (row: any) => {
@@ -86,7 +86,7 @@ const VerificationReimburse = () => {
       },
     },
     {
-      name: <div className="text-lg font-bold"> Status Reimburse </div>,
+      name: "Status Reimburse",
       selector: (row: any) => row.status,
       sortable: true,
       cell: (row: any) => (
@@ -116,7 +116,7 @@ const VerificationReimburse = () => {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-5">Reimburse Verification</h1>
+      <h1 className="text-lg font-bold mb-5">Reimburse Verification</h1>
 
       <DataTableVerifyReimburse
         columns={columns}
