@@ -11,7 +11,7 @@ import {
     DialogFooter,
 } from "@material-tailwind/react";
 import ModalFormWholesale from '../Forms/ModalFormWholesale';
-import { FaTrash, FaPlus, FaEdit } from 'react-icons/fa';
+import { FaPowerOff, FaPlus, FaEdit } from 'react-icons/fa';
 import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
 import { useNavigate } from 'react-router-dom';
 
@@ -59,12 +59,12 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
             cell: (row: any) => (
                 <div className="flex items-center">
                     <button onClick={() => handleSoftDelete(row)} className="bg-red-500 text-white py-2 px-4 rounded flex items-center mr-2">
-                        {/* <FaTrash className="mr-2" /> */}
-                        Nonaktifkan User
+                        <FaPowerOff className="mr-2" />
+                        {/* Nonaktifkan User */}
                     </button>
                     <button onClick={() => handleUpdate(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center">
-                        {/* <FaEdit className="mr-2" /> */}
-                        Update
+                        <FaEdit className="mr-2" />
+                        {/* Update */}
                     </button>
                 </div>
             ),

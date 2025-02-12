@@ -2,7 +2,7 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import { memo, useState, useEffect } from 'react';
 import "yet-another-react-lightbox/styles.css";
 import Spinner from '../Spinner';
-import { stagingURL, signOut } from '../../utils';
+import { stagingURL } from '../../utils';
 import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
 import {
     Button,
@@ -11,7 +11,7 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
-import { FaChevronCircleDown, FaPlus, FaEdit } from 'react-icons/fa';
+import { FaChevronCircleDown } from 'react-icons/fa';
 
 
 const CustomLoader = () => (
@@ -108,9 +108,9 @@ const DataTableVerifyReimburse = memo(({ columns, data, selectableRows = true, o
         {
             name: "Ubah Status",
             cell: (row: any) => (
-                <button onClick={() => openModal(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center mr-2">
+                <button onClick={() => openModal(row)} className="bg-blue-500 text-white py-2 px-8 rounded flex items-center mr-2">
                     <FaChevronCircleDown className="mr-2" />
-                    Ubah Status
+                    {/* Ubah Status */}
                 </button>
             ),
             ignoreRowClick: true,

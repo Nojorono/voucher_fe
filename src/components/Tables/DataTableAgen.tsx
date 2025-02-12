@@ -15,7 +15,6 @@ import { FaTrash, FaPlus, FaEdit } from 'react-icons/fa';
 import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
 
 
-
 const CustomLoader = () => (
     <Spinner />
 );
@@ -59,11 +58,11 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                 <div className="flex items-center">
                     <button onClick={() => handleSoftDelete(row)} className="bg-red-500 text-white py-2 px-4 rounded flex items-center mr-2">
                         <FaTrash className="mr-2" />
-                        Delete
+                        {/* Delete */}
                     </button>
                     <button onClick={() => handleUpdate(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center">
                         <FaEdit className="mr-2" />
-                        Update
+                        {/* Update */}
                     </button>
                 </div>
             ),
@@ -237,7 +236,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
             <Dialog open={openDialog} handler={() => setOpenDialog(false)}>
                 <DialogHeader>Konfirmasi Hapus</DialogHeader>
                 <DialogBody>
-                    Apakah Anda yakin ingin menghapus pengguna ini?
+                    Apakah Anda yakin ingin menghapus data ini?
                 </DialogBody>
                 <DialogFooter>
                     <Button variant="text" color="red" onClick={() => setOpenDialog(false)}>
