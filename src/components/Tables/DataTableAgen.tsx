@@ -28,6 +28,7 @@ interface DataTableProps {
 }
 
 const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelected, onRefresh }: DataTableProps) => {
+
     const [pending, setPending] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [rowToDelete, setRowToDelete] = useState<any>(null);
@@ -56,13 +57,11 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
             name: "Action",
             cell: (row: any) => (
                 <div className="flex items-center">
-                    <button onClick={() => handleSoftDelete(row)} className="bg-red-500 text-white py-2 px-4 rounded flex items-center mr-2">
-                        <FaTrash className="mr-2" />
-                        {/* Delete */}
+                    <button onClick={() => handleSoftDelete(row)} className="bg-red-500 text-white py-2 px-4 rounded flex items-center justify-center mr-2">
+                        <FaTrash />
                     </button>
-                    <button onClick={() => handleUpdate(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center">
-                        <FaEdit className="mr-2" />
-                        {/* Update */}
+                    <button onClick={() => handleUpdate(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center justify-center">
+                        <FaEdit />
                     </button>
                 </div>
             ),
@@ -189,27 +188,27 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
 
     const customStyles = {
         rows: {
-          style: {
-            paddingLeft: '8px',
-            paddingRight: '8px',
-          },
+            style: {
+                paddingLeft: '8px',
+                paddingRight: '8px',
+            },
         },
         headCells: {
-          style: {
-            fontSize: '16px',
-            paddingLeft: '8px',
-            paddingRight: '8px',
-            backgroundColor: 'lightgrey',
-          },
+            style: {
+                fontSize: '16px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                backgroundColor: 'lightgrey',
+            },
         },
         cells: {
-          style: {
-            fontSize: '15px',
-            paddingLeft: '8px',
-            paddingRight: '8px',
-          },
+            style: {
+                fontSize: '15px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+            },
         },
-      };
+    };
 
     return (
         <div>

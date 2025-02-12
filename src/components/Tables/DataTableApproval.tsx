@@ -6,7 +6,7 @@ import "yet-another-react-lightbox/styles.css";
 import { stagingURL, signOut } from '../../utils';
 import { photoRetailer } from '../../types/photoRetailer';
 import Spinner from '../Spinner'
-import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
+import CustomToast, { showErrorToast } from '../Toast/CustomToast';
 
 const CustomLoader = () => (
     <Spinner />

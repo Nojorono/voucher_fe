@@ -58,13 +58,11 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
             name: "Action",
             cell: (row: any) => (
                 <div className="flex items-center">
-                    <button onClick={() => handleSoftDelete(row)} className="bg-red-500 text-white py-2 px-4 rounded flex items-center mr-2">
-                        <FaPowerOff className="mr-2" />
-                        {/* Nonaktifkan User */}
+                    <button onClick={() => handleSoftDelete(row)} className="bg-red-500 text-white py-2 px-4 rounded flex justify-center items-center mr-2">
+                        <FaPowerOff />
                     </button>
-                    <button onClick={() => handleUpdate(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex items-center">
-                        <FaEdit className="mr-2" />
-                        {/* Update */}
+                    <button onClick={() => handleUpdate(row)} className="bg-blue-500 text-white py-2 px-4 rounded flex justify-center items-center">
+                        <FaEdit />
                     </button>
                 </div>
             ),
