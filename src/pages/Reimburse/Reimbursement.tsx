@@ -11,7 +11,7 @@ const Reimbursement = () => {
   const [selectedRowIds, setSelectedRowIds] = useState<any[]>([]);
 
   const fetchData = () => {
-    
+
     setLoading(true);
     const token = localStorage.getItem('token');
     const ws_id = localStorage.getItem('ws_id');
@@ -36,7 +36,9 @@ const Reimbursement = () => {
     fetch(`${stagingURL}/api/list_vouchers/?ws_id=${ws_id}&redeemed=${redeemed}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        setData(result);
+
+        console.log('result', result);
+
         const filteredData = result.filter((item: any) => item.reimburse_status !== null);
         setData(filteredData);
         setLoading(false);
@@ -62,10 +64,16 @@ const Reimbursement = () => {
   // Definisikan kolom untuk DataTable
   const columns = [
     {
-      name: <div className="text-lg font-bold"> Voucher Code </div>,
+      name: <div className="text-lg font-bold">Kode Voucher</div>,
       selector: (row: any) => row.voucher_code,
       sortable: true,
       cell: (row: any) => <div className="text-sm">{row.voucher_code}</div>,
+    },
+    {
+      name: <div className="text-lg font-bold"> Toko </div>,
+      selector: (row: any) => row.retailer_name,
+      sortable: true,
+      cell: (row: any) => <div className="text-sm">{row.retailer_name}</div>,
     },
     {
       name: <div className="text-lg font-bold"> Status Reimburse </div>,

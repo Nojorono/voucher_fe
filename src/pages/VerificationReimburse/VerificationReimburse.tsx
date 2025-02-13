@@ -1,16 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useCallback } from 'react';
 import DataTableVerifyReimburse from '../../components/Tables/DataTableVerifyReimburse';
-import { stagingURL, signOut } from '../../utils';
+import { stagingURL } from '../../utils';
 
 const VerificationReimburse = () => {
-  const navigate = useNavigate();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedRowIds, setSelectedRowIds] = useState<any[]>([]);
 
-
-  const fetchData = () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     const token = localStorage.getItem('token');
 
@@ -20,48 +16,36 @@ const VerificationReimburse = () => {
       return;
     }
 
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token}`);
-    myHeaders.append("Content-Type", "application/json");
-
-    const requestOptions: RequestInit = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow"
-    };
-
-    fetch(`${stagingURL}/api/list_reimburse/`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log('Data fetched:', result);
-
-        const filteredData = result.filter((item: any) => item.status !== null);
-        setData(filteredData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-        setLoading(false);
+    try {
+      const response = await fetch(`${stagingURL}/api/list_reimburse/`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        redirect: "follow"
       });
-  };
+
+      const result = await response.json();
+      const filteredData = result.filter((item: any) => item.status !== null);
+      setData(filteredData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchData();
-    }, 15 * 60 * 1000); // 15 minutes in milliseconds
-
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, []);
+    const interval = setInterval(fetchData, 15 * 60 * 1000); // 15 minutes
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const handleRowSelected = (selectedRows: any[]) => {
-    setSelectedRowIds(selectedRows); // Simpan semua data dari baris yang dipilih ke dalam state
+    console.log(selectedRows);
   };
 
-  // Definisikan kolom untuk DataTable
   const columns = [
     {
       name: "Kode Voucher",
@@ -97,14 +81,14 @@ const VerificationReimburse = () => {
       sortable: true,
       cell: (row: any) => (
         <div
-        className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${row.status === 'completed'
-          ? 'bg-success text-success'
-          : row.status === 'open'
-            ? 'bg-danger text-danger'
-            : row.status === 'waiting'
-              ? 'bg-warning text-warning'
-              : 'text-black'
-          }`}
+          className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${row.status === 'completed'
+            ? 'bg-success text-success'
+            : row.status === 'open'
+              ? 'bg-danger text-danger'
+              : row.status === 'waiting'
+                ? 'bg-warning text-warning'
+                : 'text-black'
+            }`}
         >
           {row.status}
         </div>
@@ -116,22 +100,16 @@ const VerificationReimburse = () => {
     return <div>Loading...</div>;
   }
 
-  const onRefresh = () => {
-    fetchData();
-  };
-
   return (
     <div>
       <h1 className="text-lg font-bold mb-5">Reimburse Verification</h1>
-
       <DataTableVerifyReimburse
         columns={columns}
         data={data}
         selectableRows={false}
         onRowSelected={handleRowSelected}
-        onRefresh={onRefresh}
+        onRefresh={fetchData}
       />
-
     </div>
   );
 };
