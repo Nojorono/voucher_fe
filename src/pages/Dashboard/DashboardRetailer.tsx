@@ -46,7 +46,8 @@ const DashboardRetailer: React.FC = () => {
       setData(filteredData);
     } catch (error) {
       console.error('Error fetching data:', error);
-    } finally {
+    } 
+    finally {
       setLoading(false);
     }
   };
