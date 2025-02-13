@@ -7,6 +7,7 @@ export type photoRetailer = {
     retailer_address: string
     retailer_voucher_code: string
     photos: {
+      is_rejected: unknown;
       image: string;
       is_verified: boolean;
       is_approved: boolean;

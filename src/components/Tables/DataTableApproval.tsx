@@ -58,6 +58,41 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             });
     };
 
+    const rejectData = (id: number) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Token tidak ditemukan di localStorage');
+            return;
+        }
+
+        const myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+        const API = `${stagingURL}/api/retailers/${id}/reject_photos/`;
+
+        // Kirim request ke backend untuk memperbarui berdasarkan retailer_id
+        fetch(API, {
+            method: 'POST', // atau metode yang sesuai
+            headers: myHeaders,
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .then(result => {
+                onUpdate();
+
+                if (result.code === "token_not_valid") {
+                    signOut(navigate);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating data:', error);
+            });
+    };
+
     // Fungsi untuk memperbarui semua ID yang dipilih
     const updateSelectedData = () => {
         if (selectedIds.length === 0) {
@@ -82,6 +117,29 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         });
     };
 
+    const rejectSelectedData = () => {
+        if (selectedIds.length === 0) {
+            showErrorToast('Tidak ada data yang dipilih!');
+            return;
+        }
+
+        selectedIds.forEach((id) => {
+            const retailer = selectedData.find(data => data.retailer_id === id);
+            const retailer_name = retailer?.retailer_name || '';
+
+            if (retailer) {
+                if (retailer.is_verified === 0) {
+                    rejectData(id);
+                } else {
+                    showErrorToast(`Retailer ${retailer_name} sudah diverifikasi!`);
+                }
+            } else {
+                console.error(`Retailer with ID ${retailer_name} not found in selectedData`);
+                showErrorToast(`Retailer with ID ${retailer_name} not found in selectedData`);
+            }
+        });
+    };
+
     // Mengelompokkan data berdasarkan retailer_id
     const groupedData = useMemo(() => {
         return dataPhoto.reduce((acc, retailer) => {
@@ -93,23 +151,28 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     // Transformasi data untuk DataTable
     const transformedData = useMemo(() => {
         return Object.entries(groupedData).map(([retailer_id, images]) => {
+
             const retailer = dataPhoto.find(r => r.retailer_id === Number(retailer_id));
             const is_verified = retailer?.photos.every(photo => photo.is_verified) ? 1 : 0;
+            const is_approved = retailer?.photos.every(photo => photo.is_approved) ? 1 : 0;
+            const is_rejected = retailer?.photos.every(photo => photo.is_rejected) ? 1 : 0;
 
             let status;
             let statusColor = 'text-black'; // Default color
 
-            if (is_verified === 0) {
+            if (is_verified === 1 && is_approved === 1) {
+                status = 'Verified'; // Ter-verifikasi
+                statusColor = 'text-blue-500'; // Biru
+            } else if (is_verified === 1 && is_approved === 0 && is_rejected === 1) {
+                status = 'Rejected'; // Tidak di-approve
+                statusColor = 'text-red-500'; // Merah
+            } else if (is_verified === 0) {
                 status = 'Not Verified'; // Belum diverifikasi
                 statusColor = 'text-black'; // Hitam
-            } else if (is_verified === 1) {
-                status = 'Verified'; // Sudah diverifikasi
-                statusColor = 'text-blue-500'; // Biru
             } else {
                 status = 'No Status'; // Status tidak terdefinisi
                 statusColor = 'text-black'; // Hitam
             }
-
 
             return {
                 retailer_id: Number(retailer_id),
@@ -139,7 +202,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         status: string
     }>[] = useMemo(() => {
         const createColumn = (name: string, selector: (row: any) => any) => ({
-            name:  name,
+            name: name,
             selector,
             sortable: true,
             cell: (row: any) => <span className='text-sm'>{selector(row)}</span>,
@@ -152,10 +215,10 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             createColumn('Alamat', (row) => row.retailer_address),
             createColumn('Status', (row) => (
                 <div
-                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-2 text-xs ${row.is_verified === 1
-                        ? 'bg-success text-success'
-                        : row.is_verified === 0
-                            ? 'bg-danger text-danger'
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-2 text-xs ${row.status === 'Verified'
+                        ? 'bg-green-100 text-green-700'
+                        : row.status === 'Rejected'
+                            ? 'bg-red-100 text-red-500'
                             : 'bg-warning text-warning'
                         }`}
                 >
@@ -163,7 +226,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 </div>
             )),
             {
-                name:  'Kode Voucher',
+                name: 'Kode Voucher',
                 cell: (row) => (
                     row.is_verified === 1 ? <span style={{ fontSize: '12px' }}>{row.retailer_voucher_code}</span> : null
                 ),
@@ -239,12 +302,24 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     };
 
     // Transformasi data untuk DataTable dengan filter
+    // const filteredData = useMemo(() => {
+    //     return transformedData.filter(item => {
+    //         if (filter === null) return item.is_verified === 0; 
+    //         const [verified] = filter; 
+
+    //         if (verified === 99) return true; 
+    //         return item.is_verified === verified; 
+    //     });
+    // }, [transformedData, filter]);
+
     const filteredData = useMemo(() => {
         return transformedData.filter(item => {
-            if (filter === null) return item.is_verified === 0; // Default tampilkan data yang belum diverifikasi
-            const [verified] = filter; // Mengambil nilai filter
-            if (verified === 99) return true; // Tampilkan semua data jika filter == 2
-            return item.is_verified === verified; // Filter berdasarkan is_verified
+            if (filter === null) return item.is_verified === 0;
+            const [verified] = filter;
+
+            if (verified === 99) return true;
+            if (verified === 2) return item.status === 'Rejected';
+            return item.is_verified === verified;
         });
     }, [transformedData, filter]);
 
@@ -282,6 +357,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                     <option value="99">All</option>
                     <option value="1">Verified</option>
                     <option value="0">Not Verified</option>
+                    <option value="2">Rejected</option>
                 </select>
             </div>
 
@@ -302,6 +378,12 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
 
             {/* Button */}
             <div className="flex justify-end space-x-1 mt-2">
+                <button className="flex justify-center rounded bg-red-500 p-2 font-medium text-white hover:bg-red-600"
+                    onClick={() => rejectSelectedData()}>
+                    Reject
+                </button>
+
+
                 <button className="flex justify-center rounded bg-green-500 p-2 font-medium text-white hover:bg-green-600"
                     onClick={() => updateSelectedData()}>
                     Approve
