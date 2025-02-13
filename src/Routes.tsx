@@ -10,13 +10,11 @@ import Verification from './pages/VerificationRetailer/Verification';
 import Redeem from './pages/RedeemVoucher/Redeem';
 import UserRegister from './pages/RegisterUser/UserRegister';
 import MasterWholesale from './pages/MasterData/MasterWholesale';
-import DashboardVoucher from './pages/Dashboard/DashboardVoucher';
 import HowToClaim from './pages/RedeemVoucher/HowToClaim';
 import MasterUser from './pages/MasterData/MasterUser';
 import Reimbursement from './pages/Reimburse/Reimbursement';
 import VerificationReimburse from './pages/VerificationReimburse/VerificationReimburse';
 import Profile from './pages/Profile/Profile';
-
 
 const AppRoutes = () => {
 
@@ -25,6 +23,7 @@ const AppRoutes = () => {
 
     return (
         <Routes>
+
             {/* Public Routes */}
             <Route
                 path="/auth/signin"
@@ -125,18 +124,8 @@ const AppRoutes = () => {
                                                 </>
                                             }
                                         />
-
-                                        <Route
-                                            index
-                                            path="dashboard/dashboard_voucher"
-                                            element={
-                                                <>
-                                                    <PageTitle title="Dashboard Voucher" />
-                                                    <DashboardVoucher />
-                                                </>
-                                            }
-                                        />
                                     </>) : (
+
                                     // NON ADMIN ROUTES
                                     <>
                                         <Route
@@ -198,143 +187,6 @@ const AppRoutes = () => {
                     ) : (
                         <Navigate to="/auth/signin" replace />
                     )
-
-                    // <>
-                    //     <DefaultLayout>
-                    //         <Routes>
-                    //             {isAdmin ? (
-                    //                 <>
-                    //                     <Route
-                    //                         path="verification"
-                    //                         element={
-                    //                             <>
-                    //                                 <PageTitle title="Verification" />
-                    //                                 <Verification />
-                    //                             </>
-                    //                         }
-                    //                     />
-
-                    //                     <Route
-                    //                         path="master_data/user_register"
-                    //                         element={
-                    //                             <>
-                    //                                 <PageTitle title="Master Register" />
-                    //                                 <MasterUser />
-                    //                             </>
-                    //                         }
-                    //                     />
-
-                    //                     <Route
-                    //                         path="/user_register"
-                    //                         element={
-                    //                             <>
-                    //                                 <PageTitle title="User Register" />
-                    //                                 <UserRegister />
-                    //                             </>
-                    //                         }
-                    //                     />
-
-                    //                     <Route
-                    //                         path="master_data/master_wholesale"
-                    //                         element={
-                    //                             <>
-                    //                                 <PageTitle title="Master Agen" />
-                    //                                 <MasterWholesale />
-                    //                             </>
-                    //                         }
-                    //                     />
-
-                    //                     <Route
-                    //                         path="reimburse_checking"
-                    //                         element={
-                    //                             <>
-                    //                                 <PageTitle title="Reimburse Verification" />
-                    //                                 <VerificationReimburse />
-                    //                             </>
-                    //                         }
-                    //                     />
-
-                    //                     <Route
-                    //                         index
-                    //                         path="dashboard/dashboard_retailer"
-                    //                         element={
-                    //                             <>
-                    //                                 <PageTitle title="Dashboard Retailer" />
-                    //                                 <DashboardRetailer />
-                    //                             </>
-                    //                         }
-                    //                     />
-
-                    //                     <Route
-                    //                         index
-                    //                         path="dashboard/dashboard_voucher"
-                    //                         element={
-                    //                             <>
-                    //                                 <PageTitle title="Dashboard Voucher" />
-                    //                                 <DashboardVoucher />
-                    //                             </>
-                    //                         }
-                    //                     />
-                    //                 </>) : (
-                    //                 // NON ADMIN ROUTES
-                    //                 <>
-                    //                     <Route
-                    //                         path="*"
-                    //                         element={
-                    //                             <>
-                    //                                 <PageTitle title="Page Not Found" />
-                    //                                 <div>Halaman tidak tersedia</div>
-                    //                             </>
-                    //                         }
-                    //                     />
-                    //                 </>
-                    //             )}
-
-                    //             <Route
-                    //                 path="profile"
-                    //                 element={
-                    //                     <>
-                    //                         <PageTitle title="Profile" />
-                    //                         <Profile />
-                    //                     </>
-                    //                 }
-                    //             />
-
-                    //             <Route
-                    //                 path="redeem"
-                    //                 element={
-                    //                     <>
-                    //                         <PageTitle title="Redeem" />
-                    //                         <Redeem />
-                    //                     </>
-                    //                 }
-                    //             />
-
-                    //             <Route
-                    //                 path="how-to-claim"
-                    //                 element={
-                    //                     <>
-                    //                         <PageTitle title="Claim Voucher" />
-                    //                         <HowToClaim />
-                    //                     </>
-                    //                 }
-                    //             />
-
-                    //             <Route
-                    //                 path="/reimbursement"
-                    //                 element={
-                    //                     <>
-                    //                         <PageTitle title="Reimbursement" />
-                    //                         <Reimbursement />
-                    //                     </>
-                    //                 }
-                    //             />
-
-                    //             {/* Redirect to dashboard if path is not found */}
-                    //             <Route path="*" element={<Navigate to="/" replace />} />
-                    //         </Routes>
-                    //     </DefaultLayout>
-                    // </>
                 }
             />
         </Routes>
