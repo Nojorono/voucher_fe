@@ -31,7 +31,8 @@ const MasterWholesale = () => {
 
         fetch(`${stagingURL}/api/wholesales/`, requestOptions)
             .then((response) => response.json())
-            .then((result) => {
+            .then((result) => {                
+
                 // Filter data untuk hanya menampilkan yang is_active = true
                 const filteredData = result.filter((item: any) => item.is_active === true);
 
@@ -72,6 +73,12 @@ const MasterWholesale = () => {
             selector: (row: any) => row.phone_number,
             sortable: true,
             cell: (row: any) => row.phone_number,
+        },
+        {
+            name:  "Alamat" ,
+            selector: (row: any) => row.address,
+            sortable: true,
+            cell: (row: any) => row.address,
         },
     ];
 

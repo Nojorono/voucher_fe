@@ -110,7 +110,6 @@ const DataTableVerifyReimburse = memo(({ columns, data, selectableRows = true, o
             cell: (row: any) => (
                 <button onClick={() => openModal(row)} className="bg-blue-500 text-white py-2 px-8 rounded flex items-center mr-2">
                     <FaChevronCircleDown className="mr-2" />
-                    {/* Ubah Status */}
                 </button>
             ),
             ignoreRowClick: true,

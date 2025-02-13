@@ -203,7 +203,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
         },
         cells: {
             style: {
-                fontSize: '15px',
+                fontSize: '14px',
                 paddingLeft: '8px',
                 paddingRight: '8px',
             },
