@@ -108,7 +108,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 if (retailer.is_verified === 0) {
                     approveData(id);
                 } else {
-                    showErrorToast(`Retailer ${retailer_name} sudah diverifikasi!`);
+                    showErrorToast(`Toko ${retailer_name} sudah diverifikasi!`);
                 }
             } else {
                 console.error(`Retailer with ID ${retailer_name} not found in selectedData`);
@@ -184,6 +184,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 images,
                 is_verified,
                 status,
+                is_approved,
                 statusColor,
             };
         });
@@ -199,7 +200,8 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         retailer_address: string;
         retailer_voucher_code: string;
         images: string[];
-        status: string
+        status: string;
+        is_approved: number;
     }>[] = useMemo(() => {
         const createColumn = (name: string, selector: (row: any) => any) => ({
             name: name,
@@ -228,7 +230,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             {
                 name: 'Kode Voucher',
                 cell: (row) => (
-                    row.is_verified === 1 ? <span style={{ fontSize: '12px' }}>{row.retailer_voucher_code}</span> : null
+                    row.status !== 'Rejected' ? <span style={{ fontSize: '12px' }}>{row.retailer_voucher_code}</span> : null
                 ),
                 sortable: true,
             },
@@ -302,24 +304,14 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     };
 
     // Transformasi data untuk DataTable dengan filter
-    // const filteredData = useMemo(() => {
-    //     return transformedData.filter(item => {
-    //         if (filter === null) return item.is_verified === 0; 
-    //         const [verified] = filter; 
-
-    //         if (verified === 99) return true; 
-    //         return item.is_verified === verified; 
-    //     });
-    // }, [transformedData, filter]);
-
     const filteredData = useMemo(() => {
         return transformedData.filter(item => {
             if (filter === null) return item.is_verified === 0;
             const [verified] = filter;
 
             if (verified === 99) return true;
-            if (verified === 2) return item.status === 'Rejected';
-            return item.is_verified === verified;
+            if (verified === 2) return item.is_verified === 1 && item.is_approved === 0;
+            return item.is_verified === verified && item.is_approved === 1;
         });
     }, [transformedData, filter]);
 

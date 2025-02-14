@@ -26,7 +26,7 @@ const VerificationReimburse = () => {
         redirect: "follow"
       });
 
-      const result = await response.json();
+      const result = await response.json();      
       const filteredData = result.filter((item: any) => item.status !== null);
       setData(filteredData);
     } catch (error) {

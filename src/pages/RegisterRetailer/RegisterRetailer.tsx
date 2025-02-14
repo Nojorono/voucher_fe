@@ -63,7 +63,7 @@ const RegisterRetailer: React.FC = () => {
                 });
             }
 
-            // // Log FormData
+            // Log FormData
             // formData.forEach((value, key) => {
             //     console.log(`${key}:`, value);
             // });

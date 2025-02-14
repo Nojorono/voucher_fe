@@ -4,6 +4,7 @@ import CustomToast, { showErrorToast, showSuccessToast } from '../../components/
 import { FaTrash, FaPlus } from 'react-icons/fa';
 
 interface SKUItem {
+    id_sku: number
     sku: string;
     qty: number;
     nominal: number;
@@ -11,12 +12,14 @@ interface SKUItem {
 
 function Redeem() {
     const [voucherCode, setVoucherCode] = useState('');
-    const [skuItems, setSkuItems] = useState<SKUItem[]>([{ sku: '', qty: 0, nominal: 0 }]);
+    const [skuItems, setSkuItems] = useState<SKUItem[]>([{ id_sku: 0, sku: '', qty: 0, nominal: 0 }]);
     const [message, setMessage] = useState('');
     const [errMessage, setErrMessage] = useState('');
 
     const [receiptImage, setReceiptImage] = useState<File | null>(null);
-    const [items, setItems] = useState<{ sku: string; name: string; price: string; is_active: boolean }[]>([]);
+    const [items, setItems] = useState<{
+        id: string | number | readonly string[] | undefined; sku: string; name: string; price: string; is_active: boolean
+    }[]>([]);
     const [isVoucherValid, setIsVoucherValid] = useState(false);
 
 
@@ -53,7 +56,7 @@ function Redeem() {
         }
 
         const token = localStorage.getItem('token');
-        const ws_name = localStorage.getItem('ws_name');
+        const ws_id = localStorage.getItem('ws_id');
 
         if (!token) {
             console.error('Token tidak ditemukan di localStorage');
@@ -69,7 +72,7 @@ function Redeem() {
             const verifyResponse = await fetch(`${stagingURL}/api/redeem_voucher/`, {
                 method: 'POST',
                 headers: myHeaders,
-                body: JSON.stringify({ voucher_code: voucherCode, ws_name: ws_name }),
+                body: JSON.stringify({ voucher_code: voucherCode, ws_id: ws_id }),
             });
 
             const verifyData = await verifyResponse.json();
@@ -115,27 +118,16 @@ function Redeem() {
         const myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${token}`);
 
-
-        let rypQty = 0;
-        let rysQty = 0;
-        let rymQty = 0;
-
-        skuItems.forEach((item) => {
-            if (item.sku === 'RYP') {
-                rypQty += item.qty;
-            } else if (item.sku === 'RYS') {
-                rysQty += item.qty;
-            } else if (item.sku === 'RYM') {
-                rymQty += item.qty;
-            }
-        });
+        const itemsToPost = skuItems.map((item) => ({
+            item_id: item.id_sku,
+            qty: item.qty,
+            sub_total: item.nominal
+        }));
 
         const formdata = new FormData();
         formdata.append("voucher_code", voucherCode);
-        formdata.append("wholesaler_id", `${ws_id}`);
-        formdata.append("ryp_qty", rypQty.toString());
-        formdata.append("rys_qty", rysQty.toString());
-        formdata.append("rym_qty", rymQty.toString());
+        formdata.append("ws_id", `${ws_id}`);
+        formdata.append("items", JSON.stringify(itemsToPost));
         formdata.append("total_price", subTotal.toString());
         formdata.append("total_price_after_discount", grandTotalAfterDiscount.toString());
         if (receiptImage) {
@@ -146,7 +138,6 @@ function Redeem() {
         for (let [key, value] of formdata.entries()) {
             console.log(`${key}: ${value}`);
         }
-
 
         const requestOptions = {
             method: "POST",
@@ -166,7 +157,7 @@ function Redeem() {
                 // Clear form after a delay
                 setTimeout(() => {
                     setVoucherCode('');
-                    setSkuItems([{ sku: '', qty: 0, nominal: 0 }]);
+                    setSkuItems([{ id_sku: 0, sku: '', qty: 0, nominal: 0 }]);
                     setReceiptImage(null);
                     setIsVoucherValid(false);
                     setMessage('');
@@ -183,7 +174,7 @@ function Redeem() {
     };
 
     const handleAddSKU = () => {
-        setSkuItems([...skuItems, { sku: '', qty: 0, nominal: 0 }]);
+        setSkuItems([...skuItems, { id_sku: 0, sku: '', qty: 0, nominal: 0 }]);
     };
 
     const handleRemoveSKU = (index: number) => {
@@ -197,13 +188,19 @@ function Redeem() {
     };
 
     const handleSKUChange = (index: number, field: keyof SKUItem, value: string | number) => {
+
+        console.log('skuItems', skuItems);
+
         const newSkuItems = skuItems.map((item, i) => {
             if (i === index) {
                 const updatedItem = { ...item, [field]: value };
                 if (field === 'sku') {
                     const selectedItem = items.find((itm) => itm.sku === value);
+                    console.log('selectedItem', selectedItem);
+
                     if (selectedItem) {
                         updatedItem.nominal = Number(selectedItem.price) * updatedItem.qty;
+                        updatedItem.id_sku = typeof selectedItem.id === 'number' ? selectedItem.id : 0;
                     }
                 } else if (field === 'qty') {
                     const selectedItem = items.find((itm) => itm.sku === item.sku);
@@ -259,8 +256,8 @@ function Redeem() {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
             const data = await response.json();
+
             setItems(data);
         } catch (error) {
             console.error('Fetch error:', error);
@@ -320,7 +317,7 @@ function Redeem() {
             <CustomToast />
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                 <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                <h1 className="text-xl font-bold">Reedem Voucher</h1>
+                    <h1 className="text-xl font-bold">Reedem Voucher</h1>
 
                 </div>
 
@@ -476,6 +473,10 @@ function Redeem() {
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>
+
+                            {/* <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                                Submit
+                            </button> */}
 
                             {isVoucherValid && (
                                 <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
