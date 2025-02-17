@@ -93,8 +93,8 @@ export const detailColumns = [
         cell: (row: any) => (
             <ul>
                 {row.transactions[0]?.details.map((detail: any, index: number) => (
-                    <li key={index}>
-                        {detail.item_name} <br className='mt-2' />
+                    <li key={index} className="mt-2">
+                        {detail.item_name} <br/>
                         Qty: {Math.round(detail.qty)} <br/>
                         Total: {Math.round(detail.sub_total).toLocaleString('id-ID')}
                     </li>
@@ -154,7 +154,8 @@ const exportToExcel = (fileName: string, data: any[]) => {
                 'Total Price After Discount': Math.round(item.transactions[0]?.total_price_after_discount).toLocaleString('id-ID'),
                 'Item Name': '',
                 'Qty': '',
-                'Sub Total': ''
+                'Sub Total': '',
+                'Bukti Pembayaran': `${stagingURL}${item.transactions[0]?.image}`
             }];
         }
         return item.transactions[0]?.details.map((detail: any, index: number) => ({
@@ -165,6 +166,7 @@ const exportToExcel = (fileName: string, data: any[]) => {
             'Item Name': detail.item_name,
             'Qty': detail.qty,
             'Sub Total': `Rp ${Math.round(detail.sub_total).toLocaleString('id-ID')}`,
+            'Bukti Pembayaran': index === 0 ? `${stagingURL}${item.transactions[0]?.image}` : ''
         }));
     });
 
@@ -278,7 +280,7 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
     const columnsWithActions = [
         ...columns,
         {
-            name: "Details",
+            name: "Transaksi",
             cell: (row: any) => (
                 <button onClick={() => openDetailModal(row)} className="bg-gray-300 text-black py-2 px-8 rounded flex items-center mr-2">
                     <FaEye className="mr-2" />
