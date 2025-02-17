@@ -164,8 +164,8 @@ const exportToExcel = (fileName: string, data: any[]) => {
             'Total Price': index === 0 ? Math.round(item.transactions[0]?.total_price).toLocaleString('id-ID') : '',
             'Total Price After Discount': index === 0 ? Math.round(item.transactions[0]?.total_price_after_discount).toLocaleString('id-ID') : '',
             'Item Name': detail.item_name,
-            'Qty': detail.qty,
-            'Sub Total': `Rp ${Math.round(detail.sub_total).toLocaleString('id-ID')}`,
+            'Qty': `${Math.round(detail.qty)}`,
+            'Sub Total': `${Math.round(detail.sub_total).toLocaleString('id-ID')}`,
             'Bukti Pembayaran': index === 0 ? `${stagingURL}${item.transactions[0]?.image}` : ''
         }));
     });
@@ -348,7 +348,6 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
                 onSelectedRowsChange={({ selectedRows }) => console.log(selectedRows)}
                 customStyles={customStyles}
             />
-
 
             <StatusModal
                 isOpen={isStatusModalOpen}
