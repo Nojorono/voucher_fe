@@ -75,8 +75,6 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
 
     const confirmSoftDelete = () => {
         if (rowToDelete) {
-            console.log('Delete row:', rowToDelete);
-
             const token = localStorage.getItem('token');
             const myHeaders = new Headers();
             myHeaders.append('Authorization', `Bearer ${token}`);

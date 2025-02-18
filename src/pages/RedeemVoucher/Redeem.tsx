@@ -135,9 +135,9 @@ function Redeem() {
         }
 
         // Log each key/value pair in the FormData
-        for (let [key, value] of formdata.entries()) {
-            console.log(`${key}: ${value}`);
-        }
+        // for (let [key, value] of formdata.entries()) {
+        //     console.log(`${key}: ${value}`);
+        // }
 
         const requestOptions = {
             method: "POST",
@@ -188,16 +188,11 @@ function Redeem() {
     };
 
     const handleSKUChange = (index: number, field: keyof SKUItem, value: string | number) => {
-
-        console.log('skuItems', skuItems);
-
         const newSkuItems = skuItems.map((item, i) => {
             if (i === index) {
                 const updatedItem = { ...item, [field]: value };
                 if (field === 'sku') {
                     const selectedItem = items.find((itm) => itm.sku === value);
-                    console.log('selectedItem', selectedItem);
-
                     if (selectedItem) {
                         updatedItem.nominal = Number(selectedItem.price) * updatedItem.qty;
                         updatedItem.id_sku = typeof selectedItem.id === 'number' ? selectedItem.id : 0;

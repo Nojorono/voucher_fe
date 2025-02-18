@@ -38,8 +38,6 @@ const Verification = () => {
         if (result.message === "No photos found") {
           setLoading(true);
         } else {
-          console.log('result list_photos', result);
-
           setDataPhoto(result);
           setLoading(false);
 

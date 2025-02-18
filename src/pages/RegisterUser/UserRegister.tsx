@@ -66,7 +66,6 @@ const UserRegister: React.FC = () => {
 
       if (!response.ok) {
         // const result = await response.json();
-        //   console.log('res', result);
         showErrorToast('Terjadi kesalahan saat mengirim data.');
         throw new Error(`HTTP error! status: ${response.status}`);
       }

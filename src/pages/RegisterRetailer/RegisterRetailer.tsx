@@ -30,7 +30,6 @@ const RegisterRetailer: React.FC = () => {
         try {
             const formData = new FormData();
 
-            // console.log('data form', data);
             // Map form fields to FormData
             const formFields = {
                 ws_name: data.ws_name,
@@ -67,8 +66,6 @@ const RegisterRetailer: React.FC = () => {
             // formData.forEach((value, key) => {
             //     console.log(`${key}:`, value);
             // });
-
-            // console.log('formData', formData);
 
             // Make API request
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {

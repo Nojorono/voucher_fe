@@ -36,9 +36,6 @@ const Reimbursement = () => {
     fetch(`${stagingURL}/api/list_vouchers/?ws_id=${ws_id}&redeemed=${redeemed}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-
-        console.log('result', result);
-
         const filteredData = result.filter((item: any) => item.reimburse_status !== null);
         setData(filteredData);
         setLoading(false);

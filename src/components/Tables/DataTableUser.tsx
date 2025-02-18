@@ -76,8 +76,6 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
 
     const confirmSoftDelete = () => {
         if (rowToDelete) {
-            console.log('Delete row:', rowToDelete);
-
             const token = localStorage.getItem('token');
             const myHeaders = new Headers();
             myHeaders.append('Authorization', `Bearer ${token}`);
@@ -133,7 +131,6 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
         fetch(url, requestOptions)
             .then((response) => response.json())
             .then((result) => {
-                console.log('res_Post', result);
                 setOpen(false);
                 onRefresh();
             })

@@ -318,8 +318,8 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
     const customStyles = {
         rows: {
             style: {
-                paddingLeft: '8px',
-                paddingRight: '8px',
+                paddingLeft: '0px',
+                paddingRight: '0px',
             },
         },
         headCells: {

@@ -83,10 +83,6 @@ const Profile: React.FC = () => {
       return;
     }
 
-
-    console.log(updatedData);
-
-
     try {
       if (updatedData.password) {
         await updatePassword(token, updatedData.password);
@@ -147,7 +143,6 @@ const Profile: React.FC = () => {
       showSuccessToast('Password updated successfully');
       localStorage.setItem('password', newPassword);
       setShowPassword(false); // Hide the password
-      console.log('Password updated successfully');
     } else {
       const errorData = await response.json();
       if (errorData.new_password) {
