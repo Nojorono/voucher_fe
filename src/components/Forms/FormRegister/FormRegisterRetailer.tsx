@@ -187,7 +187,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                         <>
                             {[0, 1, 2].map((index) => (
                                 <div key={index} className="mb-2">
-
                                     <label className="mt-1 block text-sm text-gray-600">
                                         {index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester'}
                                     </label>
@@ -195,7 +194,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                     <img
                                         src={index === 0 ? sample1 : index === 1 ? sample2 : sample3}
                                         alt={`Sample ${index + 1}`}
-                                        className="mt-2 w-32 h-32 object-cover"
+                                        className="mt-2 mb-1 w-32 h-32 object-cover"
                                         onClick={() => setLightboxIndex(index)}
                                     />
                                     {lightboxIndex === index && (
