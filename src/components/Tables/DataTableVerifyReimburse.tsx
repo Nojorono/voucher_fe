@@ -1,6 +1,5 @@
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { memo, useState, useEffect, FC } from 'react';
-import "yet-another-react-lightbox/styles.css";
 import Spinner from '../Spinner';
 import { stagingURL } from '../../utils';
 import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
@@ -15,6 +14,8 @@ import { FaChevronCircleDown, FaEye, FaFileExcel } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+
 
 
 

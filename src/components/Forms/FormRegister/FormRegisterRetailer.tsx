@@ -1,7 +1,10 @@
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import { useEffect, useState } from 'react';
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { stagingURL } from '../../../utils/API'
 import Select from 'react-select';
+import { sample1, sample2, sample3 } from '../../../images/sample/index';
 
 interface FormProps<T extends FieldValues> {
     onSubmit: SubmitHandler<T>;
@@ -33,6 +36,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     const [selectedKecamatan, setSelectedKecamatan] = useState<string | null>(null);
     const [selectedKelurahan, setSelectedKelurahan] = useState<string | null>(null);
     const [selectedWS, setSelectedWS] = useState<string | null>(null);
+    const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
 
 
@@ -183,9 +187,25 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                         <>
                             {[0, 1, 2].map((index) => (
                                 <div key={index} className="mb-2">
+
                                     <label className="mt-1 block text-sm text-gray-600">
-                                        {index === 0 ? 'Upload Foto Stiker POSM' : index === 1 ? 'Upload Foto Tester' : 'Upload Foto Kode Tester'}
+                                        {index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester'}
                                     </label>
+
+                                    <img
+                                        src={index === 0 ? sample1 : index === 1 ? sample2 : sample3}
+                                        alt={`Sample ${index + 1}`}
+                                        className="mt-2 w-32 h-32 object-cover"
+                                        onClick={() => setLightboxIndex(index)}
+                                    />
+                                    {lightboxIndex === index && (
+                                        <Lightbox
+                                            open={lightboxIndex !== null}
+                                            close={() => setLightboxIndex(null)}
+                                            slides={[{ src: index === 0 ? sample1 : index === 1 ? sample2 : sample3 }]}
+                                        />
+                                    )}
+
                                     <input
                                         id={`${String(field.name)}_${index}`}
                                         type="file"
