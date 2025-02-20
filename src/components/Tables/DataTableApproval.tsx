@@ -157,22 +157,14 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             const is_approved = retailer?.photos.every(photo => photo.is_approved) ? 1 : 0;
             const is_rejected = retailer?.photos.every(photo => photo.is_rejected) ? 1 : 0;
 
-            let status;
-            let statusColor = 'text-black'; // Default color
+            const statusMap: { [key: string]: { status: string; statusColor: string } } = {
+                '1-1-0': { status: 'Verified', statusColor: 'text-blue-500' },
+                '1-0-1': { status: 'Rejected', statusColor: 'text-red-500' },
+                '0-0-0': { status: 'Not Verified', statusColor: 'text-black' },
+            };
 
-            if (is_verified === 1 && is_approved === 1) {
-                status = 'Verified'; // Ter-verifikasi
-                statusColor = 'text-blue-500'; // Biru
-            } else if (is_verified === 1 && is_approved === 0 && is_rejected === 1) {
-                status = 'Rejected'; // Tidak di-approve
-                statusColor = 'text-red-500'; // Merah
-            } else if (is_verified === 0) {
-                status = 'Not Verified'; // Belum diverifikasi
-                statusColor = 'text-black'; // Hitam
-            } else {
-                status = 'No Status'; // Status tidak terdefinisi
-                statusColor = 'text-black'; // Hitam
-            }
+            const key: string = `${is_verified}-${is_approved}-${is_rejected}`;
+            const { status, statusColor } = statusMap[key] || { status: 'No Status', statusColor: 'text-black' };
 
             return {
                 retailer_id: Number(retailer_id),
@@ -210,6 +202,12 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             cell: (row: any) => <span className='text-sm'>{selector(row)}</span>,
         });
 
+        const statusClasses: { [key: string]: string } = {
+            'Verified': 'bg-green-100 text-green-700',
+            'Rejected': 'bg-red-100 text-red-500',
+            'Not Verified': 'bg-warning text-warning',
+        };
+
         return [
             createColumn('Retailer', (row) => row.retailer_name),
             createColumn('Agen', (row) => row.wholesale_name),
@@ -217,12 +215,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             createColumn('Alamat', (row) => row.retailer_address),
             createColumn('Status', (row) => (
                 <div
-                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-2 text-xs ${row.status === 'Verified'
-                        ? 'bg-green-100 text-green-700'
-                        : row.status === 'Rejected'
-                            ? 'bg-red-100 text-red-500'
-                            : 'bg-warning text-warning'
-                        }`}
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-2 text-xs ${statusClasses[row.status] || 'bg-warning text-warning'}`}
                 >
                     {row.status}
                 </div>

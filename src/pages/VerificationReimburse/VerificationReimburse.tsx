@@ -26,7 +26,7 @@ const VerificationReimburse = () => {
         redirect: "follow"
       });
 
-      const result = await response.json();      
+      const result = await response.json();
       const filteredData = result.filter((item: any) => item.status !== null);
       setData(filteredData);
     } catch (error) {
@@ -44,6 +44,12 @@ const VerificationReimburse = () => {
 
   const handleRowSelected = (selectedRows: any[]) => {
     console.log(selectedRows);
+  };
+
+  const statusStyles: { [key: string]: string } = {
+    completed: 'bg-success text-success',
+    open: 'bg-danger text-danger',
+    waiting: 'bg-warning text-warning',
   };
 
   const columns = [
@@ -81,14 +87,7 @@ const VerificationReimburse = () => {
       sortable: true,
       cell: (row: any) => (
         <div
-          className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${row.status === 'completed'
-            ? 'bg-success text-success'
-            : row.status === 'open'
-              ? 'bg-danger text-danger'
-              : row.status === 'waiting'
-                ? 'bg-warning text-warning'
-                : 'text-black'
-            }`}
+          className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${statusStyles[row.status] || 'text-black'}`}
         >
           {row.status}
         </div>

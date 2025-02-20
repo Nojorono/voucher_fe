@@ -23,6 +23,20 @@ const DashboardRetailer: React.FC = () => {
   const [data, setData] = useState<RetailerData[]>([]);
   const [voucherStatusFilter, setVoucherStatusFilter] = useState<string>('');
 
+  const statusClasses: { [key: string]: string } = useMemo(() => ({
+    PENDING: 'bg-white text-black',
+    RECEIVING: 'bg-yellow-300 text-yellow-800',
+    REDEEMED: 'bg-blue-500 text-white',
+    'WAITING PAYMENT': 'bg-purple-500 text-white',
+    'PAYMENT COMPLETED': 'bg-green-500 text-white',
+  }), []);
+
+  const statusMapping: { [key: string]: string } = {
+    'PAYMENT COMPLETED': 'COMPLETED',
+    'WAITING PAYMENT': 'WAITING',
+  };
+
+
   const fetchData = async () => {
     setLoading(true);
     const token = localStorage.getItem('token');
@@ -46,15 +60,11 @@ const DashboardRetailer: React.FC = () => {
       setData(filteredData);
     } catch (error) {
       console.error('Error fetching data:', error);
-    } 
+    }
     finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const filteredData = useMemo(() => {
     if (voucherStatusFilter) {
@@ -63,85 +73,72 @@ const DashboardRetailer: React.FC = () => {
     return data;
   }, [data, voucherStatusFilter]);
 
-  const columns = useMemo(() => [
-    {
-      name: 'Voucher Status',
-      selector: (row: RetailerData) => row.voucher_status,
-      sortable: true,
-      cell: (row: RetailerData) => {
-        const transformedStatus = row.voucher_status === 'PAYMENT COMPLETED'
-          ? 'COMPLETED'
-          : row.voucher_status === 'WAITING PAYMENT'
-            ? 'WAITING'
-            : row.voucher_status;
 
-        return (
-          <div
-            className={`inline-flex rounded-full py-1 px-3 ${row.voucher_status === 'PENDING'
-              ? 'bg-white text-black'
-              : row.voucher_status === 'RECEIVING'
-                ? 'bg-yellow-300 text-yellow-800'
-                : row.voucher_status === 'REDEEMED'
-                  ? 'bg-blue-500 text-white'
-                  : row.voucher_status === 'WAITING PAYMENT'
-                    ? 'bg-purple-500 text-white'
-                    : row.voucher_status === 'PAYMENT COMPLETED'
-                      ? 'bg-green-500 text-white'
-                      : 'bg-gray-200 text-gray-800'
-              }`}
-            style={{ fontSize: '10px', fontWeight: 'bold' }}
-          >
-            {transformedStatus}
-          </div>
-        );
-      }
-    },
-    {
-      name: 'Agen',
-      selector: (row: RetailerData) => row.agen_name,
-      sortable: true,
-    },
-    {
-      name: 'Toko',
-      selector: (row: RetailerData) => row.retailer_name,
-      sortable: true,
-    },
-    {
-      name: 'Whatsapp',
-      selector: (row: RetailerData) => row.phone_number,
-      sortable: true,
-    },
-    {
-      name: 'Alamat',
-      selector: (row: RetailerData) => row.address,
-      sortable: true,
-    },
-    {
-      name: 'Provinsi',
-      selector: (row: RetailerData) => row.provinsi,
-      sortable: true,
-    },
-    {
-      name: 'Kota',
-      selector: (row: RetailerData) => row.kota,
-      sortable: true,
-    },
-    {
-      name: 'Kecamatan',
-      selector: (row: RetailerData) => row.kecamatan,
-      sortable: true,
-    },
-    {
-      name: 'Kelurahan',
-      selector: (row: RetailerData) => row.kelurahan,
-      sortable: true,
-    },
-    {
-      name: 'Kode Voucher',
-      selector: (row: RetailerData) => row.voucher_code,
-      sortable: true,
-    },
-  ], []);
+  const columns = useMemo(() => {
+    return [
+      {
+        name: 'Voucher Status',
+        selector: (row: RetailerData) => row.voucher_status,
+        sortable: true,
+        cell: (row: RetailerData) => {
+          const transformedStatus = statusMapping[row.voucher_status] || row.voucher_status;
+          return (
+            <div
+              className={`inline-flex rounded-full py-1 px-3 ${statusClasses[row.voucher_status] || 'bg-gray-200 text-gray-800'}`}
+              style={{ fontSize: '10px', fontWeight: 'bold' }}
+            >
+              {transformedStatus}
+            </div>
+          );
+        }
+      },
+      {
+        name: 'Agen',
+        selector: (row: RetailerData) => row.agen_name,
+        sortable: true,
+      },
+      {
+        name: 'Toko',
+        selector: (row: RetailerData) => row.retailer_name,
+        sortable: true,
+      },
+      {
+        name: 'Whatsapp',
+        selector: (row: RetailerData) => row.phone_number,
+        sortable: true,
+      },
+      {
+        name: 'Alamat',
+        selector: (row: RetailerData) => row.address,
+        sortable: true,
+      },
+      {
+        name: 'Provinsi',
+        selector: (row: RetailerData) => row.provinsi,
+        sortable: true,
+      },
+      {
+        name: 'Kota',
+        selector: (row: RetailerData) => row.kota,
+        sortable: true,
+      },
+      {
+        name: 'Kecamatan',
+        selector: (row: RetailerData) => row.kecamatan,
+        sortable: true,
+      },
+      {
+        name: 'Kelurahan',
+        selector: (row: RetailerData) => row.kelurahan,
+        sortable: true,
+      },
+      {
+        name: 'Kode Voucher',
+        selector: (row: RetailerData) => row.voucher_code,
+        sortable: true,
+      },
+    ];
+  }, [statusClasses]);
 
   const exportToExcel = (fileName: string) => {
     const modifiedData = filteredData.map((item) => ({
@@ -165,6 +162,10 @@ const DashboardRetailer: React.FC = () => {
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(blob, `${fileName}.xlsx`);
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
