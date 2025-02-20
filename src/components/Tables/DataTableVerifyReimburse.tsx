@@ -187,7 +187,7 @@ const customDetailStyles = {
     },
     headCells: {
         style: {
-            fontSize: '15px',
+            fontSize: '13px',
             paddingLeft: '8px',
             paddingRight: '8px',
             backgroundColor: 'lightgrey',
