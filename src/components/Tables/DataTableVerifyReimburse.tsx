@@ -73,17 +73,17 @@ export const detailColumns = [
         sortable: false,
     },
     {
-        name: "Total Harga",
+        name: "Total Harga (Rp)",
         selector: (row: any) => `${Math.round(row.transactions[0]?.total_price).toLocaleString('id-ID')}`,
         sortable: false,
     },
     {
-        name: "Diskon",
+        name: "Diskon (Rp)",
         selector: () => "20.000",
         sortable: false,
     },
     {
-        name: "Harga Setelah Diskon",
+        name: "Harga Setelah Diskon (Rp)",
         selector: (row: any) => `${Math.round(row.transactions[0]?.total_price_after_discount).toLocaleString('id-ID')}`,
         sortable: false,
     },
