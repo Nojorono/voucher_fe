@@ -19,7 +19,6 @@ import "yet-another-react-lightbox/styles.css";
 
 const CustomLoader = () => <Spinner />;
 
-
 interface DataTableProps {
     columns: TableColumn<any>[];
     data: any[];
@@ -290,9 +289,11 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
         {
             name: "Ubah Status",
             cell: (row: any) => (
-                <button onClick={() => openStatusModal(row)} className="bg-blue-500 text-white py-2 px-8 rounded flex items-center mr-2">
-                    <FaChevronCircleDown className="mr-2" />
-                </button>
+                row.status !== 'completed' && (
+                    <button onClick={() => openStatusModal(row)} className="bg-blue-500 text-white py-2 px-8 rounded flex items-center mr-2">
+                        <FaChevronCircleDown className="mr-2" />
+                    </button>
+                )
             ),
             ignoreRowClick: true,
         }
