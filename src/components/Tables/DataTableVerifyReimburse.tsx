@@ -146,8 +146,14 @@ const exportToExcel = (fileName: string, data: any[]) => {
     const modifiedData = data.flatMap((item) => {
         if (item.transactions[0]?.details.length === 0) {
             return [{
-                'Toko': item.retailer_name,
-                'Reimburse By': item.reimbursed_by,
+                'Nama Toko': item.retailer_name,
+                'Alamat': item.retailer_address,
+                'Provinsi': item.retailer_province,
+                'Kota': item.retailer_kota,
+                'Kecamatan': item.retailer_kecamatan,
+                'Kelurahan': item.retailer_kelurahan,
+                'Kode Voucher': item.voucher_code,
+                'Nama Agen': item.wholesaler_name,
                 'Total Price': Math.round(item.transactions[0]?.total_price).toLocaleString('id-ID'),
                 'Total Price After Discount': Math.round(item.transactions[0]?.total_price_after_discount).toLocaleString('id-ID'),
                 'Item Name': '',
@@ -156,9 +162,16 @@ const exportToExcel = (fileName: string, data: any[]) => {
                 'Bukti Pembayaran': `${stagingURL}${item.transactions[0]?.image}`
             }];
         }
+
         return item.transactions[0]?.details.map((detail: any, index: number) => ({
-            'Toko': index === 0 ? item.retailer_name : '',
-            'Reimburse By': index === 0 ? item.reimbursed_by : '',
+            'Nama Toko': index === 0 ? item.retailer_name : '',
+            'Alamat': index === 0 ? item.retailer_address : '',
+            'Provinsi': index === 0 ? item.retailer_province : '',
+            'Kota': index === 0 ? item.retailer_kota : '',
+            'Kecamatan': index === 0 ? item.retailer_kecamatan : '',
+            'Kelurahan': index === 0 ? item.retailer_kelurahan : '',
+            'Kode Voucher': index === 0 ? item.voucher_code : '',
+            'Nama Agen': index === 0 ? item.wholesaler_name : '',
             'Total Price': index === 0 ? Math.round(item.transactions[0]?.total_price).toLocaleString('id-ID') : '',
             'Total Price After Discount': index === 0 ? Math.round(item.transactions[0]?.total_price_after_discount).toLocaleString('id-ID') : '',
             'Item Name': detail.item_name,

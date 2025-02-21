@@ -5,7 +5,7 @@ import { stagingURL } from '../../utils/API'
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import { RocketLaunchIcon } from '@heroicons/react/24/outline';
 import Spinner from '../../components/Spinner'
-
+import { BG } from '../../images/sample/index';
 
 interface IFormInput {
     ws_name: string;
@@ -119,7 +119,7 @@ const RegisterRetailer: React.FC = () => {
 
 
     return (
-        <div className="rounded-sm border">
+        <div className="rounded-sm border" style={{ backgroundImage: `url(${BG})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="flex flex-wrap items-center">
 
                 <div className="hidden w-full xl:block xl:w-1/2">
@@ -136,8 +136,7 @@ const RegisterRetailer: React.FC = () => {
                         <div className="w-full xl:w-1/2 p-10">
                             <div className="p-10">
 
-
-                                <h2 className="text-2xl font-bold mb-5">Pendaftaran Retailer</h2>
+                                <h2 className="text-2xl font-bold mb-5 text-white">Pendaftaran Retailer</h2>
                                 <FormRegister<IFormInput>
                                     onSubmit={onSubmit}
                                     fields={fields}

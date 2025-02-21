@@ -158,6 +158,18 @@ const DashboardRetailer: React.FC = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
+    // Add footnote
+    const footnote = [
+      [''],
+      ['Voucher Status :'],
+      ['PENDING: menunggu verifikasi photo retailer oleh Admin'],
+      ['RECEIVED: photo retailer sudah diverifikasi, dan retailer mendapatkan nomor voucher'],
+      ['REDEEMED: voucher sudah digunakan oleh retailer'],
+      ['WAITING PAYMENT: reimbursement agen sedang di proses'],
+      ['PAYMENT COMPLETED: reimbursement sudah dibayar'],
+    ];
+    XLSX.utils.sheet_add_aoa(worksheet, footnote, { origin: -1 });
+
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(blob, `${fileName}.xlsx`);

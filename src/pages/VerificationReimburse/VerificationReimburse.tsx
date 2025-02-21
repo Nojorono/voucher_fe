@@ -27,7 +27,10 @@ const VerificationReimburse = () => {
       });
 
       const result = await response.json();
+      console.log('result:', result);
+
       const filteredData = result.filter((item: any) => item.status !== null);
+
       setData(filteredData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -102,6 +105,7 @@ const VerificationReimburse = () => {
   return (
     <div>
       <h1 className="text-lg font-bold mb-5">Reimburse Verification</h1>
+
       <DataTableVerifyReimburse
         columns={columns}
         data={data}

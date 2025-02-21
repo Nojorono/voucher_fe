@@ -180,14 +180,14 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         <form onSubmit={handleSubmit(handleSubmitRegister)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {fields.map((field) => (
                 <div className="mb-4" key={String(field.name)}>
-                    <label htmlFor={String(field.name)} className="block mb-2 text-sm font-medium text-gray-700">
+                    <label htmlFor={String(field.name)} className="block mb-2 text-lg font-bold text-white">
                         {field.label}
                     </label>
                     {field.type === 'file' ? (
                         <>
                             {[0, 1, 2].map((index) => (
                                 <div key={index} className="mb-2">
-                                    <label className="mt-1 block text-sm text-gray-600">
+                                    <label className="mt-1 block text-sm text-white">
                                         {index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester'}
                                     </label>
 
@@ -209,7 +209,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                         id={`${String(field.name)}_${index}`}
                                         type="file"
                                         {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: handleFileChange })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                             ))}
