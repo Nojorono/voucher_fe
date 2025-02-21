@@ -92,8 +92,8 @@ export const detailColumns = [
             <ul>
                 {row.transactions[0]?.details.map((detail: any, index: number) => (
                     <li key={index} className="mt-2">
-                        {detail.item_name} <br/>
-                        Qty: {Math.round(detail.qty)} <br/>
+                        {detail.item_name} <br />
+                        Qty: {Math.round(detail.qty)} <br />
                         Total: {Math.round(detail.sub_total).toLocaleString('id-ID')}
                     </li>
                 ))}
