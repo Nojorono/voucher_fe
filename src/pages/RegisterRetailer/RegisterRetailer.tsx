@@ -119,7 +119,7 @@ const RegisterRetailer: React.FC = () => {
 
 
     return (
-        <div className="rounded-sm border" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="flex flex-wrap items-center">
 
                 <div className="hidden w-full xl:block xl:w-1/2">
