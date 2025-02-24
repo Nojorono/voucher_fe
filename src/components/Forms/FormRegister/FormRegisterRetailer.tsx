@@ -183,9 +183,10 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                     <label htmlFor={String(field.name)} className="block mb-2 text-lg font-bold text-white">
                         {field.label}
                     </label>
+                    
                     {field.type === 'file' ? (
-                        <>
-                            {[0, 1, 2].map((index) => (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {[0, 1, 2].map((index) => ( 
                                 <div key={index} className="mb-2">
                                     <label className="mt-1 block text-sm text-white">
                                         {index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester'}
@@ -209,11 +210,11 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                         id={`${String(field.name)}_${index}`}
                                         type="file"
                                         {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: handleFileChange })}
-                                        className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                             ))}
-                        </>
+                        </div>
                     ) : field.type === 'select' ? (
                         <div>
                             {field.name === 'provinsi' && (

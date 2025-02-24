@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { stagingURL } from '../../utils/index';
+import { BG3 } from '../../images/sample/index';
+
 
 const SignIn: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -187,8 +189,10 @@ const SignIn: React.FC = () => {
 
   return (
     <>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="flex flex-wrap items-center">
+      <div className="min-h-screen flex items-center justify-center"
+        style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="flex flex-wrap items-center justify-center w-full">
+
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
               <span className="mt-15 inline-block">{renderSVG()}</span>
@@ -196,13 +200,13 @@ const SignIn: React.FC = () => {
           </div>
 
           <div className="w-full xl:w-1/2 p-10">
-            <h2 className="text-2xl font-bold mb-5">Welcome Back!</h2>
+            <h2 className="text-2xl font-bold mb-5 text-white">Welcome Back!</h2>
             {error && (
               <div className="mb-4 text-red-500 text-center">{error}</div>
             )}
             <form onSubmit={handleLogin}>
               <div className="mb-4">
-                <label className="block mb-2 text-sm font-medium text-gray-700">Username</label>
+                <label className="block mb-2 text-sm font-medium text-white">Username</label>
                 <input
                   type="username"
                   value={username}
@@ -214,7 +218,7 @@ const SignIn: React.FC = () => {
               </div>
 
               <div className="mb-4 relative">
-                <label className="block mb-2 text-sm font-medium text-gray-700">Password</label>
+                <label className="block mb-2 text-sm font-medium text-white">Password</label>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}

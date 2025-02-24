@@ -122,21 +122,22 @@ const RegisterRetailer: React.FC = () => {
         <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="flex flex-wrap items-center">
 
-                <div className="hidden w-full xl:block xl:w-1/2">
+                {/* <div className="hidden w-full xl:block xl:w-1/2">
                     <div className="py-17.5 px-26 text-center">
                         <span className="mt-15 inline-block"><RocketLaunchIcon className="h-100 w-100 text-white-500" /></span>
                     </div>
-                </div>
+                </div> */}
 
                 <CustomToast />
 
                 {loading ? (
                     <Spinner />) : (
                     <>
-                        <div className="w-full xl:w-1/2 p-10">
+                        <div className="w-full p-10">
                             <div className="p-10">
 
-                                <h2 className="text-3xl font-bold mb-5 text-white">Pendaftaran Retailer</h2>
+                                <h2 className="text-4xl font-bold mb-10 text-white text-center">Pendaftaran Retailer</h2>
+
                                 <FormRegister<IFormInput>
                                     onSubmit={onSubmit}
                                     fields={fields}
