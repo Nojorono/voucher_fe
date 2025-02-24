@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import Loader from './common/Loader';
 import AppRoutes from './Routes';
+import { BG } from './images/sample/index';
+
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,7 +35,11 @@ function App() {
     return <AppRoutes />; // Pastikan tetap di halaman yang sama
   }
 
-  return <AppRoutes />;
+  return (
+    <div>
+      <AppRoutes />
+    </div>
+  );
 }
 
 export default App;
