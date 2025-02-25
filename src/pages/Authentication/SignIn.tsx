@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { stagingURL } from '../../utils/index';
-import { BG3 } from '../../images/sample/index';
+import { BG3, NNA } from '../../images/sample/index';
 
 
 const SignIn: React.FC = () => {
@@ -193,11 +193,12 @@ const SignIn: React.FC = () => {
         style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="flex flex-wrap items-center justify-center w-full">
 
-          <div className="hidden w-full xl:block xl:w-1/2">
+            <div className="hidden w-full xl:block xl:w-1/2 mb-10">
             <div className="py-17.5 px-26 text-center">
-              <span className="mt-15 inline-block">{renderSVG()}</span>
+              {/* <span className="mt-15 inline-block">{renderSVG()}</span> */}
+              <img src={NNA} alt="NNA" className="inline-block" />
             </div>
-          </div>
+            </div>
 
           <div className="w-full xl:w-1/2 p-10">
             <h2 className="text-2xl font-bold mb-5 text-white">Welcome Back!</h2>
@@ -260,6 +261,7 @@ const SignIn: React.FC = () => {
               </Link>
             </p>
           </div>
+
         </div>
       </div>
     </>

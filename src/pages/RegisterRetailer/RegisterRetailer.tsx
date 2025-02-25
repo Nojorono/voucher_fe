@@ -25,6 +25,7 @@ const RegisterRetailer: React.FC = () => {
     // const [voucherCode, setVoucherCode] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // POST REGISTER
     const postRetailerData = async (data: IFormInput) => {
         setLoading(true);
         try {
@@ -120,18 +121,21 @@ const RegisterRetailer: React.FC = () => {
 
     return (
         <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-            <div className="flex flex-wrap items-center">
 
+            <div className="flex flex-wrap items-center justify-center">
                 {/* <div className="hidden w-full xl:block xl:w-1/2">
-                    <div className="py-17.5 px-26 text-center">
-                        <span className="mt-15 inline-block"><RocketLaunchIcon className="h-100 w-100 text-white-500" /></span>
-                    </div>
-                </div> */}
+                <div className="py-17.5 px-26 text-center">
+                <span className="mt-15 inline-block"><RocketLaunchIcon className="h-100 w-100 text-white-500" /></span>
+                </div>
+            </div> */}
 
                 <CustomToast />
 
                 {loading ? (
-                    <Spinner />) : (
+                    <div className="flex justify-center items-center w-full h-full">
+                        <Spinner />
+                    </div>
+                ) : (
                     <>
                         <div className="w-full p-10">
                             <div className="p-10">

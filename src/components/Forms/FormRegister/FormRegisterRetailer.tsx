@@ -38,8 +38,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     const [selectedWS, setSelectedWS] = useState<string | null>(null);
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-
-
     useEffect(() => {
         const fetcProvinsi = async () => {
             try {
@@ -136,6 +134,12 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     };
 
     const handleSubmitRegister = (data: T) => {
+
+        if (uploadedPhotos.length < 3) {
+            alert('Please upload all required photos.');
+            return;
+        }
+
         const remarksData = {
             ...data,
             photo_remarks: photoRemarks,
@@ -174,7 +178,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     useEffect(() => {
         fetchDataWholesale();
     }, [])
-
 
     return (
         <form onSubmit={handleSubmit(handleSubmitRegister)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -280,7 +283,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                         />
                     )}
                     {errors[field.name] && (
-                        <span className="text-sm text-red-500">This field is required</span>
+                        <span className="text-sm text-yellow-500">This field is required!</span>
                     )}
                 </div>
             ))}
