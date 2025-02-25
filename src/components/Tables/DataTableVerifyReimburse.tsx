@@ -51,7 +51,14 @@ const StatusModal: FC<ModalProps> = ({ isOpen, onClose, onSubmit, newStatus, set
                 className="w-full p-2 border border-gray-300 rounded"
             >
                 <option value="">---Pilih Status---</option>
-                <option value="completed">Completed</option>
+                {['completed', 'paid'].some(status => status === newStatus) ? (
+                    <option value="paid">Paid</option>
+                ) : (
+                    <>
+                        <option value="completed">Completed</option>
+                        <option value="paid">Paid</option>
+                    </>
+                )}
             </select>
         </DialogBody>
         <DialogFooter>
@@ -146,6 +153,7 @@ const exportToExcel = (fileName: string, data: any[]) => {
     const modifiedData = data.flatMap((item) => {
         if (item.transactions[0]?.details.length === 0) {
             return [{
+                'Status': item.status,
                 'Nama Toko': item.retailer_name,
                 'Alamat': item.retailer_address,
                 'Provinsi': item.retailer_province,
@@ -164,6 +172,7 @@ const exportToExcel = (fileName: string, data: any[]) => {
         }
 
         return item.transactions[0]?.details.map((detail: any, index: number) => ({
+            'Status': index === 0 ? item.status : '',
             'Nama Toko': index === 0 ? item.retailer_name : '',
             'Alamat': index === 0 ? item.retailer_address : '',
             'Provinsi': index === 0 ? item.retailer_province : '',
@@ -221,6 +230,7 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [currentRow, setCurrentRow] = useState<any>(null);
     const [newStatus, setNewStatus] = useState<string>('');
+    const [selectedStatus, setSelectedStatus] = useState<string>('');
 
     useEffect(() => {
         const timeout = setTimeout(() => setPending(false), 2000);
@@ -255,11 +265,13 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
             return;
         }
 
-        if (currentRow.status === 'completed') {
-            showErrorToast('Status is already complete and cannot be changed');
+        if (currentRow.status === 'paid') {
+            showErrorToast('Status is already complete and paid, cannot be changed');
             closeStatusModal();
             return;
         }
+
+        console.log('newStatus', newStatus);
 
         try {
             const token = localStorage.getItem('token');
@@ -300,9 +312,9 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
             ignoreRowClick: true,
         },
         {
-            name: "Ubah Status",
+            name: "Action",
             cell: (row: any) => (
-                row.status !== 'completed' && (
+                row.status !== 'paid' && (
                     <button onClick={() => openStatusModal(row)} className="bg-blue-500 text-white py-2 px-8 rounded flex items-center mr-2">
                         <FaChevronCircleDown className="mr-2" />
                     </button>
@@ -336,15 +348,27 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
         },
     };
 
+    const filteredData = selectedStatus ? data.filter(item => item.status === selectedStatus) : data;
 
     return (
         <div>
             <CustomToast />
 
-            <div className="flex justify-end items-center mb-4">
+            <div className="flex justify-between items-center mb-4">
+
+                <select
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                    className="px-3 py-2 border rounded"
+                >
+                    <option value="">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="paid">Paid</option>
+                </select>
+
                 <button
                     className="bg-blue-300 text-white py-1 px-2 rounded flex items-center"
-                    onClick={() => exportToExcel('retailer_transaction', data)}
+                    onClick={() => exportToExcel('reimbursement', filteredData)}
                 >
                     <FaFileExcel className="mr-2" />
                     Export to Excel
@@ -353,7 +377,7 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
 
             <DataTable
                 columns={columnsWithActions}
-                data={data}
+                data={filteredData}
                 selectableRows={selectableRows}
                 pagination
                 progressPending={pending}
@@ -381,4 +405,3 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
 });
 
 export default DataTableVerifyReimburse;
-

@@ -184,6 +184,7 @@ const DashboardRetailer: React.FC = () => {
       <h1 className="text-lg font-bold mb-5">Report All Retailers & Vouchers</h1>
 
       <div className="col-span-12 flex items-center justify-between mb-4">
+        
         <select
           value={voucherStatusFilter}
           onChange={(e) => setVoucherStatusFilter(e.target.value)}

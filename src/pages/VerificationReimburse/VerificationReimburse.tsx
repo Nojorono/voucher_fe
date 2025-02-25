@@ -27,8 +27,7 @@ const VerificationReimburse = () => {
       });
 
       const result = await response.json();
-      console.log('result:', result);
-
+      // console.log('Data:', result);
       const filteredData = result.filter((item: any) => item.status !== null);
 
       setData(filteredData);
@@ -50,9 +49,8 @@ const VerificationReimburse = () => {
   };
 
   const statusStyles: { [key: string]: string } = {
-    completed: 'bg-success text-success',
-    open: 'bg-danger text-danger',
-    waiting: 'bg-warning text-warning',
+    completed: 'bg-warning text-warning',
+    paid: 'bg-success text-success',
   };
 
   const columns = [
