@@ -56,7 +56,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   }, [sidebarExpanded]);
 
   // Mengecek token dan apakah sudah kedaluwarsa
-  useEffect(() => {    
+  useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       const tokenPayload = JSON.parse(atob(storedToken.split('.')[1]));

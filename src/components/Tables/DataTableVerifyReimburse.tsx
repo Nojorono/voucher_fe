@@ -16,7 +16,6 @@ import { saveAs } from 'file-saver';
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 
-
 const CustomLoader = () => <Spinner />;
 
 interface DataTableProps {
@@ -355,13 +354,13 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
             <CustomToast />
 
             <div className="flex justify-between items-center mb-4">
-
                 <select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
                     className="px-3 py-2 border rounded"
                 >
                     <option value="">All Status</option>
+                    <option value="waiting">Waiting</option>
                     <option value="completed">Completed</option>
                     <option value="paid">Paid</option>
                 </select>

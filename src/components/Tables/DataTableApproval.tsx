@@ -6,7 +6,7 @@ import "yet-another-react-lightbox/styles.css";
 import { stagingURL, signOut } from '../../utils';
 import { photoRetailer } from '../../types/photoRetailer';
 import Spinner from '../Spinner'
-import CustomToast, { showErrorToast } from '../Toast/CustomToast';
+import CustomToast, { showErrorToast, showSuccessToast } from '../Toast/CustomToast';
 
 const CustomLoader = () => (
     <Spinner />
@@ -42,12 +42,21 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             .then(response => {
                 if (response.ok) {
                     return response.json();
-                } else {
+                }
+                else {
                     throw new Error('Network response was not ok');
                 }
             })
             .then(result => {
-                onUpdate();
+
+                if (result.message === "Voucher limit reached") {
+                    showErrorToast(result.message);
+                } else {
+                    showSuccessToast(result.message);
+                    setTimeout(() => {
+                        onUpdate();
+                    }, 2000);
+                }
 
                 if (result.code === "token_not_valid") {
                     signOut(navigate);
@@ -223,7 +232,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             {
                 name: 'Kode Voucher',
                 cell: (row) => (
-                    row.status !== 'Rejected' ? <span style={{ fontSize: '12px' }}>{row.retailer_voucher_code}</span> : null
+                    row.status !== 'Rejected' && row.status !== 'Not Verified' ? <span style={{ fontSize: '12px' }}>{row.retailer_voucher_code}</span> : null
                 ),
                 sortable: true,
             },
@@ -247,7 +256,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             },
             {
                 name: "Foto Tester",
-                cell: (row) => (
+                cell: (row: { images: any[]; }) => (
                     row.images[1] ? (
                         <img
                             loading="lazy"
@@ -303,6 +312,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             const [verified] = filter;
 
             if (verified === 99) return true;
+            if (verified === 0) return item.is_verified === 0 && item.is_approved === 0;
             if (verified === 2) return item.is_verified === 1 && item.is_approved === 0;
             return item.is_verified === verified && item.is_approved === 1;
         });

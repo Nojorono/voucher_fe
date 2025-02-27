@@ -24,16 +24,19 @@ const DashboardRetailer: React.FC = () => {
   const [voucherStatusFilter, setVoucherStatusFilter] = useState<string>('');
 
   const statusClasses: { [key: string]: string } = useMemo(() => ({
-    PENDING: 'bg-white text-black',
-    RECEIVING: 'bg-yellow-300 text-yellow-800',
-    REDEEMED: 'bg-blue-500 text-white',
-    'WAITING PAYMENT': 'bg-purple-500 text-white',
-    'PAYMENT COMPLETED': 'bg-green-500 text-white',
+    'REJECTED': 'bg-red text-white',
+    'PENDING': 'bg-white text-black',
+    'RECEIVING': 'bg-yellow-300 text-yellow-800',
+    'REDEEMED': 'bg-blue-500 text-white',
+    'WAITING REIMBURSE': 'bg-purple-500 text-white',
+    'REIMBURSE COMPLETED': 'bg-green-300 text-white',
+    'REIMBURSE PAID': 'bg-green-800 text-white',
   }), []);
 
   const statusMapping: { [key: string]: string } = {
-    'PAYMENT COMPLETED': 'COMPLETED',
-    'WAITING PAYMENT': 'WAITING',
+    'WAITING REIMBURSE': 'WAITING',
+    'REIMBURSE COMPLETED': 'COMPLETED',
+    'REIMBURSE PAID': 'PAID',
   };
 
 
@@ -56,6 +59,10 @@ const DashboardRetailer: React.FC = () => {
         },
       });
       const result = await response.json();
+     
+      console.log('result', result);
+      
+
       const filteredData = result.filter((item: RetailerData) => item.voucher_status !== null);
       setData(filteredData);
     } catch (error) {
@@ -194,8 +201,9 @@ const DashboardRetailer: React.FC = () => {
           <option value="PENDING">PENDING</option>
           <option value="RECEIVED">RECEIVED</option>
           <option value="REDEEMED">REDEEMED</option>
-          <option value="WAITING PAYMENT">WAITING PAYMENT</option>
-          <option value="PAYMENT COMPLETED">PAYMENT COMPLETED</option>
+          <option value="WAITING REIMBURSE">WAITING REIMBURSE</option>
+          <option value="REIMBURSE COMPLETED">REIMBURSE COMPLETED</option>
+          <option value="REIMBURSE PAID">REIMBURSE PAID</option>
         </select>
 
         <button

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { stagingURL } from '../../utils/API';
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import { FaTrash, FaPlus } from 'react-icons/fa';
+import Spinner from '../../components/Spinner'
 
 interface SKUItem {
     id_sku: number
@@ -15,6 +16,8 @@ function Redeem() {
     const [skuItems, setSkuItems] = useState<SKUItem[]>([{ id_sku: 0, sku: '', qty: 0, nominal: 0 }]);
     const [message, setMessage] = useState('');
     const [errMessage, setErrMessage] = useState('');
+    const [loading, setLoading] = useState<boolean>(false);
+
 
     const [receiptImage, setReceiptImage] = useState<File | null>(null);
     const [items, setItems] = useState<{
@@ -24,6 +27,7 @@ function Redeem() {
 
 
     const validateForm = () => {
+
         if (!voucherCode) {
             showErrorToast('Voucher code harus diisi.');
             return false;
@@ -118,11 +122,13 @@ function Redeem() {
         const myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${token}`);
 
+
         const itemsToPost = skuItems.map((item) => ({
             item_id: item.id_sku,
             qty: item.qty,
             sub_total: item.nominal
         }));
+
 
         const formdata = new FormData();
         formdata.append("voucher_code", voucherCode);
@@ -139,6 +145,8 @@ function Redeem() {
         //     console.log(`${key}: ${value}`);
         // }
 
+        setLoading(true);
+
         const requestOptions = {
             method: "POST",
             headers: myHeaders,
@@ -150,22 +158,24 @@ function Redeem() {
             const response = await fetch(`${stagingURL}/api/submit_redeem_voucher/`, requestOptions);
             const data = await response.json();
             if (response.ok) {
-                setMessage(data.message);
-                showSuccessToast(data.message);
+
                 reimburseVoucher();
+                showSuccessToast(data.message);
 
                 // Clear form after a delay
                 setTimeout(() => {
+                    setLoading(false);
                     setVoucherCode('');
                     setSkuItems([{ id_sku: 0, sku: '', qty: 0, nominal: 0 }]);
                     setReceiptImage(null);
                     setIsVoucherValid(false);
                     setMessage('');
-                    window.location.reload(); // Refresh the page
+                    // window.location.reload(); // Refresh the page
                 }, 5000);
             } else {
                 setErrMessage(data.non_field_errors[0]);
                 showErrorToast(data.non_field_errors[0]);
+                setLoading(true);
             }
         } catch (error) {
             setErrMessage('Terjadi kesalahan, silakan coba lagi.');
@@ -309,180 +319,192 @@ function Redeem() {
 
     return (
         <div>
-            <CustomToast />
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                    <h1 className="text-xl font-bold">Reedem Voucher</h1>
+            {loading ? (
+                <>
+                    <Spinner />
+                    <CustomToast />
+                </>
+            ) : (
+                <>
+                    <CustomToast />
 
-                </div>
+                    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                        <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+                            <h1 className="text-xl font-bold">Reedem Voucher</h1>
 
-                <form action="#" onSubmit={handleRedeem}>
-                    <div className="p-6.5">
-                        <>
-                            <button
-                                type='button'
-                                onClick={handleAddSKU}
-                                className="mt-15 border border-green-500 text-green-500 py-2 px-2 rounded flex items-center hover:bg-green-500 hover:text-white"
-                            >
-                                <FaPlus className="mr-2" />
-                                Tambah SKU
-                            </button>
+                        </div>
 
-                            {skuItems.map((item, index) => (
-                                <div key={index} className="mb-4.5 mt-10 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                        <form action="#" onSubmit={handleRedeem}>
+                            <div className="p-6.5">
+                                <>
+                                    <button
+                                        type='button'
+                                        onClick={handleAddSKU}
+                                        className="mt-15 border border-green-500 text-green-500 py-2 px-2 rounded flex items-center hover:bg-green-500 hover:text-white"
+                                    >
+                                        <FaPlus className="mr-2" />
+                                        Tambah SKU
+                                    </button>
 
-                                    <div className="flex-1">
+                                    {skuItems.map((item, index) => (
+                                        <div key={index} className="mb-4.5 mt-10 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+
+                                            <div className="flex-1">
+                                                <label className="mb-2.5 block text-black dark:text-white">
+                                                    SKU
+                                                </label>
+                                                <select
+                                                    value={item.sku}
+                                                    onChange={(e) => handleSKUChange(index, 'sku', e.target.value)}
+                                                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                                >
+                                                    <option value="">Pilih SKU</option>
+                                                    {items.map((itm) => (
+                                                        <option key={itm.sku} value={itm.sku}>
+                                                            {itm.name} ({itm.sku})
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            <div className="flex-1">
+                                                <label className="mb-2.5 block text-black dark:text-white">
+                                                    Jumlah Beli
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="Enter quantity"
+                                                    value={item.qty}
+                                                    min="1"
+                                                    onFocus={() => handleFocus(index, 'qty')}
+                                                    onChange={(e) => {
+                                                        const value = Number(e.target.value);
+                                                        handleSKUChange(index, 'qty', value);
+                                                    }}
+                                                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                                />
+                                            </div>
+
+                                            <div className="flex-1">
+                                                <label className="mb-2.5 block text-black dark:text-white">
+                                                    Total Harga
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Enter nominal value"
+                                                    value={item.nominal.toLocaleString('id-ID')}
+                                                    readOnly
+                                                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                                />
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveSKU(index)}
+                                                className="text-red-500 py-5 px-2 rounded flex items-center"
+                                            >
+                                                <FaTrash className="mr-2" />
+                                                Hapus
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    <hr className="my-8 border-t dark:border-strokedark" />
+
+                                    <div className="mb-4.5">
                                         <label className="mb-2.5 block text-black dark:text-white">
-                                            SKU
-                                        </label>
-                                        <select
-                                            value={item.sku}
-                                            onChange={(e) => handleSKUChange(index, 'sku', e.target.value)}
-                                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                        >
-                                            <option value="">Pilih SKU</option>
-                                            {items.map((itm) => (
-                                                <option key={itm.sku} value={itm.sku}>
-                                                    {itm.name} ({itm.sku})
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    <div className="flex-1">
-                                        <label className="mb-2.5 block text-black dark:text-white">
-                                            Jumlah Beli
+                                            Bukti Pembelian
                                         </label>
                                         <input
-                                            type="number"
-                                            placeholder="Enter quantity"
-                                            value={item.qty}
-                                            min="1"
-                                            onFocus={() => handleFocus(index, 'qty')}
-                                            onChange={(e) => {
-                                                const value = Number(e.target.value);
-                                                handleSKUChange(index, 'qty', value);
-                                            }}
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
                                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                         />
                                     </div>
 
-                                    <div className="flex-1">
+                                    <div className="mb-4.5">
                                         <label className="mb-2.5 block text-black dark:text-white">
-                                            Total Harga
+                                            Sub Total
                                         </label>
                                         <input
                                             type="text"
-                                            placeholder="Enter nominal value"
-                                            value={item.nominal.toLocaleString('id-ID')}
+                                            value={subTotal.toLocaleString('id-ID')}
                                             readOnly
                                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                         />
                                     </div>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemoveSKU(index)}
-                                        className="text-red-500 py-5 px-2 rounded flex items-center"
-                                    >
-                                        <FaTrash className="mr-2" />
-                                        Hapus
-                                    </button>
-                                </div>
-                            ))}
+                                    <div className="mb-4.5 flex items-end space-x-4">
+                                        <div className="flex-1">
+                                            <label className="mb-2.5 block text-black dark:text-white">
+                                                Kode Voucher
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Masukan voucher code"
+                                                value={voucherCode}
+                                                onChange={(e) => setVoucherCode(e.target.value)}
+                                                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                            />
+                                        </div>
+                                        <button
+                                            type='button'
+                                            onClick={verifyVoucher}
+                                            className="rounded bg-purple-500 p-3 font-medium text-gray hover:bg-opacity-90"
+                                        >
+                                            Redeem Voucher
+                                        </button>
+                                    </div>
 
-                            <hr className="my-8 border-t dark:border-strokedark" />
+                                    {(message || errMessage) && (
+                                        <div className={`mt-4 p-4 border rounded text-center ${message ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
+                                            <p>{message || errMessage}</p>
+                                        </div>
+                                    )}
 
-                            <div className="mb-4.5">
-                                <label className="mb-2.5 block text-black dark:text-white">
-                                    Bukti Pembelian
-                                </label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                />
-                            </div>
+                                    <div className="mb-4.5 mt-5">
+                                        <label className="mb-2.5 block text-black dark:text-white">
+                                            Diskon Potongan Voucher
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={isVoucherValid ? `${(20000).toLocaleString('id-ID')}` : 0}
+                                            readOnly
+                                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                        />
+                                    </div>
 
-                            <div className="mb-4.5">
-                                <label className="mb-2.5 block text-black dark:text-white">
-                                    Sub Total
-                                </label>
-                                <input
-                                    type="text"
-                                    value={subTotal.toLocaleString('id-ID')}
-                                    readOnly
-                                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                />
-                            </div>
+                                    <div className="mb-4.5">
+                                        <label className="mb-2.5 block text-black dark:text-white">
+                                            Grand Total (Setelah Diskon)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={grandTotalAfterDiscount.toLocaleString('id-ID')}
+                                            readOnly
+                                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                        />
+                                    </div>
 
-                            <div className="mb-4.5 flex items-end space-x-4">
-                                <div className="flex-1">
-                                    <label className="mb-2.5 block text-black dark:text-white">
-                                        Kode Voucher
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Masukan voucher code"
-                                        value={voucherCode}
-                                        onChange={(e) => setVoucherCode(e.target.value)}
-                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    />
-                                </div>
-                                <button
-                                    type='button'
-                                    onClick={verifyVoucher}
-                                    className="rounded bg-purple-500 p-3 font-medium text-gray hover:bg-opacity-90"
-                                >
-                                    Redeem Voucher
-                                </button>
-                            </div>
-
-                            {(message || errMessage) && (
-                                <div className={`mt-4 p-4 border rounded text-center ${message ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
-                                    <p>{message || errMessage}</p>
-                                </div>
-                            )}
-
-                            <div className="mb-4.5 mt-5">
-                                <label className="mb-2.5 block text-black dark:text-white">
-                                    Diskon Potongan Voucher
-                                </label>
-                                <input
-                                    type="text"
-                                    value={isVoucherValid ? `${(20000).toLocaleString('id-ID')}` : 0}
-                                    readOnly
-                                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                />
-                            </div>
-
-                            <div className="mb-4.5">
-                                <label className="mb-2.5 block text-black dark:text-white">
-                                    Grand Total (Setelah Diskon)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={grandTotalAfterDiscount.toLocaleString('id-ID')}
-                                    readOnly
-                                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                />
-                            </div>
-
-                            {/* <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                                    {/* <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
                                 Submit
                             </button> */}
 
-                            {isVoucherValid && (
-                                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                                    Submit
-                                </button>
-                            )}
-                        </>
+                                    {isVoucherValid && (
+                                        <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                                            Submit
+                                        </button>
+                                    )}
+                                </>
 
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
+                </>
+            )}
+
+
         </div>
     );
 }

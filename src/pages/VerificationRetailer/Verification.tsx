@@ -61,9 +61,9 @@ const Verification = () => {
   const handleDataUpdate = () => {
     setLoading(true);
     fetchData();
-    setTimeout(() => {
-      showSuccessToast('All photos for retailer verified successfully.');
-    }, 1000);
+    // setTimeout(() => {
+    //   showSuccessToast('All photos for retailer verified successfully.');
+    // }, 1000);
   };
 
   return (

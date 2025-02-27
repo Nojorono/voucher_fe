@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import FormRegister from '../../components/Forms/FormRegister/FormRegisterRetailer';
-import { stagingURL } from '../../utils/API'
+import { stagingURL } from '../../utils/API';
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
-import { RocketLaunchIcon } from '@heroicons/react/24/outline';
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/Spinner';
 import { BG3 } from '../../images/sample/index';
 
 interface IFormInput {
@@ -21,14 +20,45 @@ interface IFormInput {
 }
 
 const RegisterRetailer: React.FC = () => {
-
-    // const [voucherCode, setVoucherCode] = useState('');
     const [loading, setLoading] = useState(false);
+    const [reachLimit, setReachLimit] = useState(false);
+
+    useEffect(() => {
+        checkLimit()
+    }, [])
+
+    // Check limit
+    const checkLimit = async () => {
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow" as RequestRedirect
+        };
+
+        try {
+            const response = await fetch("http://10.0.29.49:8081/api/current-count/?id=1", requestOptions);
+            const result = await response.json();
+            if (result.message == "Voucher limit reached") {
+                setReachLimit(true)
+            };
+
+        } catch (error) {
+            console.error(error);
+            showErrorToast('Failed to check limit.');
+            throw error;
+        }
+    };
 
     // POST REGISTER
     const postRetailerData = async (data: IFormInput) => {
         setLoading(true);
         try {
+            // const limit = await checkLimit();
+            // if (limit >= 100) { // Assuming the limit is 100
+            //     showErrorToast('Limit exceeded. Cannot register more retailers.');
+            //     setLoading(false);
+            //     return;
+            // }
+
             const formData = new FormData();
 
             // Map form fields to FormData
@@ -63,11 +93,6 @@ const RegisterRetailer: React.FC = () => {
                 });
             }
 
-            // Log FormData
-            // formData.forEach((value, key) => {
-            //     console.log(`${key}:`, value);
-            // });
-
             // Make API request
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
                 method: 'POST',
@@ -77,7 +102,6 @@ const RegisterRetailer: React.FC = () => {
             if (!response.ok) {
                 const result = await response.json();
                 if (response.status === 400) {
-                    // Cek apakah ada non_field_errors dan pastikan itu adalah array
                     if (Array.isArray(result.non_field_errors) && result.non_field_errors.length > 0) {
                         showErrorToast(result.non_field_errors.join(', '));
                     } else {
@@ -88,7 +112,6 @@ const RegisterRetailer: React.FC = () => {
             }
 
             const result = await response.json();
-            // showSuccessToast(`${result.message}, berhasil mendaftar sebagai retailer.`);
             showSuccessToast(`berhasil mendaftar sebagai retailer.`);
             setTimeout(() => {
                 setLoading(false);
@@ -98,6 +121,7 @@ const RegisterRetailer: React.FC = () => {
         } catch (error) {
             console.error(`Error: ${(error as Error).message}`);
             showErrorToast(`Error: ${(error as Error).message}`);
+            setLoading(false);
             throw error;
         }
     };
@@ -118,30 +142,25 @@ const RegisterRetailer: React.FC = () => {
         { name: 'photos', label: 'Upload Foto', required: true, type: 'file' },
     ];
 
-
     return (
         <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-
             <div className="flex flex-wrap items-center justify-center">
-                {/* <div className="hidden w-full xl:block xl:w-1/2">
-                <div className="py-17.5 px-26 text-center">
-                <span className="mt-15 inline-block"><RocketLaunchIcon className="h-100 w-100 text-white-500" /></span>
-                </div>
-            </div> */}
-
                 <CustomToast />
-
                 {loading ? (
                     <div className="flex justify-center items-center w-full h-full">
                         <Spinner />
+                    </div>
+                ) : reachLimit ? (
+                    <div className="flex justify-center items-center w-full h-full">
+                        <div className="flex justify-center items-center h-screen bg-transparent">
+                            <h2 className="text-4xl font-bold mb-10 text-white text-center">Promo RYO Sudah Berakhir</h2>
+                        </div>
                     </div>
                 ) : (
                     <>
                         <div className="w-full p-10">
                             <div className="p-10">
-
                                 <h2 className="text-4xl font-bold mb-10 text-white text-center">Pendaftaran Retailer</h2>
-
                                 <FormRegister<IFormInput>
                                     onSubmit={onSubmit}
                                     fields={fields}
@@ -150,9 +169,8 @@ const RegisterRetailer: React.FC = () => {
                         </div>
                     </>
                 )}
-
             </div>
-        </div >
+        </div>
     );
 };
 
