@@ -22,6 +22,8 @@ const DashboardRetailer: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<RetailerData[]>([]);
   const [voucherStatusFilter, setVoucherStatusFilter] = useState<string>('');
+  const [agenNameFilter, setAgenNameFilter] = useState<string>('');
+  const [uniqueAgenNames, setUniqueAgenNames] = useState<string[]>([]);
 
   const statusClasses: { [key: string]: string } = useMemo(() => ({
     'REJECTED': 'bg-red text-white',
@@ -38,7 +40,6 @@ const DashboardRetailer: React.FC = () => {
     'REIMBURSE COMPLETED': 'COMPLETED',
     'REIMBURSE PAID': 'PAID',
   };
-
 
   const fetchData = async () => {
     setLoading(true);
@@ -58,13 +59,15 @@ const DashboardRetailer: React.FC = () => {
           'Content-Type': 'application/json',
         },
       });
-      const result = await response.json();
-     
+      const result: RetailerData[] = await response.json();
+
       console.log('result', result);
-      
 
       const filteredData = result.filter((item: RetailerData) => item.voucher_status !== null);
       setData(filteredData);
+
+      const uniqueAgenNames = Array.from(new Set(filteredData.map((item: RetailerData) => item.agen_name)));
+      setUniqueAgenNames(uniqueAgenNames);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -74,12 +77,13 @@ const DashboardRetailer: React.FC = () => {
   };
 
   const filteredData = useMemo(() => {
-    if (voucherStatusFilter) {
-      return data.filter((item) => item.voucher_status === voucherStatusFilter);
-    }
-    return data;
-  }, [data, voucherStatusFilter]);
-
+    return data.filter((item) => {
+      return (
+        (!voucherStatusFilter || item.voucher_status === voucherStatusFilter) &&
+        (!agenNameFilter || item.agen_name === agenNameFilter)
+      );
+    });
+  }, [data, voucherStatusFilter, agenNameFilter]);
 
   const columns = useMemo(() => {
     return [
@@ -113,6 +117,19 @@ const DashboardRetailer: React.FC = () => {
         name: 'Whatsapp',
         selector: (row: RetailerData) => row.phone_number,
         sortable: true,
+        cell: (row: RetailerData) => {
+          return (
+            <a
+              href={`https://wa.me/${row.phone_number}?text=Berikut%20ini%20Kode%20Voucher%20BARON%20Anda:%20${row.voucher_code}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline"
+              style={{ fontSize: '10px', fontWeight: 'bold' }}
+            >
+              {row.phone_number}
+            </a>
+          );
+        }
       },
       {
         name: 'Alamat',
@@ -168,11 +185,12 @@ const DashboardRetailer: React.FC = () => {
     // Add footnote
     const footnote = [
       [''],
-      ['Voucher Status :'],
+      ['Voucher Status:'],
       ['PENDING: menunggu verifikasi photo retailer oleh Admin'],
       ['RECEIVED: photo retailer sudah diverifikasi, dan retailer mendapatkan nomor voucher'],
       ['REDEEMED: voucher sudah digunakan oleh retailer'],
-      ['WAITING PAYMENT: reimbursement agen sedang di proses'],
+      ['WAITING REIMBURSE: reimbursement agen sedang di proses'],
+      ['REIMBURSE COMPLETED: reimbursement sudah diproses'],
       ['PAYMENT COMPLETED: reimbursement sudah dibayar'],
     ];
     XLSX.utils.sheet_add_aoa(worksheet, footnote, { origin: -1 });
@@ -191,20 +209,33 @@ const DashboardRetailer: React.FC = () => {
       <h1 className="text-lg font-bold mb-5">Report All Retailers & Vouchers</h1>
 
       <div className="col-span-12 flex items-center justify-between mb-4">
-        
-        <select
-          value={voucherStatusFilter}
-          onChange={(e) => setVoucherStatusFilter(e.target.value)}
-          className="px-3 py-2 border rounded"
-        >
-          <option value="">All Status</option>
-          <option value="PENDING">PENDING</option>
-          <option value="RECEIVED">RECEIVED</option>
-          <option value="REDEEMED">REDEEMED</option>
-          <option value="WAITING REIMBURSE">WAITING REIMBURSE</option>
-          <option value="REIMBURSE COMPLETED">REIMBURSE COMPLETED</option>
-          <option value="REIMBURSE PAID">REIMBURSE PAID</option>
-        </select>
+        <div>
+          <select
+            value={voucherStatusFilter}
+            onChange={(e) => setVoucherStatusFilter(e.target.value)}
+            className="px-3 py-2 border rounded"
+          >
+            <option value="">All Status</option>
+            <option value="PENDING">PENDING</option>
+            <option value="RECEIVED">RECEIVED</option>
+            <option value="REDEEMED">REDEEMED</option>
+            <option value="WAITING REIMBURSE">WAITING REIMBURSE</option>
+            <option value="REIMBURSE COMPLETED">REIMBURSE COMPLETED</option>
+            <option value="REIMBURSE PAID">REIMBURSE PAID</option>
+          </select>
+
+          <select
+            value={agenNameFilter}
+            onChange={(e) => setAgenNameFilter(e.target.value)}
+            className="px-3 py-2 border rounded ml-2"
+          >
+            <option value="">All Agen</option>
+            {uniqueAgenNames.map((agenName) => (
+              <option key={agenName} value={agenName}>{agenName}</option>
+            ))}
+          </select>
+        </div>
+
 
         <button
           onClick={() => exportToExcel('report_retailers')}

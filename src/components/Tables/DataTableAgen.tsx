@@ -36,7 +36,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
     const [method, setMethod] = useState('POST');
     const [IdUpdate, setIdUpdate] = useState(null);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const [updateData, setUpdateData] = useState({ id: '', name: '', phone_number: '' });
+    const [updateData, setUpdateData] = useState({ id: '', name: '', phone_number: '', address: '' });
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -130,13 +130,23 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
         const url = `${stagingURL}/api/wholesales/`;
 
         fetch(url, requestOptions)
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error posting/updating data');
+                }
+            })
             .then((result) => {
                 setOpen(false);
                 onRefresh();
+                setTimeout(() => {
+                    showSuccessToast('Data berhasil ditambahkan!');
+                }, 2000);
             })
             .catch((error) => {
                 console.error('Error posting/updating data:', error);
+                showErrorToast('Error posting/updating data');
             });
     };
 
@@ -147,7 +157,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
     };
 
     const handleUpdate = (row: any) => {
-        setUpdateData({ id: row.id, name: row.name, phone_number: row.phone_number });
+        setUpdateData({ id: row.id, name: row.name, phone_number: row.phone_number, address: row.address || '' });
         setOpenUpdateModal(true);
     };
 
@@ -163,6 +173,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
             body: JSON.stringify({
                 name: updateData.name,
                 phone_number: updateData.phone_number,
+                address: updateData.address,
                 is_active: true // Atur sesuai kebutuhan
             }),
         };
@@ -258,12 +269,25 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                             className="border p-2 w-full"
                         />
                     </div>
-                    <div>
+
+                    <div className='mt-2'>
                         <label>Nomor Telepon</label>
                         <input
                             value={updateData.phone_number}
                             onChange={(e) => setUpdateData({ ...updateData, phone_number: e.target.value })}
                             placeholder="Nomor Telepon"
+                            className="border p-2 w-full mt-2"
+                            type="tel"
+                            inputMode="numeric"
+                        />
+                    </div>
+
+                    <div className='mt-2'>
+                        <label>Alamat</label>
+                        <input
+                            value={updateData.address}
+                            onChange={(e) => setUpdateData({ ...updateData, address: e.target.value })}
+                            placeholder="Masukan alamat"
                             className="border p-2 w-full mt-2"
                             type="tel"
                             inputMode="numeric"

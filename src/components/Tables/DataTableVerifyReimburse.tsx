@@ -230,6 +230,7 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
     const [currentRow, setCurrentRow] = useState<any>(null);
     const [newStatus, setNewStatus] = useState<string>('');
     const [selectedStatus, setSelectedStatus] = useState<string>('');
+    const [selectedWholesaler, setSelectedWholesaler] = useState<string>('');
 
     useEffect(() => {
         const timeout = setTimeout(() => setPending(false), 2000);
@@ -347,23 +348,43 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
         },
     };
 
-    const filteredData = selectedStatus ? data.filter(item => item.status === selectedStatus) : data;
+    const filteredData = data.filter(item =>
+        (selectedStatus ? item.status === selectedStatus : true) &&
+        (selectedWholesaler ? item.wholesaler_name === selectedWholesaler : true)
+    );
+
+    const uniqueWholesalers = Array.from(new Set(data.map(item => item.wholesaler_name)));
 
     return (
         <div>
             <CustomToast />
 
             <div className="flex justify-between items-center mb-4">
-                <select
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="px-3 py-2 border rounded"
-                >
-                    <option value="">All Status</option>
-                    <option value="waiting">Waiting</option>
-                    <option value="completed">Completed</option>
-                    <option value="paid">Paid</option>
-                </select>
+
+                <div>
+                    <select
+                        value={selectedStatus}
+                        onChange={(e) => setSelectedStatus(e.target.value)}
+                        className="px-3 py-2 border rounded"
+                    >
+                        <option value="">All Status</option>
+                        <option value="waiting">Waiting</option>
+                        <option value="completed">Completed</option>
+                        <option value="paid">Paid</option>
+                    </select>
+
+                    <select
+                        value={selectedWholesaler}
+                        onChange={(e) => setSelectedWholesaler(e.target.value)}
+                        className="px-3 py-2 border rounded ml-2"
+                    >
+                        <option value="">All Wholesalers</option>
+                        {uniqueWholesalers.map(wholesaler => (
+                            <option key={wholesaler} value={wholesaler}>{wholesaler}</option>
+                        ))}
+                    </select>
+                </div>
+
 
                 <button
                     className="bg-blue-300 text-white py-1 px-2 rounded flex items-center"

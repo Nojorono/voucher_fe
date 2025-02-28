@@ -41,23 +41,26 @@ const ModalFormWholesale: React.FC<FormAddWholesaleProps> = ({ open, handleOpen,
                         <label>Telepon</label>
                         <input {...register('phone_number', { required: true })} required className="border p-2 w-full" type="tel" inputMode="numeric" />
                     </div>
-                    <Button type="submit" variant="gradient" color="green" className="mt-4">
-                        <span>Submit</span>
-                    </Button>
+                    <div>
+                        <label>Address</label>
+                        <input {...register('address')} required className="border p-2 w-full" />
+                    </div>
+                    <div className="flex justify-end mt-4">
+                        <Button type="submit" variant="gradient" color="green" className="mr-2">
+                            <span>Submit</span>
+                        </Button>
+                        <Button
+                            variant="text"
+                            color="red"
+                            onClick={handleOpen}
+                        >
+                            <span>Cancel</span>
+                        </Button>
+                    </div>
                 </form>
             </DialogBody>
-            <DialogFooter>
-                <Button
-                    variant="text"
-                    color="red"
-                    onClick={handleOpen}
-                    className="mr-1"
-                >
-                    <span>Cancel</span>
-                </Button>
-            </DialogFooter>
         </Dialog>
     );
 };
 
-export default ModalFormWholesale; 
+export default ModalFormWholesale;

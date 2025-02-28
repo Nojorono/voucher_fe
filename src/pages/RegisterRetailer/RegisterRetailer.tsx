@@ -37,6 +37,7 @@ const RegisterRetailer: React.FC = () => {
         try {
             const response = await fetch("http://10.0.29.49:8081/api/current-count/?id=1", requestOptions);
             const result = await response.json();
+            
             if (result.message == "Voucher limit reached") {
                 setReachLimit(true)
             };

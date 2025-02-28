@@ -85,8 +85,6 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
                 method: 'PUT',
                 headers: myHeaders,
                 body: JSON.stringify({
-                    // name: rowToDelete.name,
-                    // phone_number: rowToDelete.phone_number,
                     is_active: false
                 }),
             };
@@ -97,7 +95,7 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
                         onRefresh();
                         setTimeout(() => {
                             showSuccessToast('Data berhasil dihapus!');
-                        }, 1000);
+                        }, 2000);
                     } else {
                         showErrorToast('Error delete data');
                     }
@@ -115,6 +113,7 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
     };
 
     const postData = (formData: any) => {
+
         const token = localStorage.getItem('token');
         const myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${token}`);
@@ -156,11 +155,14 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
         myHeaders.append('Authorization', `Bearer ${token}`);
         myHeaders.append('Content-Type', 'application/json');
 
+        console.log('updateData.username', updateData.username);
+        console.log('updateData.username', updateData.username);
+
         const requestOptions: RequestInit = {
             method: 'PUT',
             headers: myHeaders,
             body: JSON.stringify({
-                username: updateData.username,
+                // username: updateData.username,
                 email: updateData.email,
             }),
         };
@@ -246,7 +248,8 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
             <Dialog open={openUpdateModal} handler={() => setOpenUpdateModal(false)}>
                 <DialogHeader>Update Data</DialogHeader>
                 <DialogBody>
-                    <div>
+
+                    {/* <div>
                         <label>Username</label>
                         <input
                             type="text"
@@ -255,7 +258,7 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
                             placeholder="Username"
                             className="border p-2 w-full"
                         />
-                    </div>
+                    </div> */}
 
                     <div className='mt-2'>
                         <label>Email</label>
