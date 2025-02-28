@@ -378,7 +378,7 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
                         onChange={(e) => setSelectedWholesaler(e.target.value)}
                         className="px-3 py-2 border rounded ml-2"
                     >
-                        <option value="">All Wholesalers</option>
+                        <option value="">All Agen</option>
                         {uniqueWholesalers.map(wholesaler => (
                             <option key={wholesaler} value={wholesaler}>{wholesaler}</option>
                         ))}

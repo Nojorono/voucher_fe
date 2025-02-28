@@ -37,13 +37,13 @@ const ModalFormWholesale: React.FC<FormAddWholesaleProps> = ({ open, handleOpen,
                         <label>Nama Agen</label>
                         <input {...register('name')} required className="border p-2 w-full" />
                     </div>
-                    <div>
+                    <div className='mt-2'>
                         <label>Telepon</label>
                         <input {...register('phone_number', { required: true })} required className="border p-2 w-full" type="tel" inputMode="numeric" />
                     </div>
-                    <div>
+                    <div className='mt-2'>
                         <label>Address</label>
-                        <input {...register('address')} required className="border p-2 w-full" />
+                        <textarea {...register('address')} required className="border p-2 w-full" rows={4} />
                     </div>
                     <div className="flex justify-end mt-4">
                         <Button type="submit" variant="gradient" color="green" className="mr-2">

@@ -2,7 +2,7 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import { memo, useState, useEffect } from 'react';
 import "yet-another-react-lightbox/styles.css";
 import Spinner from '../Spinner'
-import { stagingURL, signOut } from '../../utils';
+import { stagingURL } from '../../utils';
 import {
     Button,
     Dialog,
@@ -284,13 +284,11 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
 
                     <div className='mt-2'>
                         <label>Alamat</label>
-                        <input
+                        <textarea
                             value={updateData.address}
                             onChange={(e) => setUpdateData({ ...updateData, address: e.target.value })}
                             placeholder="Masukan alamat"
-                            className="border p-2 w-full mt-2"
-                            type="tel"
-                            inputMode="numeric"
+                            className="border p-2 w-full" rows={4}
                         />
                     </div>
                 </DialogBody>
