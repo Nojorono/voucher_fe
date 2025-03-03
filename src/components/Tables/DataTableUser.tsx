@@ -249,17 +249,6 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
                 <DialogHeader>Update Data</DialogHeader>
                 <DialogBody>
 
-                    {/* <div>
-                        <label>Username</label>
-                        <input
-                            type="text"
-                            value={updateData.username}
-                            onChange={(e) => setUpdateData({ ...updateData, username: e.target.value })}
-                            placeholder="Username"
-                            className="border p-2 w-full"
-                        />
-                    </div> */}
-
                     <div className='mt-2'>
                         <label>Email</label>
                         <input
