@@ -5,6 +5,8 @@ import "yet-another-react-lightbox/styles.css";
 import { stagingURL } from '../../../utils/API'
 import Select from 'react-select';
 import { sample1, sample2, sample3 } from '../../../images/sample/index';
+import CustomToast, { showErrorToast, showSuccessToast } from '../../../components/Toast/CustomToast';
+
 
 interface FormProps<T extends FieldValues> {
     onSubmit: SubmitHandler<T>;
@@ -127,9 +129,25 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files) {
-            const newPhotos = Array.from(files);
+            const newPhotos: File[] = [];
+            const newPhotoRemarks: string[] = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const remark = i === 0 ? 'Foto Stiker POSM' : i === 1 ? 'Foto Tester' : 'Foto Kode Tester';
+                if (!file.type.startsWith('image/')) {
+                    alert('Only image files are allowed.');
+                    continue;
+                }
+                if (file.size > 300 * 1024) {
+                    showErrorToast(`${remark} tidak boleh lebih dari 300 KB!`);
+                    event.target.value = ''; // Clear the input
+                    return;
+                }
+                newPhotos.push(file);
+                newPhotoRemarks.push(remark);
+            }
             setUploadedPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
-            setPhotoRemarks(['Foto Stiker POSM', 'Foto Tester', 'Foto Kode Tester'].slice(0, newPhotos.length));
+            setPhotoRemarks(newPhotoRemarks);
         }
     };
 
@@ -180,122 +198,128 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     }, [])
 
     return (
-        <form onSubmit={handleSubmit(handleSubmitRegister)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {fields.map((field) => (
-                <div className="mb-4" key={String(field.name)}>
-                    <label htmlFor={String(field.name)} className="block mb-2 text-lg font-bold text-white">
-                        {field.label}
-                    </label>
-                    
-                    {field.type === 'file' ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {[0, 1, 2].map((index) => ( 
-                                <div key={index} className="mb-2">
-                                    <label className="mt-1 block text-sm text-white">
-                                        {index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester'}
-                                    </label>
+        <>
+            <CustomToast />
 
-                                    <img
-                                        src={index === 0 ? sample1 : index === 1 ? sample2 : sample3}
-                                        alt={`Sample ${index + 1}`}
-                                        className="mt-2 mb-1 w-32 h-32 object-cover"
-                                        onClick={() => setLightboxIndex(index)}
-                                    />
-                                    {lightboxIndex === index && (
-                                        <Lightbox
-                                            open={lightboxIndex !== null}
-                                            close={() => setLightboxIndex(null)}
-                                            slides={[{ src: index === 0 ? sample1 : index === 1 ? sample2 : sample3 }]}
+            <form onSubmit={handleSubmit(handleSubmitRegister)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {fields.map((field) => (
+                    <div className="mb-4" key={String(field.name)}>
+                        <label htmlFor={String(field.name)} className="block mb-2 text-lg font-bold text-white">
+                            {field.label}
+                        </label>
+
+                        {field.type === 'file' ? (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                {[0, 1, 2].map((index) => (
+                                    <div key={index} className="mb-2">
+                                        <label className="mt-1 block text-sm text-white">
+                                            {index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester'}
+                                        </label>
+
+                                        <img
+                                            src={index === 0 ? sample1 : index === 1 ? sample2 : sample3}
+                                            alt={`Sample ${index + 1}`}
+                                            className="mt-2 mb-1 w-32 h-32 object-cover"
+                                            onClick={() => setLightboxIndex(index)}
                                         />
-                                    )}
 
-                                    <input
-                                        id={`${String(field.name)}_${index}`}
-                                        type="file"
-                                        {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: handleFileChange })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        {lightboxIndex === index && (
+                                            <Lightbox
+                                                open={lightboxIndex !== null}
+                                                close={() => setLightboxIndex(null)}
+                                                slides={[{ src: index === 0 ? sample1 : index === 1 ? sample2 : sample3 }]}
+                                            />
+                                        )}
+
+                                        <input
+                                            id={`${String(field.name)}_${index}`}
+                                            type="file"
+                                            {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: handleFileChange })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : field.type === 'select' ? (
+                            <div>
+                                {field.name === 'provinsi' && (
+                                    <Select
+                                        options={provinsi}
+                                        onChange={(selectedOption) => {
+                                            if (selectedOption) {
+                                                setSelectedProvinsi(selectedOption.value);
+                                                handleProvinsiChange(selectedOption.value);
+                                            }
+                                        }}
                                     />
-                                </div>
-                            ))}
-                        </div>
-                    ) : field.type === 'select' ? (
-                        <div>
-                            {field.name === 'provinsi' && (
-                                <Select
-                                    options={provinsi}
-                                    onChange={(selectedOption) => {
-                                        if (selectedOption) {
-                                            setSelectedProvinsi(selectedOption.value);
-                                            handleProvinsiChange(selectedOption.value);
-                                        }
-                                    }}
-                                />
-                            )}
-                            {field.name === 'kota' && (
-                                <Select
-                                    options={kota}
-                                    onChange={(selectedOption) => {
-                                        if (selectedOption) {
-                                            setSelectedKota(selectedOption.value);
-                                            handleKotaChange(selectedOption.value);
-                                        }
-                                    }}
-                                />
-                            )}
-                            {field.name === 'kecamatan' && (
-                                <Select
-                                    options={kecamatan}
-                                    onChange={(selectedOption) => {
-                                        if (selectedOption) {
-                                            setSelectedKecamatan(selectedOption.value);
-                                            handleKecamatanChange(selectedOption.value);
-                                        }
-                                    }}
-                                />
-                            )}
-                            {field.name === 'kelurahan' && (
-                                <Select
-                                    options={kelurahan}
-                                    onChange={(selectedOption) => {
-                                        if (selectedOption) {
-                                            setSelectedKelurahan(selectedOption.value);
-                                        }
-                                    }}
-                                />
-                            )}
-                            {field.name === 'ws_name' && (
-                                <Select
-                                    options={dataWholesale}
-                                    onChange={(selectedOption) => {
-                                        if (selectedOption) {
-                                            setSelectedWS(selectedOption.value);
-                                        }
-                                    }}
-                                />
-                            )}
-                        </div>
-                    ) : (
-                        <input
-                            id={String(field.name)}
-                            type={field.type || 'text'}
-                            {...register(field.name as any, { required: field.required })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    )}
-                    {errors[field.name] && (
-                        <span className="text-sm text-yellow-500">This field is required!</span>
-                    )}
+                                )}
+                                {field.name === 'kota' && (
+                                    <Select
+                                        options={kota}
+                                        onChange={(selectedOption) => {
+                                            if (selectedOption) {
+                                                setSelectedKota(selectedOption.value);
+                                                handleKotaChange(selectedOption.value);
+                                            }
+                                        }}
+                                    />
+                                )}
+                                {field.name === 'kecamatan' && (
+                                    <Select
+                                        options={kecamatan}
+                                        onChange={(selectedOption) => {
+                                            if (selectedOption) {
+                                                setSelectedKecamatan(selectedOption.value);
+                                                handleKecamatanChange(selectedOption.value);
+                                            }
+                                        }}
+                                    />
+                                )}
+                                {field.name === 'kelurahan' && (
+                                    <Select
+                                        options={kelurahan}
+                                        onChange={(selectedOption) => {
+                                            if (selectedOption) {
+                                                setSelectedKelurahan(selectedOption.value);
+                                            }
+                                        }}
+                                    />
+                                )}
+                                {field.name === 'ws_name' && (
+                                    <Select
+                                        options={dataWholesale}
+                                        onChange={(selectedOption) => {
+                                            if (selectedOption) {
+                                                setSelectedWS(selectedOption.value);
+                                            }
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        ) : (
+                            <input
+                                id={String(field.name)}
+                                type={field.type || 'text'}
+                                {...register(field.name as any, { required: field.required })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        )}
+                        {errors[field.name] && (
+                            <span className="text-sm text-yellow-500">This field is required!</span>
+                        )}
+                    </div>
+                ))}
+                <div className="col-span-1 md:col-span-2">
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+                    >
+                        Submit
+                    </button>
                 </div>
-            ))}
-            <div className="col-span-1 md:col-span-2">
-                <button
-                    type="submit"
-                    className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
-                >
-                    Submit
-                </button>
-            </div>
-        </form>
+            </form>
+        </>
+
     );
 };
 
