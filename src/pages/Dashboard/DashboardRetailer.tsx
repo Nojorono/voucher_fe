@@ -122,7 +122,8 @@ const DashboardRetailer: React.FC = () => {
         sortable: true,
         cell: (row: RetailerData) => {
           if (row.voucher_code != null) {
-            const whatsappLink = `https://wa.me/${row.phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A%20Kode%20Voucher:%20*${row.voucher_code}*%0A%20Diskon:%20Rp%2020.000%20yang%20dapat%20digunakan%20untuk%20pembelian%20produk%20Baron%20berikutnya%0A%20Berlaku%20Hingga:%202%20Juli%202025%0AGunakan%20kode%20ini%20saat%20pembelian%20untuk%20menikmati%20potongan%20harga!%20Jika%20ada%20pertanyaan,%20jangan%20ragu%20untuk%20menghubungi%20kami.`; 
+            const whatsappLink = `https://wa.me/${row.phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.voucher_code}*%0A- Diskon: Rp 20.000 yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: 2 Juli 2025%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`; 
+
             return (
               <a
                 href={whatsappLink}
