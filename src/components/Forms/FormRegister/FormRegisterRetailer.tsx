@@ -140,13 +140,10 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                     continue;
                 }
 
-                console.log('File size:', file.size);
 
                 if (file.size > 500 * 1024) {
                     try {
                         file = await compressImage(file, 100 * 1024);
-                        console.log('Compressed file size:', file.size);
-
                     } catch (error) {
                         showErrorToast(`Failed to compress ${remark}.`);
                         continue;
