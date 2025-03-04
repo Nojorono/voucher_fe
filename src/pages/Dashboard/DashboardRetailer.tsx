@@ -60,6 +60,10 @@ const DashboardRetailer: React.FC = () => {
         },
       });
       const result: RetailerData[] = await response.json();
+
+      console.log('Data:', result);
+
+
       const filteredData = result
         .filter((item: RetailerData) => item.voucher_status !== null)
         .sort((a: any, b: any) => {
@@ -120,27 +124,6 @@ const DashboardRetailer: React.FC = () => {
         name: 'Whatsapp',
         selector: (row: RetailerData) => row.phone_number,
         sortable: true,
-        cell: (row: RetailerData) => {
-          if (row.voucher_code != null) {
-            const whatsappLink = `https://wa.me/${row.phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.voucher_code}*%0A- Diskon: Rp 20.000 yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: 2 Juli 2025%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`; 
-
-            return (
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
-                style={{ fontSize: '10px', fontWeight: 'bold' }}
-              >
-                {row.phone_number}
-              </a>
-            );
-          } else {
-            return (
-              <span style={{ fontSize: '10px', fontWeight: 'bold' }}>{row.phone_number}</span>
-            );
-          }
-        }
       },
       {
         name: 'Alamat',

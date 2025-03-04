@@ -34,13 +34,15 @@ const Verification = () => {
 
     fetch(`${stagingURL}/api/list_photos/`, requestOptions)
       .then((response) => response.json())
-      .then((result) => {        
+      .then((result) => {
+
+        console.log('Data:', result);
+
         if (result.message === "No photos found") {
           setLoading(true);
         } else {
           setDataPhoto(result);
           setLoading(false);
-
           if (result.code == "token_not_valid") {
             signOut(navigate);
           }

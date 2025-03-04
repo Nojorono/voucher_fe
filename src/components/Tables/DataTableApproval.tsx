@@ -222,7 +222,32 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
         return [
             createColumn('Retailer', (row) => row.retailer_name),
             createColumn('Agen', (row) => row.wholesale_name),
-            createColumn('Whatsapp', (row) => row.retailer_phone_number),
+            {
+                name: 'Whatsapp',
+                selector: (row) => row.retailer_phone_number,
+                sortable: true,
+                cell: (row) => {
+                    if (row.retailer_voucher_code != null && row.status == "Verified") {
+                        const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp 20.000 yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: 2 Juli 2025%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
+
+                        return (
+                            <a
+                                href={whatsappLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 underline"
+                                style={{ fontSize: '10px', fontWeight: 'bold' }}
+                            >
+                                {row.retailer_phone_number}
+                            </a>
+                        );
+                    } else {
+                        return (
+                            <span style={{ fontSize: '10px', fontWeight: 'bold' }}>{row.retailer_phone_number}</span>
+                        );
+                    }
+                }
+            },
             createColumn('Alamat', (row) => row.retailer_address),
             createColumn('Status', (row) => (
                 <div
@@ -258,7 +283,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             },
             {
                 name: "Foto Tester",
-                cell: (row: { images: any[]; }) => (
+                cell: (row) => (
                     row.images[1] ? (
                         <img
                             loading="lazy"
@@ -276,7 +301,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             },
             {
                 name: "Foto Kode Tester",
-                cell: (row: { images: any[]; }) => (
+                cell: (row) => (
                     row.images[2] ? (
                         <img
                             loading="lazy"
@@ -309,15 +334,21 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
 
     // Transformasi data untuk DataTable dengan filter
     const filteredData = useMemo(() => {
-        return transformedData.filter(item => {
-            if (filter === null) return item.is_verified === 0;
-            const [verified] = filter;
+        return transformedData
+            .filter(item => {
+                if (filter === null) return item.is_verified === 0;
+                const [verified] = filter;
 
-            if (verified === 99) return true;
-            if (verified === 0) return item.is_verified === 0 && item.is_approved === 0;
-            if (verified === 2) return item.is_verified === 1 && item.is_approved === 0;
-            return item.is_verified === verified && item.is_approved === 1;
-        });
+                if (verified === 99) return true;
+                if (verified === 0) return item.is_verified === 0 && item.is_approved === 0;
+                if (verified === 2) return item.is_verified === 1 && item.is_approved === 0;
+                return item.is_verified === verified && item.is_approved === 1;
+            })
+            .sort((a, b) => {
+                const dateA = new Date(a.retailer_id).getTime();
+                const dateB = new Date(b.retailer_id).getTime();
+                return dateB - dateA;
+            });
     }, [transformedData, filter]);
 
     const customStyles = {
