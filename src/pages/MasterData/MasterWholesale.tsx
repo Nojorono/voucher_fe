@@ -36,7 +36,10 @@ const MasterWholesale = () => {
                 // Filter data untuk hanya menampilkan yang is_active = true
                 const filteredData = result.filter((item: any) => item.is_active === true);
 
-                setData(filteredData); // Set data yang sudah difilter
+                // Sort data berdasarkan id terbesar
+                const sortedData = filteredData.sort((a: any, b: any) => b.id - a.id);
+
+                setData(sortedData); // Set data yang sudah difilter dan diurutkan
                 setLoading(false);
 
                 if (result.code == "token_not_valid") {
