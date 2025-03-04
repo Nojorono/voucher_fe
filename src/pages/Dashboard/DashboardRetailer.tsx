@@ -121,19 +121,24 @@ const DashboardRetailer: React.FC = () => {
         selector: (row: RetailerData) => row.phone_number,
         sortable: true,
         cell: (row: RetailerData) => {
-          return row.voucher_code ? (
-            <a
-              href={`https://wa.me/${row.phone_number}?text=Berikut%20ini%20Kode%20Voucher%20BARON%20Anda:%20${row.voucher_code}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline"
-              style={{ fontSize: '10px', fontWeight: 'bold' }}
-            >
-              {row.phone_number}
-            </a>
-          ) : (
-            <span style={{ fontSize: '10px', fontWeight: 'bold' }}>{row.phone_number}</span>
-          );
+          if (row.voucher_code != null) {
+            const whatsappLink = `https://wa.me/${row.phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A%20Kode%20Voucher:%20*${row.voucher_code}*%0A%20Diskon:%20Rp%2020.000%20yang%20dapat%20digunakan%20untuk%20pembelian%20produk%20Baron%20berikutnya%0A%20Berlaku%20Hingga:%202%20Juli%202025%0AGunakan%20kode%20ini%20saat%20pembelian%20untuk%20menikmati%20potongan%20harga!%20Jika%20ada%20pertanyaan,%20jangan%20ragu%20untuk%20menghubungi%20kami.`; 
+            return (
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+                style={{ fontSize: '10px', fontWeight: 'bold' }}
+              >
+                {row.phone_number}
+              </a>
+            );
+          } else {
+            return (
+              <span style={{ fontSize: '10px', fontWeight: 'bold' }}>{row.phone_number}</span>
+            );
+          }
         }
       },
       {
