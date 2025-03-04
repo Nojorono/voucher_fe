@@ -34,9 +34,7 @@ const Verification = () => {
 
     fetch(`${stagingURL}/api/list_photos/`, requestOptions)
       .then((response) => response.json())
-      .then((result) => {
-        console.log('result', result);
-        
+      .then((result) => {        
         if (result.message === "No photos found") {
           setLoading(true);
         } else {

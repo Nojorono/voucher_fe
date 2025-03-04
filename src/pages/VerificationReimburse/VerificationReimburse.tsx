@@ -15,7 +15,6 @@ const VerificationReimburse = () => {
       setLoading(false);
       return;
     }
-
     try {
       const response = await fetch(`${stagingURL}/api/list_reimburse/`, {
         method: "GET",
@@ -27,8 +26,14 @@ const VerificationReimburse = () => {
       });
 
       const result = await response.json();
-      // console.log('Data:', result);
-      const filteredData = result.filter((item: any) => item.status !== null);
+      console.log('Data:', result);
+      const filteredData = result
+        .filter((item: any) => item.status !== null)
+        .sort((a: any, b: any) => {
+          const dateA = new Date(a.status_at).getTime();
+          const dateB = new Date(b.status_at).getTime();
+          return dateB - dateA;
+        });
 
       setData(filteredData);
     } catch (error) {

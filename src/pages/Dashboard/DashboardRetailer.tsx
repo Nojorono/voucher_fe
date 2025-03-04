@@ -60,11 +60,8 @@ const DashboardRetailer: React.FC = () => {
         },
       });
       const result: RetailerData[] = await response.json();
-
-      console.log('result', result);
-
       const filteredData = result.filter((item: RetailerData) => item.voucher_status !== null);
-      setData(filteredData);
+      setData(filteredData.reverse());
 
       const uniqueAgenNames = Array.from(new Set(filteredData.map((item: RetailerData) => item.agen_name)));
       setUniqueAgenNames(uniqueAgenNames);
@@ -118,7 +115,7 @@ const DashboardRetailer: React.FC = () => {
         selector: (row: RetailerData) => row.phone_number,
         sortable: true,
         cell: (row: RetailerData) => {
-          return (
+          return row.voucher_code ? (
             <a
               href={`https://wa.me/${row.phone_number}?text=Berikut%20ini%20Kode%20Voucher%20BARON%20Anda:%20${row.voucher_code}`}
               target="_blank"
@@ -128,6 +125,8 @@ const DashboardRetailer: React.FC = () => {
             >
               {row.phone_number}
             </a>
+          ) : (
+            <span style={{ fontSize: '10px', fontWeight: 'bold' }}>{row.phone_number}</span>
           );
         }
       },

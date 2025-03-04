@@ -52,9 +52,9 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 if (result.message === "Voucher limit reached") {
                     showErrorToast(result.message);
                 } else {
-                    showSuccessToast(result.message);
+                    onUpdate();
                     setTimeout(() => {
-                        onUpdate();
+                        showSuccessToast(result.message);
                     }, 2000);
                 }
 
@@ -92,7 +92,9 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             })
             .then(result => {
                 onUpdate();
-
+                setTimeout(() => {
+                    showSuccessToast(result.message);
+                }, 2000);
                 if (result.code === "token_not_valid") {
                     signOut(navigate);
                 }
