@@ -64,7 +64,7 @@ const RegisterRetailer: React.FC = () => {
                 for (let i = 0; i < data.photos.length; i++) {
                     const photo = data.photos[i];
                     const remark = i === 0 ? 'Foto Stiker POSM' : i === 1 ? 'Foto Tester' : 'Foto Kode Tester';
-                    if (photo.size > 400 * 1024) { 
+                    if (photo.size > 600 * 1024) { 
                         showErrorToast(`(${remark}) ${photo.name} melebihi ukuran maksimal 300KB. Silakan unggah ulang.`);
                         setLoading(false);
                         return;
