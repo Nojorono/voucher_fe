@@ -298,8 +298,6 @@ function Redeem() {
         fetch(url, requestOptions)
             .then((response) => response.json())
             .then((result) => {
-                console.log('res_Post', result[0].status);
-
                 if (Array.isArray(result) && result[0]?.error) {
                     const errorCodes = result.filter((item: any) => item.error).map((item: any) => item.voucher_code);
                     showErrorToast(`${errorCodes.join(', ')} ${result[0].error}`);

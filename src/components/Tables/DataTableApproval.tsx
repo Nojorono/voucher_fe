@@ -12,7 +12,7 @@ const CustomLoader = () => (
     <Spinner />
 );
 
-const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetailer[]; onUpdate: () => void }) => {
+const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetailer[]; onUpdate: (param: string) => void }) => {
     const navigate = useNavigate();
 
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -51,12 +51,11 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
 
                 if (result.message === "Voucher limit reached") {
                     showErrorToast(result.message);
-                } else {
-                    onUpdate();
-                    setTimeout(() => {
-                        showSuccessToast(result.message);
-                    }, 2000);
                 }
+
+                // if (result.message === "All photos for retailer verified successfully.") {
+                //     onUpdate();
+                // }
 
                 if (result.code === "token_not_valid") {
                     signOut(navigate);
@@ -91,10 +90,11 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 }
             })
             .then(result => {
-                onUpdate();
-                setTimeout(() => {
-                    showSuccessToast(result.message);
-                }, 2000);
+                // onUpdate();
+                // setTimeout(() => {
+                //     showSuccessToast(result.message);
+                // }, 2000);
+
                 if (result.code === "token_not_valid") {
                     signOut(navigate);
                 }
@@ -106,24 +106,32 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
 
     // Fungsi untuk memperbarui semua ID yang dipilih
     const updateSelectedData = () => {
+
         if (selectedIds.length === 0) {
             showErrorToast('Tidak ada data yang dipilih!');
             return;
         }
 
-        selectedIds.forEach((id) => {
+        let approvedCount = 0;
+
+        selectedIds.forEach((id, index) => {
             const retailer = selectedData.find(data => data.retailer_id === id);
             const retailer_name = retailer?.retailer_name || '';
 
             if (retailer) {
                 if (retailer.is_verified === 0) {
                     approveData(id);
+                    approvedCount++;
                 } else {
                     showErrorToast(`Toko ${retailer_name} sudah diverifikasi!`);
                 }
             } else {
                 console.error(`Retailer with ID ${retailer_name} not found in selectedData`);
                 showErrorToast(`Retailer with ID ${retailer_name} not found in selectedData`);
+            }
+
+            if (index === selectedIds.length - 1 && approvedCount > 0) {
+                onUpdate('approve');
             }
         });
     };
@@ -134,19 +142,26 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
             return;
         }
 
-        selectedIds.forEach((id) => {
+        let rejectedCount = 0;
+
+        selectedIds.forEach((id, index) => {
             const retailer = selectedData.find(data => data.retailer_id === id);
             const retailer_name = retailer?.retailer_name || '';
 
             if (retailer) {
                 if (retailer.is_verified === 0) {
                     rejectData(id);
+                    rejectedCount++;
                 } else {
                     showErrorToast(`Retailer ${retailer_name} sudah diverifikasi!`);
                 }
             } else {
                 console.error(`Retailer with ID ${retailer_name} not found in selectedData`);
                 showErrorToast(`Retailer with ID ${retailer_name} not found in selectedData`);
+            }
+
+            if (index === selectedIds.length - 1 && rejectedCount > 0) {
+                onUpdate('reject');
             }
         });
     };

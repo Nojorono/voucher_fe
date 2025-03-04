@@ -61,9 +61,6 @@ const DashboardRetailer: React.FC = () => {
       });
       const result: RetailerData[] = await response.json();
 
-      console.log('Data:', result);
-
-
       const filteredData = result
         .filter((item: RetailerData) => item.voucher_status !== null)
         .sort((a: any, b: any) => {

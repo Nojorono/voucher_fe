@@ -35,9 +35,6 @@ const Verification = () => {
     fetch(`${stagingURL}/api/list_photos/`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-
-        console.log('Data:', result);
-
         if (result.message === "No photos found") {
           setLoading(true);
         } else {
@@ -60,9 +57,22 @@ const Verification = () => {
   }, []);
 
   // Fungsi untuk memperbarui data setelah approval/reject
-  const handleDataUpdate = () => {
-    setLoading(true);
-    fetchData();
+  const handleDataUpdate = (param: string) => {
+    if (param === 'approve') {
+      showSuccessToast('Approve Foto berhasil!');
+      setTimeout(() => {
+        fetchData();
+        setLoading(true);
+      }, 2000);
+    }
+
+    if (param === 'reject') {
+      showSuccessToast('Reject Foto berhasil!');
+      setTimeout(() => {
+        fetchData();
+        setLoading(true);
+      }, 2000);
+    }
   };
 
   return (

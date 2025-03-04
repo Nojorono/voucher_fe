@@ -271,8 +271,6 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
             return;
         }
 
-        console.log('newStatus', newStatus);
-
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`${stagingURL}/api/update_reimburse_status/${currentRow.id}/${newStatus}/`, {

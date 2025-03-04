@@ -51,6 +51,7 @@ const createToast=(title: string, msg: string, type: number)=>{toast.custom((t) 
       </div>
     </div>
   ))};
+
 // let dataJSON: any;
 // let headers = new Headers();
 // headers.append('Access-Control-Allow-Origin', 'http://127.0.0.1:8000');
@@ -64,6 +65,7 @@ const createToast=(title: string, msg: string, type: number)=>{toast.custom((t) 
 //     console.log(data);
 //     dataJSON=data;
 //   })
+
 const fireToast = () => {
 const alertSettings=localStorage.getItem("alertSettings");
 if (alertSettings){

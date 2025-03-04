@@ -155,9 +155,6 @@ const DataTableUser = memo(({ columns, data, selectableRows = true, onRowSelecte
         myHeaders.append('Authorization', `Bearer ${token}`);
         myHeaders.append('Content-Type', 'application/json');
 
-        console.log('updateData.username', updateData.username);
-        console.log('updateData.username', updateData.username);
-
         const requestOptions: RequestInit = {
             method: 'PUT',
             headers: myHeaders,

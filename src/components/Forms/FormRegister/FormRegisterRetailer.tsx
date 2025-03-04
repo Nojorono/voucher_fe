@@ -197,7 +197,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     };
 
     const handleSubmitRegister = (data: T) => {
-
         if (uploadedPhotos.length < 3) {
             alert('Please upload all required photos.');
             return;

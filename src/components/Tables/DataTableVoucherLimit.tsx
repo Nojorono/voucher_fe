@@ -97,9 +97,6 @@ const DataTableVoucherLimit = memo(({ columns, data, selectableRows = true, onRe
     myHeaders.append('Authorization', `Bearer ${token}`);
     myHeaders.append('Content-Type', 'application/json');
 
-    console.log('ID', updateData.id);
-    console.log('Limit', updateData.limit);
-
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: myHeaders,
@@ -152,7 +149,7 @@ const DataTableVoucherLimit = memo(({ columns, data, selectableRows = true, onRe
             <input
               value={updateData.limit}
               onChange={(e) => setUpdateData({ ...updateData, limit: e.target.value })}
-              placeholder="Email"
+              placeholder="Limit"
               className="border p-2 w-full mt-2"
               inputMode="numeric"
             />

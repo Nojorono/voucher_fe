@@ -49,7 +49,6 @@ const RegisterRetailer: React.FC = () => {
         }
     };
 
-    // POST REGISTER
     const postRetailerData = async (data: IFormInput) => {
         setLoading(true);
 
@@ -59,12 +58,11 @@ const RegisterRetailer: React.FC = () => {
             // Validate photo size
             if (data.photos) {
                 const validPhotos: File[] = [];
-                console.log('data.photos', data.photos);
 
                 for (let i = 0; i < data.photos.length; i++) {
                     const photo = data.photos[i];
                     const remark = i === 0 ? 'Foto Stiker POSM' : i === 1 ? 'Foto Tester' : 'Foto Kode Tester';
-                    if (photo.size > 600 * 1024) { 
+                    if (photo.size > 600 * 1024) {
                         showErrorToast(`(${remark}) ${photo.name} melebihi ukuran maksimal 300KB. Silakan unggah ulang.`);
                         setLoading(false);
                         return;
@@ -107,14 +105,10 @@ const RegisterRetailer: React.FC = () => {
                 });
             }
 
-            // Make API request
             const controller = new AbortController();
             const timeoutId = setTimeout(() => {
                 controller.abort();
                 showErrorToast('Request timeout!');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
             }, 20000); // 20 seconds timeout
 
             try {
@@ -137,9 +131,9 @@ const RegisterRetailer: React.FC = () => {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                 }
-
                 const result = await response.json();
                 showSuccessToast(`berhasil mendaftar sebagai retailer.`);
+                
                 setTimeout(() => {
                     setLoading(false);
                 }, 2000);
@@ -148,6 +142,7 @@ const RegisterRetailer: React.FC = () => {
             } catch (error) {
                 if (error instanceof Error) {
                     if (error.name === 'AbortError') {
+                        showErrorToast('Request was aborted due to timeout.');
                         console.error('Request was aborted due to timeout.');
                     } else {
                         console.error(`Error: ${error.message}`);

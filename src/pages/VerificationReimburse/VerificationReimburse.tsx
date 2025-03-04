@@ -26,7 +26,6 @@ const VerificationReimburse = () => {
       });
 
       const result = await response.json();
-      console.log('Data:', result);
       const filteredData = result
         .filter((item: any) => item.status !== null)
         .sort((a: any, b: any) => {
