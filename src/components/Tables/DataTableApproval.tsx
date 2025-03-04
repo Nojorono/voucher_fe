@@ -242,11 +242,11 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                     row.images[0] ? (
                         <img
                             loading="lazy"
-                            src={`${stagingURL}${row.images[0]}`}
+                            src={`${row.images[0]}`}
                             alt="Retailer"
                             style={{ width: '40px', height: '40px', cursor: 'pointer' }}
                             onClick={() => {
-                                setCurrentImage(`${stagingURL}${row.images[0]}`);
+                                setCurrentImage(`${row.images[0]}`);
                                 setLightboxOpen(true);
                             }}
                         />
@@ -260,11 +260,11 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                     row.images[1] ? (
                         <img
                             loading="lazy"
-                            src={`${stagingURL}${row.images[1]}`}
+                            src={`${row.images[1]}`}
                             alt="Retailer"
                             style={{ width: '40px', height: '40px', cursor: 'pointer' }}
                             onClick={() => {
-                                setCurrentImage(`${stagingURL}${row.images[1]}`);
+                                setCurrentImage(`${row.images[1]}`);
                                 setLightboxOpen(true);
                             }}
                         />
@@ -278,11 +278,11 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                     row.images[2] ? (
                         <img
                             loading="lazy"
-                            src={`${stagingURL}${row.images[2]}`}
+                            src={`${row.images[2]}`}
                             alt="Retailer"
                             style={{ width: '40px', height: '40px', cursor: 'pointer' }}
                             onClick={() => {
-                                setCurrentImage(`${stagingURL}${row.images[2]}`);
+                                setCurrentImage(`${row.images[2]}`);
                                 setLightboxOpen(true);
                             }}
                         />

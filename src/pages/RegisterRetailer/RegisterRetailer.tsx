@@ -52,7 +52,7 @@ const RegisterRetailer: React.FC = () => {
     // POST REGISTER
     const postRetailerData = async (data: IFormInput) => {
         setLoading(true);
-        
+
         try {
             const formData = new FormData();
 
