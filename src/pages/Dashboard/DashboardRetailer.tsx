@@ -60,8 +60,14 @@ const DashboardRetailer: React.FC = () => {
         },
       });
       const result: RetailerData[] = await response.json();
-      const filteredData = result.filter((item: RetailerData) => item.voucher_status !== null);
-      setData(filteredData.reverse());
+      const filteredData = result
+        .filter((item: RetailerData) => item.voucher_status !== null)
+        .sort((a: any, b: any) => {
+          const dateA = new Date(a.voucher_status_at).getTime();
+          const dateB = new Date(b.voucher_status_at).getTime();
+          return dateB - dateA;
+        });
+      setData(filteredData);
 
       const uniqueAgenNames = Array.from(new Set(filteredData.map((item: RetailerData) => item.agen_name)));
       setUniqueAgenNames(uniqueAgenNames);

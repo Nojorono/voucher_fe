@@ -126,29 +126,78 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         }
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files) {
             const newPhotos: File[] = [];
             const newPhotoRemarks: string[] = [];
             for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+                let file = files[i];
                 const remark = i === 0 ? 'Foto Stiker POSM' : i === 1 ? 'Foto Tester' : 'Foto Kode Tester';
+
                 if (!file.type.startsWith('image/')) {
                     alert('Only image files are allowed.');
                     continue;
                 }
-                if (file.size > 300 * 1024) {
-                    showErrorToast(`${remark} tidak boleh lebih dari 300 KB!`);
+
+                console.log('File size:', file.size);
+
+                if (file.size > 500 * 1024) {
+                    try {
+                        file = await compressImage(file, 100 * 1024);
+                        console.log('Compressed file size:', file.size);
+
+                    } catch (error) {
+                        showErrorToast(`Failed to compress ${remark}.`);
+                        continue;
+                    }
+                }
+
+                if (file.size > 500 * 1024) {
+                    showErrorToast(`${remark} tidak boleh lebih dari 500 KB!`);
                     event.target.value = ''; // Clear the input
                     return;
                 }
+
                 newPhotos.push(file);
                 newPhotoRemarks.push(remark);
             }
             setUploadedPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
             setPhotoRemarks(newPhotoRemarks);
         }
+    };
+
+    const compressImage = (file: File, maxSize: number): Promise<File> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    if (!ctx) {
+                        reject(new Error('Failed to get canvas context'));
+                        return;
+                    }
+
+                    const scaleFactor = Math.sqrt(maxSize / file.size);
+                    canvas.width = img.width * scaleFactor;
+                    canvas.height = img.height * scaleFactor;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(new File([blob], file.name, { type: file.type }));
+                        } else {
+                            reject(new Error('Compression failed'));
+                        }
+                    }, file.type);
+                };
+            };
+            reader.onerror = (error) => reject(error);
+        });
     };
 
     const handleSubmitRegister = (data: T) => {
