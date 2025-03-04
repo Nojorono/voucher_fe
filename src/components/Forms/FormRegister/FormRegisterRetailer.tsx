@@ -140,7 +140,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                     continue;
                 }
 
-
                 if (file.size > 500 * 1024) {
                     try {
                         file = await compressImage(file, 100 * 1024);
@@ -150,7 +149,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                     }
                 }
 
-                if (file.size > 500 * 1024) {
+                if (file.size > 600 * 1024) {
                     showErrorToast(`${remark} tidak boleh lebih dari 500 KB!`);
                     event.target.value = ''; // Clear the input
                     return;
