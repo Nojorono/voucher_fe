@@ -67,7 +67,7 @@ const MasterVoucherLimit = () => {
             cell: (row: any) => row.limit,
         },
         {
-            name: "Current Voucher",
+            name: "Verified Voucher Count",
             selector: (row: any) => row.current_count,
             sortable: true,
             cell: (row: any) => row.current_count,

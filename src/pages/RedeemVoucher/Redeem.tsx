@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { stagingURL } from '../../utils/API';
-import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
+import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaPlus } from 'react-icons/fa';
+import { stagingURL, signOut } from '../../utils';
+import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import Spinner from '../../components/Spinner'
 
 interface SKUItem {
@@ -12,19 +13,17 @@ interface SKUItem {
 }
 
 function Redeem() {
+    const navigate = useNavigate();
     const [voucherCode, setVoucherCode] = useState('');
     const [skuItems, setSkuItems] = useState<SKUItem[]>([{ id_sku: 0, sku: '', qty: 0, nominal: 0 }]);
     const [message, setMessage] = useState('');
     const [errMessage, setErrMessage] = useState('');
     const [loading, setLoading] = useState<boolean>(false);
-
-
     const [receiptImage, setReceiptImage] = useState<File | null>(null);
     const [items, setItems] = useState<{
         id: string | number | readonly string[] | undefined; sku: string; name: string; price: string; is_active: boolean
     }[]>([]);
     const [isVoucherValid, setIsVoucherValid] = useState(false);
-
 
     const validateForm = () => {
 
@@ -182,8 +181,12 @@ function Redeem() {
             showErrorToast(String(error));
         }
     };
-
+    
     const handleAddSKU = () => {
+        if (skuItems.length >= 3) {
+            showErrorToast('Maksimal hanya bisa menambahkan 3 SKU.');
+            return;
+        }
         setSkuItems([...skuItems, { id_sku: 0, sku: '', qty: 0, nominal: 0 }]);
     };
 
@@ -242,6 +245,8 @@ function Redeem() {
 
     const fetchItemSKU = async () => {
         const token = localStorage.getItem('token');
+        console.log('token', token);
+
 
         if (!token) {
             console.error('Token tidak ditemukan di localStorage');
@@ -259,11 +264,16 @@ function Redeem() {
             });
 
             if (!response.ok) {
+                if (response.status === 401 && response.statusText === "Unauthorized") {
+                    signOut(navigate);
+
+                }
+                console.log('res', response);
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-
             setItems(data);
+
         } catch (error) {
             console.error('Fetch error:', error);
             showErrorToast('Gagal mengambil data, silakan coba lagi.');

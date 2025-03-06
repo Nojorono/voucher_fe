@@ -90,11 +90,6 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 }
             })
             .then(result => {
-                // onUpdate();
-                // setTimeout(() => {
-                //     showSuccessToast(result.message);
-                // }, 2000);
-
                 if (result.code === "token_not_valid") {
                     signOut(navigate);
                 }
@@ -243,7 +238,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                 sortable: true,
                 cell: (row) => {
                     if (row.retailer_voucher_code != null && row.status == "Verified") {
-                        const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp 20.000 yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: 2 Juli 2025%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
+                        const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp 20.000 yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: 2 Juli 2025%0A- Bisa di klaim di Agen: ${row.wholesale_name}%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
 
                         return (
                             <a
@@ -251,6 +246,20 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-500 underline"
+                                style={{ fontSize: '10px', fontWeight: 'bold' }}
+                            >
+                                {row.retailer_phone_number}
+                            </a>
+                        );
+                    } else if (row.status == "Rejected") {
+                        const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Setelah%20kami%20lakukan%20pengecekan,%20saat%20ini%20pengajuan%20Anda%20belum%20memenuhi%20kriteria%20untuk%20disetujui.%20Silakan%20lakukan%20perbaikan%20dan%20ajukan%20kembali%20formulir%20dengan%20informasi%20yang%20benar%20dan%20lengkap.%20Jika%20ada%20pertanyaan,%20Anda%20bisa%20menghubungi%20kami%20di%20nomor%20ini.%20Kami%20akan%20menunggu%20respon%20dari%20anda.%20Terima%20kasih%20atas%20pengertiannya.`;
+
+                        return (
+                            <a
+                                href={whatsappLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-red-500 underline"
                                 style={{ fontSize: '10px', fontWeight: 'bold' }}
                             >
                                 {row.retailer_phone_number}

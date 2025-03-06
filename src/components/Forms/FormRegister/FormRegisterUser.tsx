@@ -57,11 +57,13 @@ const FormRegisterUser = <T extends FieldValues>({ onSubmit, fields, isReset }: 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const data = await response.json();
-            const options = data.map((item: { name: string, id: string }) => ({
-                value: item.id,
-                label: item.name,
-            }));
+            const data = await response.json();            
+            const options = data
+                .filter((item: { is_active: boolean }) => item.is_active)
+                .map((item: { name: string, id: string }) => ({
+                    value: item.id,
+                    label: item.name,
+                }));
             setData(options);
         } catch (error) {
             setError(error instanceof Error ? error.message : 'An unknown error occurred');

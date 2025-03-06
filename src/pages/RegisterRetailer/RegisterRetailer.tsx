@@ -4,7 +4,7 @@ import FormRegister from '../../components/Forms/FormRegister/FormRegisterRetail
 import { stagingURL } from '../../utils/API';
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import Spinner from '../../components/Spinner';
-import { BG3 } from '../../images/sample/index';
+import { BG3, banner1, banner2 } from '../../images/sample/index';
 
 interface IFormInput {
     ws_name: string;
@@ -55,23 +55,20 @@ const RegisterRetailer: React.FC = () => {
         try {
             const formData = new FormData();
 
-            // Validate photo size
-            if (data.photos) {
-                const validPhotos: File[] = [];
-
-                for (let i = 0; i < data.photos.length; i++) {
-                    const photo = data.photos[i];
-                    const remark = i === 0 ? 'Foto Stiker POSM' : i === 1 ? 'Foto Tester' : 'Foto Kode Tester';
-                    if (photo.size > 600 * 1024) {
-                        showErrorToast(`(${remark}) ${photo.name} melebihi ukuran maksimal 300KB. Silakan unggah ulang.`);
-                        setLoading(false);
-                        return;
-                    } else {
-                        validPhotos.push(photo);
-                    }
+            // Validate and add photos to FormData
+            const validPhotos: File[] = [];
+            Array.from(data.photos).forEach((photo, index) => {
+                const remark = ['Foto Stiker POSM', 'Foto Tester', 'Foto Kode Tester'][index] || 'Foto Lainnya';
+                if (photo.size > 600 * 1024) {
+                    showErrorToast(`(${remark}) ${photo.name} melebihi ukuran maksimal 300KB. Silakan unggah ulang.`);
+                    setLoading(false);
+                    return;
                 }
-                data.photos = validPhotos as unknown as FileList;
-            }
+
+                validPhotos.push(photo);
+                formData.append('photos', photo);
+                formData.append('photo_remarks', remark);
+            });
 
             // Map form fields to FormData
             const formFields = {
@@ -85,76 +82,26 @@ const RegisterRetailer: React.FC = () => {
                 kelurahan: data.kelurahan,
             };
 
-            // Add form fields to FormData
-            for (const [key, value] of Object.entries(formFields)) {
-                if (Array.isArray(value)) {
-                    value.forEach((item, index) => {
-                        formData.append(`${key}[${index}]`, item);
-                    });
-                } else {
-                    formData.append(key, value as string);
-                }
+            Object.entries(formFields).forEach(([key, value]) => {
+                formData.append(key, value as string);
+            });
+
+            const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                console.log('res_fail', result);
+                showErrorToast('Failed to register retailer.');
+            } else {
+                console.log('res_success', result);
+                showSuccessToast('Retailer registered successfully.');
             }
 
-            // Add photos and corresponding remarks to FormData
-            if (data.photos) {
-                Array.from(data.photos).forEach((photo, index) => {
-                    formData.append(`photos`, photo); // Tambahkan foto ke dalam FormData
-                    const remark = index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester';
-                    formData.append(`photo_remarks`, remark);
-                });
-            }
-
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => {
-                controller.abort();
-                showErrorToast('Request timeout!');
-            }, 20000); // 20 seconds timeout
-
-            try {
-                const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
-                    method: 'POST',
-                    body: formData,
-                    signal: controller.signal
-                });
-
-                clearTimeout(timeoutId);
-
-                if (!response.ok) {
-                    const result = await response.json();
-                    if (response.status === 400) {
-                        if (Array.isArray(result.non_field_errors) && result.non_field_errors.length > 0) {
-                            showErrorToast(result.non_field_errors.join(', '));
-                        } else {
-                            showErrorToast('Terjadi kesalahan saat mengirim data.');
-                        }
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                }
-                const result = await response.json();
-                showSuccessToast(`berhasil mendaftar sebagai retailer.`);
-                
-                setTimeout(() => {
-                    setLoading(false);
-                }, 2000);
-
-                return result;
-            } catch (error) {
-                if (error instanceof Error) {
-                    if (error.name === 'AbortError') {
-                        showErrorToast('Request was aborted due to timeout.');
-                        console.error('Request was aborted due to timeout.');
-                    } else {
-                        console.error(`Error: ${error.message}`);
-                        showErrorToast(`Error: ${error.message}`);
-                    }
-                } else {
-                    console.error('An unknown error occurred.');
-                    showErrorToast('An unknown error occurred.');
-                }
-                setLoading(false);
-                throw error;
-            }
+            setLoading(false);
+            return result;
 
         } catch (error) {
             console.error(`Error: ${(error as Error).message}`);
@@ -181,35 +128,44 @@ const RegisterRetailer: React.FC = () => {
     ];
 
     return (
-        <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-            <div className="flex flex-wrap items-center justify-center">
-                <CustomToast />
-                {loading ? (
-                    <div className="flex justify-center items-center w-full h-full">
-                        <Spinner />
-                    </div>
-                ) : reachLimit ? (
-                    <div className="flex justify-center items-center w-full h-full">
-                        <div className="flex justify-center items-center h-screen bg-transparent">
-                            <h2 className="text-4xl font-bold mb-10 text-white text-center">Promo RYO Sudah Berakhir</h2>
+        <>
+            <CustomToast />
+            <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <div className="flex flex-wrap items-center justify-center">
+                    {loading ? (
+                        <div className="flex justify-center items-center w-full h-full">
+                            <Spinner />
                         </div>
-                    </div>
-                ) : (
-                    <>
-                        <div className="w-full p-10">
-                            <div className="p-10">
-                                <h2 className="text-4xl font-bold mb-10 text-white text-center">Pendaftaran Retailer</h2>
-
-                                <FormRegister<IFormInput>
-                                    onSubmit={onSubmit}
-                                    fields={fields}
-                                />
+                    ) : reachLimit ? (
+                        <div className="flex justify-center items-center w-full h-full">
+                            <div className="flex justify-center items-center h-screen bg-transparent">
+                                <h2 className="text-4xl font-bold mb-10 text-white text-center">Promo RYO Sudah Berakhir</h2>
                             </div>
                         </div>
-                    </>
-                )}
+                    ) : (
+                        <>
+                            <div className="w-full p-10">
+                                <div className="p-10">
+                                    <h2 className="text-4xl font-bold mb-10 text-white text-center">Pendaftaran Retailer</h2>
+
+                                    <FormRegister<IFormInput>
+                                        onSubmit={onSubmit}
+                                        fields={fields}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
+            {window.innerWidth >= 768 ? (
+                <img src={banner1} className="object-cover w-full h-auto md:w-full" />
+            ) : (
+                <img src={banner2} className="object-cover w-full h-auto md:w-full" />
+            )}
+
+        </>
+
     );
 };
 
