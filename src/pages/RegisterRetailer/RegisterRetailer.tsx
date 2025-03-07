@@ -24,30 +24,33 @@ const RegisterRetailer: React.FC = () => {
     const [reachLimit, setReachLimit] = useState(false);
 
     useEffect(() => {
-        checkLimit()
-    }, [])
-
-    // Check limit
-    const checkLimit = async () => {
-        const requestOptions = {
-            method: "GET",
-            redirect: "follow" as RequestRedirect
-        };
-
-        try {
-            const response = await fetch(`${stagingURL}/api/current-count/?id=1`, requestOptions);
-            const result = await response.json();
-
-            if (result.message === "Voucher limit reached") {
-                setReachLimit(true)
+        // Check limit
+        const checkLimit = async () => {
+            const requestOptions = {
+                method: "GET",
+                redirect: "follow" as RequestRedirect
             };
 
-        } catch (error) {
-            console.error(error);
-            showErrorToast('Failed to check limit.');
-            throw error;
-        }
-    };
+            try {
+                const response = await fetch(`${stagingURL}/api/current-count/?id=1`, requestOptions);
+                const result = await response.json();
+
+                if (result.message === "Voucher limit reached") {
+                    setReachLimit(true)
+                };
+
+            } catch (error) {
+                console.error(error);
+                showErrorToast('Failed to check limit.');
+                throw error;
+            }
+        };
+
+        checkLimit()
+        console.log('reachLimit', reachLimit);
+    }, []);
+
+
 
     const postRetailerData = async (data: IFormInput) => {
 
@@ -133,10 +136,8 @@ const RegisterRetailer: React.FC = () => {
 
     return (
         <>
-
             <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <CustomToast />
-
                 <div className="flex flex-wrap items-center justify-center">
                     {loading ? (
                         <div className="flex justify-center items-center w-full h-full">
