@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { stagingURL } from '../../utils/index';
-import { BG3, NNA } from '../../images/sample/index';
+import { BG3, NNA, banner1, banner2 } from '../../images/sample/index';
 
 
 const SignIn: React.FC = () => {
@@ -70,12 +70,12 @@ const SignIn: React.FC = () => {
         style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="flex flex-wrap items-center justify-center w-full">
 
-            <div className="hidden w-full xl:block xl:w-1/2 mb-10">
+          <div className="hidden w-full xl:block xl:w-1/2 mb-10">
             <div className="py-17.5 px-26 text-center">
               {/* <span className="mt-15 inline-block">{renderSVG()}</span> */}
               <img src={NNA} alt="NNA" className="inline-block" />
             </div>
-            </div>
+          </div>
 
           <div className="w-full xl:w-1/2 p-10">
             <h2 className="text-2xl font-bold mb-5 text-white">Welcome Back!</h2>
@@ -116,11 +116,11 @@ const SignIn: React.FC = () => {
               <div className="flex justify-between items-center mb-6">
                 <label className="flex items-center">
                   {/* <input type="checkbox" className="mr-2" />
-                  Remember me */}
+            Remember me */}
                 </label>
                 {/* <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
-                  Forgot Password?
-                </Link> */}
+            Forgot Password?
+          </Link> */}
               </div>
 
               <button
@@ -133,13 +133,20 @@ const SignIn: React.FC = () => {
 
             <p className="text-center mt-5">
               {/* Don’t have an account?{' '}
-              <Link to="/signup" className="text-blue-500 hover:underline">
-                Sign Up
-              </Link> */}
+          <Link to="/signup" className="text-blue-500 hover:underline">
+          Sign Up
+          </Link> */}
             </p>
           </div>
 
         </div>
+      </div>
+      <div className="sticky bottom-0 w-full">
+        {window.innerWidth >= 768 ? (
+          <img src={banner1} className="object-cover w-full h-auto md:w-full" />
+        ) : (
+          <img src={banner2} className="object-cover w-full h-auto md:w-full" />
+        )}
       </div>
     </>
   );

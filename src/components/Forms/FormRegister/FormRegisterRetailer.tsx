@@ -277,12 +277,17 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                                 slides={[{ src: index === 0 ? sample1 : index === 1 ? sample2 : sample3 }]}
                                             />
                                         )}
+
                                         <button
                                             type="button"
-                                            onClick={() => {
-                                                const webcamElement = document.getElementById(`webcam-container-${index}`);
-                                                if (webcamElement) {
-                                                    webcamElement.style.display = 'block';
+                                            onClick={async () => {
+                                                try {
+                                                    const webcamElement = document.getElementById(`webcam-container-${index}`);
+                                                    if (webcamElement) {
+                                                        webcamElement.style.display = 'block';
+                                                    }
+                                                } catch (error) {
+                                                    alert('Permission to access camera was denied.');
                                                 }
                                             }}
                                             className="w-auto bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors mt-2"

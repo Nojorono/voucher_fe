@@ -158,12 +158,13 @@ const RegisterRetailer: React.FC = () => {
                     )}
                 </div>
             </div>
-            {window.innerWidth >= 768 ? (
-                <img src={banner1} className="object-cover w-full h-auto md:w-full" />
-            ) : (
-                <img src={banner2} className="object-cover w-full h-auto md:w-full" />
-            )}
-
+            <div className="sticky bottom-0 w-full">
+                {window.innerWidth >= 768 ? (
+                    <img src={banner1} className="object-cover w-full h-auto md:w-full" />
+                ) : (
+                    <img src={banner2} className="object-cover w-full h-auto md:w-full" />
+                )}
+            </div>
         </>
 
     );
