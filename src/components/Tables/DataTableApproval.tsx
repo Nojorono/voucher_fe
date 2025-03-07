@@ -252,7 +252,7 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                             </a>
                         );
                     } else if (row.status == "Rejected") {
-                        const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Setelah%20kami%20lakukan%20pengecekan,%20saat%20ini%20pengajuan%20Anda%20belum%20memenuhi%20kriteria%20untuk%20disetujui.%20Silakan%20lakukan%20perbaikan%20dan%20ajukan%20kembali%20formulir%20dengan%20informasi%20yang%20benar%20dan%20lengkap.%20Jika%20ada%20pertanyaan,%20Anda%20bisa%20menghubungi%20kami%20di%20nomor%20ini.%20Kami%20akan%20menunggu%20respon%20dari%20anda.%20Terima%20kasih%20atas%20pengertiannya.`;
+                        const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Setelah%20kami%20lakukan%20pengecekan,%20saat%20ini%20pengajuan%20Anda%20belum%20memenuhi%20kriteria%20untuk%20disetujui.%20Silakan%20lakukan%20perbaikan%20dengan%20cek%20kembali%20untuk%20data%20yang%20tidak%20sesuai,%20foto%20yang%20kurang%20jelas,%20atau%20informasi%20yang%20tidak%20lengkap%20lalu%20ajukan%20kembali%20formulir%20dengan%20informasi%20yang%20benar%20dan%20lengkap.%20Jika%20ada%20pertanyaan,%20Anda%20bisa%20menghubungi%20kami%20di%20nomor%20ini.%20Kami%20akan%20menunggu%20respon%20dari%20anda.%20Terima%20kasih%20atas%20pengertiannya.`; 
 
                         return (
                             <a
