@@ -50,7 +50,11 @@ const RegisterRetailer: React.FC = () => {
     };
 
     const postRetailerData = async (data: IFormInput) => {
-        setLoading(true);
+
+        showSuccessToast('Mohon tunggu, sedang mengunggah data...');
+        setTimeout(() => {
+            setLoading(true);
+        }, 2000);
 
         try {
             const formData = new FormData();
@@ -129,8 +133,10 @@ const RegisterRetailer: React.FC = () => {
 
     return (
         <>
-            <CustomToast />
+
             <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <CustomToast />
+
                 <div className="flex flex-wrap items-center justify-center">
                     {loading ? (
                         <div className="flex justify-center items-center w-full h-full">
