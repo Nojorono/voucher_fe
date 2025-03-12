@@ -229,7 +229,12 @@ const DashboardRetailer: React.FC = () => {
 
 
         <button
-          onClick={() => exportToExcel('report_retailers')}
+          // onClick={() => exportToExcel('report_retailers')}
+          onClick={() => {
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}_${currentDate.getHours().toString().padStart(2, '0')}-${currentDate.getMinutes().toString().padStart(2, '0')}-${currentDate.getSeconds().toString().padStart(2, '0')}`;
+            exportToExcel(`report_retailers_${formattedDate}`);
+        }}
           className="bg-blue-300 text-white py-1 px-2 rounded flex items-center"
         >
           <FaFileExcel className="mr-2" />
