@@ -126,40 +126,43 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
         }
     };
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const files = event.target.files;
-        if (files) {
-            const newPhotos: File[] = [];
-            const newPhotoRemarks: string[] = [];
-            for (let i = 0; i < files.length; i++) {
-                let file = files[i];
-                const remark = i === 0 ? 'Foto Stiker POSM' : i === 1 ? 'Foto Tester' : 'Foto Kode Tester';
+        if (files && files.length > 0) {
+            let file = files[0];
+            const remark = index === 0 ? 'Foto Stiker POSM' : index === 1 ? 'Foto Tester' : 'Foto Kode Tester';
 
-                if (!file.type.startsWith('image/')) {
-                    alert('Only image files are allowed.');
-                    continue;
-                }
+            if (!file.type.startsWith('image/')) {
+                alert('Only image files are allowed.');
+                return;
+            }
 
-                if (file.size > 500 * 1024) {
-                    try {
-                        file = await compressImage(file, 100 * 1024);
-                    } catch (error) {
-                        showErrorToast(`Failed to compress ${remark}.`);
-                        continue;
-                    }
-                }
-
-                if (file.size > 600 * 1024) {
-                    showErrorToast(`${remark} tidak boleh lebih dari 500 KB!`);
-                    event.target.value = ''; // Clear the input
+            if (file.size > 500 * 1024) {
+                try {
+                    file = await compressImage(file, 100 * 1024);
+                } catch (error) {
+                    showErrorToast(`Failed to compress ${remark}.`);
                     return;
                 }
-
-                newPhotos.push(file);
-                newPhotoRemarks.push(remark);
             }
-            setUploadedPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
-            setPhotoRemarks(newPhotoRemarks);
+
+            if (file.size > 600 * 1024) {
+                showErrorToast(`${remark} tidak boleh lebih dari 500 KB!`);
+                event.target.value = ''; // Clear the input
+                return;
+            }
+
+            setUploadedPhotos((prevPhotos) => {
+                const newPhotos = [...prevPhotos];
+                newPhotos[index] = file;
+                return newPhotos;
+            });
+
+            setPhotoRemarks((prevRemarks) => {
+                const newRemarks = [...prevRemarks];
+                newRemarks[index] = remark;
+                return newRemarks;
+            });
         }
     };
 
@@ -197,6 +200,8 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     };
 
     const handleSubmitRegister = (data: T) => {
+
+        console.log('uploadedPhotos.length', uploadedPhotos.length);
 
         if (uploadedPhotos.length != 3) {
             showErrorToast('Please upload all required photos.');
@@ -283,7 +288,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                             type="file"
                                             accept="image/*"
                                             capture="environment"
-                                            {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: handleFileChange })}
+                                            {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: (e) => handleFileChange(e, index) })}
                                             className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
 
