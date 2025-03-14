@@ -289,7 +289,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                             accept="image/*"
                                             capture="environment"
                                             {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: (e) => handleFileChange(e, index) })}
-                                            className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-50 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
 
                                         {/* WITH OPEN CAMERA */}

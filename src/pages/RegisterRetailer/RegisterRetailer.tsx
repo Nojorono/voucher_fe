@@ -47,7 +47,6 @@ const RegisterRetailer: React.FC = () => {
         };
 
         checkLimit()
-        console.log('reachLimit', reachLimit);
     }, []);
 
 
@@ -100,6 +99,8 @@ const RegisterRetailer: React.FC = () => {
             });
 
             const result = await response.json();
+            console.log('res', result);
+
             if (!response.ok) {
                 console.log('res_fail', result);
                 showErrorToast('Failed to register retailer.');

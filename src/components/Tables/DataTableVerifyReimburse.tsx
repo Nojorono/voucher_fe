@@ -123,7 +123,7 @@ export const detailColumns = [
                         <Lightbox
                             open={isLightboxOpen}
                             close={() => setIsLightboxOpen(false)}
-                            slides={[{ src: `${stagingURL}${row.transactions[0]?.image}` }]}
+                            slides={[{ src: `${row.transactions[0]?.image}` }]}
                         />
                     )}
                 </>

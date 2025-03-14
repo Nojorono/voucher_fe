@@ -119,10 +119,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
         const token = localStorage.getItem('token');
         const myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${token}`);
-        myHeaders.append('Content-Type', 'application/json');
-
-        console.log('formData:', formData);
-        
+        myHeaders.append('Content-Type', 'application/json');        
 
         const requestOptions: RequestInit = {
             method: 'POST',
