@@ -41,7 +41,7 @@ const RegisterRetailer: React.FC = () => {
 
             } catch (error) {
                 console.error(error);
-                showErrorToast('Failed to check limit.');
+                console.log('Failed to check limit.');
                 throw error;
             }
         };
