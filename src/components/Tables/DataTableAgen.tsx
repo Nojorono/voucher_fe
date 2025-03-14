@@ -121,8 +121,11 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
         myHeaders.append('Authorization', `Bearer ${token}`);
         myHeaders.append('Content-Type', 'application/json');
 
+        console.log('formData:', formData);
+        
+
         const requestOptions: RequestInit = {
-            method: method,
+            method: 'POST',
             headers: myHeaders,
             body: JSON.stringify(formData),
         };
@@ -134,10 +137,14 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error('Error posting/updating data');
+                    return response.json().then((errorData) => {
+                        console.error('Error posting/updating data:', errorData);
+                        throw new Error('Error posting/updating data');
+                    });
                 }
             })
-            .then((result) => {
+            .then((data) => {
+                console.log('Success:', data);
                 setOpen(false);
                 onRefresh();
                 setTimeout(() => {
@@ -146,7 +153,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
             })
             .catch((error) => {
                 console.error('Error posting/updating data:', error);
-                showErrorToast('Error posting/updating data');
+                showErrorToast(`Error posting/updating data ${error}`,);
             });
     };
 

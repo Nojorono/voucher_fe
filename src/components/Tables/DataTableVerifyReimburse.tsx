@@ -114,7 +114,7 @@ export const detailColumns = [
             return (
                 <>
                     <img
-                        src={`${stagingURL}${row.transactions[0]?.image}`}
+                        src={`${row.transactions[0]?.image}`}
                         alt="Bukti Pembayaran"
                         className="w-20 h-20 object-cover cursor-pointer"
                         onClick={() => setIsLightboxOpen(true)}
