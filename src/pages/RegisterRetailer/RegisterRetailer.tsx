@@ -116,15 +116,15 @@ const RegisterRetailer: React.FC = () => {
         } catch (error) {
             console.error(`Error Log: ${(error as Error).message}`);
             setLoading(false);
-            setTimeout(() => {
-                const errorMessage = (error as Error).message;
-                if (errorMessage.includes('Unexpected end of input')) {
-                    showSuccessToast('Retailer registered successfully.');
-                } else {
-                    showErrorToast(`Error: ${errorMessage}`);
-                }
-            }, 1000);
-            throw error;
+            // setTimeout(() => {
+            //     const errorMessage = (error as Error).message;
+            //     if (errorMessage.includes('Unexpected end of input')) {
+            //         showSuccessToast('Retailer registered successfully.');
+            //     } else {
+            //         showErrorToast(`Error: ${errorMessage}`);
+            //     }
+            // }, 1000);
+            // throw error;
         }
     };
 
