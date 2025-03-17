@@ -91,14 +91,16 @@ const RegisterRetailer: React.FC = () => {
                 formData.append(key, value as string);
             });
 
-
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
                 method: 'POST',
                 body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                }
             });
 
             const result = await response.json();
-            if (response.ok && result.message == "Retailer registered successfully") {
+            if (response.ok && result.message === "Retailer registered successfully") {
                 setLoading(false);
                 setTimeout(() => {
                     showSuccessToast('Registrasi berhasil!');
