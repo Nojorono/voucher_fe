@@ -24,6 +24,7 @@ const RegisterRetailer: React.FC = () => {
     const [reachLimit, setReachLimit] = useState(false);
 
     useEffect(() => {
+        // Check limit
         const checkLimit = async () => {
             const requestOptions = {
                 method: "GET",
@@ -35,25 +36,32 @@ const RegisterRetailer: React.FC = () => {
                 const result = await response.json();
 
                 if (result.message === "Voucher limit reached") {
-                    setReachLimit(true);
-                }
+                    setReachLimit(true)
+                };
 
             } catch (error) {
                 console.error(error);
                 console.log('Failed to check limit.');
+                throw error;
             }
         };
 
-        checkLimit();
+        checkLimit()
     }, []);
 
+
+
     const postRetailerData = async (data: IFormInput) => {
+
         showSuccessToast('Mohon tunggu, sedang mengunggah data...');
-        setLoading(true);
+        setTimeout(() => {
+            setLoading(true);
+        }, 1000);
 
         try {
             const formData = new FormData();
 
+            // Validate and add photos to FormData
             const validPhotos: File[] = [];
             Array.from(data.photos).forEach((photo, index) => {
                 const remark = ['Foto Stiker POSM', 'Foto Tester', 'Foto Kode Tester'][index] || 'Foto Lainnya';
@@ -68,6 +76,7 @@ const RegisterRetailer: React.FC = () => {
                 formData.append('photo_remarks', remark);
             });
 
+            // Map form fields to FormData
             const formFields = {
                 ws_name: data.ws_name,
                 name: data.username,
@@ -89,12 +98,32 @@ const RegisterRetailer: React.FC = () => {
             });
 
             const result = await response.json();
-            showSuccessToast(result.message || 'Retailer registered successfully.');
+
+            console.log('res', response);
+            
+            if (!response.ok) {
+                console.log('res_fail', result);
+                showErrorToast('Failed to register retailer.');
+            } else {
+                console.log('res_success', result);
+                showSuccessToast('Retailer registered successfully.');
+            }
+
+            setLoading(false);
+            return result;
+
         } catch (error) {
             console.error(`Error Log: ${(error as Error).message}`);
-            showErrorToast(`Error: ${(error as Error).message}`);
-        } finally {
             setLoading(false);
+            // setTimeout(() => {
+            //     const errorMessage = (error as Error).message;
+            //     if (errorMessage.includes('Unexpected end of input')) {
+            //         showSuccessToast('Retailer registered successfully.');
+            //     } else {
+            //         showErrorToast(`Error: ${errorMessage}`);
+            //     }
+            // }, 1000);
+            // throw error;
         }
     };
 
@@ -130,15 +159,18 @@ const RegisterRetailer: React.FC = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="w-full p-10">
-                            <div className="p-10">
-                                <h2 className="text-4xl font-bold mb-10 text-white text-center">Pendaftaran Retailer</h2>
-                                <FormRegister<IFormInput>
-                                    onSubmit={onSubmit}
-                                    fields={fields}
-                                />
+                        <>
+                            <div className="w-full p-10">
+                                <div className="p-10">
+                                    <h2 className="text-4xl font-bold mb-10 text-white text-center">Pendaftaran Retailer</h2>
+
+                                    <FormRegister<IFormInput>
+                                        onSubmit={onSubmit}
+                                        fields={fields}
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        </>
                     )}
                 </div>
             </div>
@@ -150,6 +182,7 @@ const RegisterRetailer: React.FC = () => {
                 )}
             </div>
         </>
+
     );
 };
 
