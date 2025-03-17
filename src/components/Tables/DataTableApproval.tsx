@@ -53,10 +53,6 @@ const DataTableApproval = memo(({ dataPhoto, onUpdate }: { dataPhoto: photoRetai
                     showErrorToast(result.message);
                 }
 
-                // if (result.message === "All photos for retailer verified successfully.") {
-                //     onUpdate();
-                // }
-
                 if (result.code === "token_not_valid") {
                     signOut(navigate);
                 }

@@ -5,6 +5,7 @@ import { stagingURL } from '../../utils/API';
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import Spinner from '../../components/Spinner';
 import { BG3, banner1, banner2 } from '../../images/sample/index';
+import { Alert } from '@material-tailwind/react';
 
 interface IFormInput {
     ws_name: string;
@@ -90,27 +91,30 @@ const RegisterRetailer: React.FC = () => {
                 formData.append(key, value as string);
             });
 
+
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
                 method: 'POST',
                 body: formData,
             });
 
-            let result;
-            try {
-                result = await response.json();
-                showSuccessToast(result.message || 'Retailer registered successfully.');
+            const result = await response.json();
+            if (response.ok && result.message == "Retailer registered successfully") {
+                setLoading(false);
                 setTimeout(() => {
-                    setLoading(true);
+                    showSuccessToast('Registrasi berhasil!');
                 }, 2000);
-            } catch (error) {
-                showErrorToast(result.message || 'Failed to register retailer.');
-                throw new Error('Invalid JSON response');
+            } else {
+                if (result.non_field_errors) {
+                    showErrorToast(result.non_field_errors.join(' '));
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 1000);
+                }
             }
 
         } catch (error) {
             console.error(`Error Log: ${(error as Error).message}`);
             showErrorToast(`Error: ${(error as Error).message}`);
-        } finally {
             setLoading(false);
         }
     };
