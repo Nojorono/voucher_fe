@@ -97,7 +97,7 @@ const RegisterRetailer: React.FC = () => {
                 headers: {
                     'Accept': 'application/json',
                 },
-                mode: 'no-cors',
+                // mode: 'no-cors',
             });
 
             const result = await response.json();
