@@ -102,7 +102,7 @@ const RegisterRetailer: React.FC = () => {
                 setLoading(false);
                 setTimeout(() => {
                     showSuccessToast('Registrasi berhasil!');
-                }, 2000);
+                }, 1000);
             } else {
                 if (result.non_field_errors) {
                     showErrorToast(result.non_field_errors.join(' '));
