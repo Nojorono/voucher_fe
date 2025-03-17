@@ -50,9 +50,7 @@ const RegisterRetailer: React.FC = () => {
     }, []);
 
 
-
     const postRetailerData = async (data: IFormInput) => {
-
         showSuccessToast('Mohon tunggu, sedang mengunggah data...');
         setTimeout(() => {
             setLoading(true);
@@ -95,38 +93,28 @@ const RegisterRetailer: React.FC = () => {
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
                 method: 'POST',
                 body: formData,
-                mode: 'no-cors',
             });
 
-            const result = await response.json();
-
-            console.log('res', response);
-            
-            if (!response.ok) {
-                console.log('res_fail', result);
-                showErrorToast('Failed to register retailer.');
-            } else {
-                console.log('res_success', result);
-                showSuccessToast('Retailer registered successfully.');
+            let result;
+            try {
+                result = await response.json();
+                showSuccessToast(result.message || 'Retailer registered successfully.');
+                setTimeout(() => {
+                    setLoading(true);
+                }, 2000);
+            } catch (error) {
+                showErrorToast(result.message || 'Failed to register retailer.');
+                throw new Error('Invalid JSON response');
             }
-
-            setLoading(false);
-            return result;
 
         } catch (error) {
             console.error(`Error Log: ${(error as Error).message}`);
+            showErrorToast(`Error: ${(error as Error).message}`);
+        } finally {
             setLoading(false);
-            // setTimeout(() => {
-            //     const errorMessage = (error as Error).message;
-            //     if (errorMessage.includes('Unexpected end of input')) {
-            //         showSuccessToast('Retailer registered successfully.');
-            //     } else {
-            //         showErrorToast(`Error: ${errorMessage}`);
-            //     }
-            // }, 1000);
-            // throw error;
         }
     };
+
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         await postRetailerData(data);
