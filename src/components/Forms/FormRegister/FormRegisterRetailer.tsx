@@ -269,7 +269,7 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                         </label>
 
                                         <img
-                                            src={index === 0 ? sample1 : index === 1 ? sample2 : sample3}
+                                            src={uploadedPhotos[index] ? URL.createObjectURL(uploadedPhotos[index]) : (index === 0 ? sample1 : index === 1 ? sample2 : sample3)}
                                             alt={`Sample ${index + 1}`}
                                             className="mt-2 mb-1 w-32 h-32 object-cover"
                                             onClick={() => setLightboxIndex(index)}
@@ -279,85 +279,19 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                             <Lightbox
                                                 open={lightboxIndex !== null}
                                                 close={() => setLightboxIndex(null)}
-                                                slides={[{ src: index === 0 ? sample1 : index === 1 ? sample2 : sample3 }]}
+                                                slides={[{ src: uploadedPhotos[index] ? URL.createObjectURL(uploadedPhotos[index]) : (index === 0 ? sample1 : index === 1 ? sample2 : sample3) }]}
                                             />
                                         )}
 
                                         <input
+                                            style={{ width: '100%' }}
                                             id={`${String(field.name)}_${index}`}
                                             type="file"
                                             accept="image/*"
                                             capture="environment"
                                             {...register(`${String(field.name)}_${index}` as any, { required: field.required, onChange: (e) => handleFileChange(e, index) })}
-                                            className="w-50 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
-
-                                        {/* WITH OPEN CAMERA */}
-                                        {/* <button
-                                            type="button"
-                                            onClick={async () => {
-                                                try {
-                                                    const webcamElement = document.getElementById(`webcam-container-${index}`);
-                                                    if (webcamElement) {
-                                                        webcamElement.style.display = 'block';
-                                                    }
-                                                } catch (error) {
-                                                    alert('Permission to access camera was denied.');
-                                                }
-                                            }}
-                                            className="w-auto bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors mt-2"
-                                            id={`open-camera-button-${index}`}
-                                        >
-                                            Buka Camera
-                                        </button>
-
-                                        <div id={`webcam-container-${index}`} style={{ display: 'none' }} className='mt-2'>
-                                            <Webcam mirrored>
-                                                {({ getSnapshot }) => (
-                                                    <div>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                const snapshot = getSnapshot({ quality: 0.8 });
-                                                                if (snapshot) {
-                                                                    const base64Data = snapshot.split(',')[1];
-                                                                    const byteCharacters = atob(base64Data);
-                                                                    const byteNumbers = new Array(byteCharacters.length);
-                                                                    for (let i = 0; i < byteCharacters.length; i++) {
-                                                                        byteNumbers[i] = byteCharacters.charCodeAt(i);
-                                                                    }
-                                                                    const byteArray = new Uint8Array(byteNumbers);
-                                                                    const file = new File([byteArray], `photo_${index}.jpg`, { type: 'image/jpeg' });
-
-                                                                    handleFileChange({
-                                                                        target: { files: [file] }
-                                                                    } as unknown as React.ChangeEvent<HTMLInputElement>);
-
-                                                                    // Display the captured photo
-                                                                    const objectUrl = URL.createObjectURL(file);
-                                                                    const imgElement = document.getElementById(`captured-photo-${index}`) as HTMLImageElement;
-                                                                    if (imgElement) {
-                                                                        imgElement.src = objectUrl;
-                                                                    }
-
-                                                                    // Hide webcam and show "Buka Camera" button again
-                                                                    const webcamElement = document.getElementById(`webcam-container-${index}`);
-                                                                    const openCameraButton = document.getElementById(`open-camera-button-${index}`);
-                                                                    if (webcamElement && openCameraButton) {
-                                                                        webcamElement.style.display = 'none';
-                                                                        openCameraButton.style.display = 'block';
-                                                                    }
-                                                                }
-                                                            }}
-                                                            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors mt-3"
-                                                        >
-                                                            Ambil Foto
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </Webcam>
-                                        </div>
-                                        <img src={noImg} id={`captured-photo-${index}`} alt={`Captured ${index + 1}`} className="mt-3 w-32 h-32 object-cover" /> */}
                                     </div>
                                 ))}
                             </div>
