@@ -50,14 +50,8 @@ const StatusModal: FC<ModalProps> = ({ isOpen, onClose, onSubmit, newStatus, set
                 className="w-full p-2 border border-gray-300 rounded"
             >
                 <option value="">---Pilih Status---</option>
-                {['completed', 'paid'].some(status => status === newStatus) ? (
-                    <option value="paid">Paid</option>
-                ) : (
-                    <>
-                        <option value="completed">Completed</option>
-                        <option value="paid">Paid</option>
-                    </>
-                )}
+                <option value="completed">Completed</option>
+                <option value="paid">Paid</option>
             </select>
         </DialogBody>
         <DialogFooter>
@@ -261,12 +255,12 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
 
     const submitStatusChange = async () => {
         if (!currentRow || !newStatus) {
-            showErrorToast('Please select a status');
+            showErrorToast('Please select a status', 'error');
             return;
         }
 
         if (currentRow.status === 'paid') {
-            showErrorToast('Status is already complete and paid, cannot be changed');
+            showErrorToast('Status is already complete and paid, cannot be changed', 'error');
             closeStatusModal();
             return;
         }
@@ -283,7 +277,10 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
             const result = await response.json();
 
             if (result.error) {
-                showErrorToast(result.error);
+                closeStatusModal();
+                setTimeout(() => {
+                    showErrorToast(result.error, 'error');
+                }, 1000);
             } else {
                 showSuccessToast('Status updated successfully');
                 onRefresh();
@@ -294,7 +291,10 @@ const DataTableVerifyReimburse: FC<DataTableProps> = memo(({ columns, data, sele
             }
         } catch (error) {
             console.error('Error updating status:', error);
-            showErrorToast('Error updating status');
+            closeStatusModal();
+            setTimeout(() => {
+                showErrorToast('Error updating status', error);
+            }, 1000);
         }
     };
 

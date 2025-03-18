@@ -25,7 +25,7 @@ export const showToast = (message: string) => {
     });
 };
 
-export const showErrorToast = (errorMessage: string) => {
+export const showErrorToast = (errorMessage: string, error: unknown) => {
     toast.error(errorMessage, {
         position: "top-right",
         autoClose: 5000,

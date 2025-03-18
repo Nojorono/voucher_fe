@@ -152,8 +152,6 @@ const RegisterRetailer: React.FC = () => {
     };
 
 
-
-
     const fields: { name: keyof IFormInput; label: string; required: boolean; type?: string }[] = [
         { name: 'ws_name', label: 'Nama Agen', required: true, type: 'select' },
         { name: 'username', label: 'Nama Toko/Pemilik', required: true },
