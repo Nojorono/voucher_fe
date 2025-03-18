@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { stagingURL } from '../../utils/index';
 import { BG3, NNA, banner1, banner2 } from '../../images/sample/index';
-import CustomToast, { showErrorToast } from '../../components/Toast/CustomToast';
+import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 
 
 
@@ -52,10 +52,13 @@ const SignIn: React.FC = () => {
       localStorage.setItem('is_staff', is_staff);
 
       if (is_staff === true) {
-        navigate('/verification');
+        showSuccessToast('Login successful. Redirecting to verification page...');
         setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+          navigate('/verification');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }, 1500)
       } else {
         navigate('/how-to-claim');
       }

@@ -5,7 +5,7 @@ import { stagingURL } from '../../utils/API';
 import CustomToast, { showErrorToast, showSuccessToast } from '../../components/Toast/CustomToast';
 import Spinner from '../../components/Spinner';
 import { BG3, banner1, banner2 } from '../../images/sample/index';
-import { Alert } from '@material-tailwind/react';
+import Swal from 'sweetalert2'
 
 interface IFormInput {
     ws_name: string;
@@ -50,8 +50,11 @@ const RegisterRetailer: React.FC = () => {
         checkLimit()
     }, []);
 
+    const onSubmit: SubmitHandler<IFormInput> = async (data, event) => {
+        await postRetailerData(data, event);
+    };
 
-    const postRetailerData = async (data: IFormInput) => {
+    const postRetailerData = async (data: IFormInput, event?: React.BaseSyntheticEvent) => {
         showSuccessToast('Mohon tunggu, sedang mengunggah data...');
         setTimeout(() => {
             setLoading(true);
@@ -91,41 +94,65 @@ const RegisterRetailer: React.FC = () => {
                 formData.append(key, value as string);
             });
 
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 90000);
+
             const response = await fetch(`${stagingURL}/api/retailer_register_upload/`, {
                 method: 'POST',
                 body: formData,
-                headers: {
-                    'Accept': 'application/json',
-                },
-                mode: 'no-cors',
+                signal: controller.signal,
+                redirect: "follow"
             });
-
+            clearTimeout(timeoutId);
             const result = await response.json();
-            if (response.ok && result.message === "Retailer registered successfully") {
+
+            if (response.ok && result.message == "Retailer registered successfully") {
                 setLoading(false);
                 setTimeout(() => {
-                    showSuccessToast('Registrasi berhasil!');
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Registrasi berhasil!",
+                        text: 'Terima kasih telah mendaftar.'
+                    });
+                    event?.target.reset();
+                    return;
                 }, 1000);
             } else {
                 if (result.non_field_errors) {
-                    showErrorToast(result.non_field_errors.join(' '));
+                    setLoading(false);
                     setTimeout(() => {
-                        setLoading(false);
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Registrasi gagal!",
+                            text: result.non_field_errors.join(' '),
+                        });
                     }, 1000);
                 }
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: 'Registrasi gagal. Silakan coba lagi.',
+                });
             }
 
         } catch (error) {
             console.error(`Error Log: ${(error as Error).message}`);
-            showErrorToast(`Error: ${(error as Error).message}`);
             setLoading(false);
+            setTimeout(() => {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Timeout!",
+                    text: `Error: ${(error as Error).message}`,
+                });
+            }, 1000);
         }
     };
 
 
-    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-        await postRetailerData(data);
-    };
+
 
     const fields: { name: keyof IFormInput; label: string; required: boolean; type?: string }[] = [
         { name: 'ws_name', label: 'Nama Agen', required: true, type: 'select' },
@@ -144,6 +171,7 @@ const RegisterRetailer: React.FC = () => {
             <div className="rounded-sm" style={{ backgroundImage: `url(${BG3})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <div className="flex flex-wrap items-center justify-center">
                     <CustomToast />
+
                     {loading ? (
                         <div className="flex justify-center items-center w-full h-full">
                             <Spinner />
