@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-06.png';
 import { signOut } from '../../utils';
+import CustomToast, { showSuccessToast } from '../../components/Toast/CustomToast';
+
 
 
 
@@ -11,7 +13,10 @@ const DropdownUser = () => {
   const name = localStorage.getItem('username') || 'Not Assigned';
 
   const handleLogout = () => {
-    signOut(navigate)
+    showSuccessToast('Logging out in 1..2..');
+    setTimeout(() => {
+      signOut(navigate)
+    }, 1000);
   };
 
 
@@ -19,6 +24,7 @@ const DropdownUser = () => {
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
+      <CustomToast />
       <Link
         onClick={() => setDropdownOpen(!dropdownOpen)}
         className="flex items-center gap-4"

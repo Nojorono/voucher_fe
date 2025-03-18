@@ -52,7 +52,7 @@ const SignIn: React.FC = () => {
       localStorage.setItem('is_staff', is_staff);
 
       if (is_staff === true) {
-        showSuccessToast('Login successful. Redirecting to verification page...');
+        showSuccessToast('Login successful. Redirecting to...');
         setTimeout(() => {
           navigate('/verification');
           setTimeout(() => {
