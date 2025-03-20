@@ -1,5 +1,3 @@
-import { stagingURL } from '../../utils/API';
-
 
 export default function HowToClaim() {
     return (
