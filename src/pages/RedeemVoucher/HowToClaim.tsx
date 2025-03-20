@@ -7,7 +7,7 @@ export default function HowToClaim() {
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER MENDAPATKAN VOUCHER:</h2>
             <ol className="list-decimal list-inside mb-6">
                 <li className="mb-2">Toko/retailer diwajibkan memasang sticker POSM dan menyediakan tester di tempat yang telah disediakan di tempat yang strategis di dalam toko.</li>
-                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href={`${stagingURL}/register/retailer`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
+                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href={`https://ryoapp.niaganusaabadi.co.id/register/retailer`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
                 <li className="mb-2">Setelah formulir diappove, toko/retailer akan menerima kode voucher melalui WhatsApp untuk mendapatkan potongan Rp 20.000 yang berlaku untuk pembelian berikutnya.</li>
             </ol>
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER CLAIM VOUCHER:</h2>
