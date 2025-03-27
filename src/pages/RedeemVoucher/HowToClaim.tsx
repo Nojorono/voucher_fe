@@ -2,6 +2,7 @@ import { FaCopy } from 'react-icons/fa';
 import Swal from 'sweetalert2'
 
 export default function HowToClaim() {
+    // COPY CLIPBOARD
     const copyToClipboard = () => {
         navigator.clipboard
             .writeText("https://ryoapp.niaganusaabadi.co.id/register/retailer")
