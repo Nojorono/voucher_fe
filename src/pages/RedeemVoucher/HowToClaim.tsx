@@ -1,22 +1,23 @@
 import { FaCopy } from 'react-icons/fa';
-import CustomToast, { showSuccessToast } from '../../components/Toast/CustomToast';
-
+import Swal from 'sweetalert2'
 
 export default function HowToClaim() {
     const copyToClipboard = () => {
         navigator.clipboard
             .writeText("https://ryoapp.niaganusaabadi.co.id/register/retailer")
             .then(() => {
-                showSuccessToast(
-                    "Link sudah ter-copy, silahkan Paste/Tempel pada Chat Retailer yang akan mendaftar!"
-                );
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Link sudah ter-copy!",
+                    text: 'Silahkan Paste/Tempel pada Chat Retailer yang akan mendaftar!'
+                });
             })
             .catch((err) => console.error("Gagal menyalin teks: ", err));
     };
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-md">
-            <CustomToast/>
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER MENDAPATKAN VOUCHER:</h2>
             <ol className="list-decimal list-inside mb-6">
                 <li className="mb-2">Toko/retailer diwajibkan memasang sticker POSM dan menyediakan tester di tempat yang telah disediakan di tempat yang strategis di dalam toko.</li>
