@@ -78,6 +78,12 @@ const MasterWholesale = () => {
             cell: (row: any) => row.phone_number,
         },
         {
+            name:  "Kota" ,
+            selector: (row: any) => row.city,
+            sortable: true,
+            cell: (row: any) => row.city,
+        },
+        {
             name:  "Alamat" ,
             selector: (row: any) => row.address,
             sortable: true,

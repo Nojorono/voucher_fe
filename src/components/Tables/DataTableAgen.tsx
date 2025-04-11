@@ -36,7 +36,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
     const [method, setMethod] = useState('POST');
     const [IdUpdate, setIdUpdate] = useState(null);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const [updateData, setUpdateData] = useState({ id: '', name: '', phone_number: '', address: '' });
+    const [updateData, setUpdateData] = useState({ id: '', name: '', phone_number: '', address: '', city: '' });
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -161,7 +161,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
     };
 
     const handleUpdate = (row: any) => {
-        setUpdateData({ id: row.id, name: row.name, phone_number: row.phone_number, address: row.address || '' });
+        setUpdateData({ id: row.id, name: row.name, phone_number: row.phone_number, city: row.city, address: row.address || '' });
         setOpenUpdateModal(true);
     };
 
@@ -177,6 +177,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
             body: JSON.stringify({
                 name: updateData.name,
                 phone_number: updateData.phone_number,
+                city: updateData.city,
                 address: updateData.address,
                 is_active: true // Atur sesuai kebutuhan
             }),
@@ -283,6 +284,17 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                             className="border p-2 w-full mt-2"
                             type="tel"
                             inputMode="numeric"
+                        />
+                    </div>
+
+                    <div>
+                        <label>Kota</label>
+                        <input
+                            type="text"
+                            value={updateData.city}
+                            onChange={(e) => setUpdateData({ ...updateData, city: e.target.value })}
+                            placeholder="Masukan Kota"
+                            className="border p-2 w-full"
                         />
                     </div>
 

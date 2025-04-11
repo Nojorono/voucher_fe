@@ -5,7 +5,6 @@ import {
     Dialog,
     DialogHeader,
     DialogBody,
-    DialogFooter,
 } from "@material-tailwind/react";
 
 interface FormAddWholesaleProps {
@@ -40,6 +39,10 @@ const ModalFormWholesale: React.FC<FormAddWholesaleProps> = ({ open, handleOpen,
                     <div className='mt-2'>
                         <label>Telepon</label>
                         <input {...register('phone_number', { required: true })} required className="border p-2 w-full" type="tel" inputMode="numeric" />
+                    </div>
+                    <div className='mt-2'>
+                        <label>Kota</label>
+                        <input {...register('city', { required: true })} required className="border p-2 w-full" type="tel" />
                     </div>
                     <div className='mt-2'>
                         <label>Address</label>

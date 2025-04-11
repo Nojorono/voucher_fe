@@ -230,11 +230,17 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
+
+
             const options = data
                 .filter((item: { is_active: boolean }) => item.is_active)
-                .map((item: { name: string, id: string }) => ({
+                .map((item: { name: string, id: string, city: string }) => ({
                     value: item.name,
-                    label: item.name,
+                    label: (
+                        <span style={{ color: item.city === "JOG" ? "#006400" : "inherit", fontWeight: "bold" }}>
+                            {item.name}
+                        </span>
+                    ),
                 }));
             setDataWholesale(options);
         } catch (error) {
