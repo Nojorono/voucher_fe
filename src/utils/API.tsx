@@ -1,6 +1,4 @@
 const localURL = 'http://localhost:8080';
-const stagingURL = 'http://localhost:8080';
-// const stagingURL = 'http://10.0.29.49:8081';
-// const s3URL = 'https://s3-ap-southeast-1.amazonaws.com/retailer-verification';
+const stagingURL = 'http://10.0.3.222:8082';  // AWS backend port
 
 export { localURL, stagingURL };
