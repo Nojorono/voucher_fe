@@ -29,22 +29,22 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8082',  // Updated to match .env API_BASE_URL
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/admin': {
-        target: 'http://localhost:8082',  // Updated to match .env API_BASE_URL
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/staticfiles': {
-        target: 'http://localhost:8082',  // Updated to match .env API_BASE_URL
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/media': {
-        target: 'http://localhost:8082',  // Updated to match .env API_BASE_URL
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
@@ -57,22 +57,22 @@ export default defineConfig({
     port: 4173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8082',  // Updated to match .env API_BASE_URL
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/admin': {
-        target: 'http://localhost:8082',  // Updated to match .env API_BASE_URL
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/staticfiles': {
-        target: 'http://localhost:8082',  // Updated to match .env API_BASE_URL
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
       '/media': {
-        target: 'http://localhost:8082',  // Updated to match .env API_BASE_URL
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
