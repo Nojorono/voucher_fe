@@ -1,7 +1,21 @@
-const localURL = 'http://localhost:8081';
-//const stagingURL = 'http://localhost:8081';
-const stagingURL = 'http://kcsi-alb-prod-1476414350.ap-southeast-3.elb.amazonaws.com:8082';
-// const stagingURL = 'http://10.0.29.49:8081';
-// const s3URL = 'https://s3-ap-southeast-1.amazonaws.com/retailer-verification';
+const getBaseURL = () => {
+  const hostname = window.location.hostname;
+  
+  // Development
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8081';
+  }
+  
+  // Production via ALB
+  if (hostname.includes('kcsi-alb-prod')) {
+    return `http://${hostname}:8082`;
+  }
+  
+  // Fallback untuk IP langsung
+  return `http://${hostname}:8081`;
+};
+
+const localURL = getBaseURL();
+const stagingURL = getBaseURL();
 
 export { localURL, stagingURL };
