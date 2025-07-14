@@ -3,6 +3,11 @@ import axios from 'axios';
 const getBaseURL = () => {
   const hostname = window.location.hostname;
   
+  // Localhost development
+  if (hostname === 'ryo.localhost') {
+    return 'http://apiryo.localhost';  // ✅ Domain-to-domain
+  }
+  
   // Production domains (HTTP only for now)
   if (hostname === 'ryo.kcsi.id') {
     return 'http://apiryo.kcsi.id';  // ✅ HTTP backend
