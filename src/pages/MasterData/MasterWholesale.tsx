@@ -78,41 +78,24 @@ const MasterWholesale = () => {
         // Fetch data with hierarchy support
         fetch(`${stagingURL}/api/wholesales/`, requestOptions)
             .then((response) => {
-                console.log('📥 Fetch response status:', response.status);
                 return response.json();
             })
-            .then((result) => {                
-                console.log('📥 API Response:', result);
-                console.log('📥 API Response type:', typeof result);
-                console.log('📥 API Response length:', Array.isArray(result) ? result.length : 'Not array');
-
+            .then((result) => {
                 // Filter data untuk hanya menampilkan yang is_active = true
                 const filteredData = result.filter((item: any) => item.is_active === true);
-                console.log('📋 Filtered data length:', filteredData.length);
-
+                
                 // Check if items have hierarchy fields
                 if (filteredData.length > 0) {
                     const sample = filteredData[0];
-                    console.log('📋 Sample item fields:', Object.keys(sample));
-                    console.log('📋 Sample item hierarchy fields:', {
-                        parent: sample.parent,
-                        parent_name: sample.parent_name,
-                        level: sample.level,
-                        children_count: sample.children_count,
-                        is_root: sample.is_root,
-                        is_leaf: sample.is_leaf
-                    });
                 }
 
                 // Sort data untuk menampilkan parent diikuti dengan child-nya
                 const sortedData = sortHierarchicalData(filteredData);
-
-                console.log('📋 Sorted data length:', sortedData.length);
+                
                 setData(sortedData);
                 setLoading(false);
 
                 if (result.code == "token_not_valid") {
-                    console.log('❌ Token invalid, signing out...');
                     signOut(navigate);
                 }
             })

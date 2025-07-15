@@ -147,7 +147,6 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                 }
             })
             .then((data) => {
-                console.log('Success:', data);
                 setOpen(false);
                 onRefresh();
                 setTimeout(() => {
