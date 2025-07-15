@@ -3,11 +3,57 @@ import { useNavigate } from 'react-router-dom';
 import DataTableAgen from '../../components/Tables/DataTableAgen';
 import { stagingURL, signOut } from '../../utils';
 
+interface WholesaleData {
+    id: number;
+    name: string;
+    phone_number: string;
+    address: string;
+    city: string;
+    pic: string;
+    is_active: boolean;
+    parent: number | null;
+    parent_name: string | null;
+    children_count: number;
+    level: number;
+    is_root: boolean;
+    is_leaf: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+// Fungsi untuk mengurutkan data secara hierarki
+const sortHierarchicalData = (data: WholesaleData[]): WholesaleData[] => {
+    const result: WholesaleData[] = [];
+    
+    // Ambil semua root items (parent = null) dan urutkan berdasarkan nama
+    const rootItems = data.filter(item => item.parent === null).sort((a, b) => a.name.localeCompare(b.name));
+    
+    // Fungsi rekursif untuk menambahkan parent dan children-nya
+    const addItemWithChildren = (item: WholesaleData) => {
+        result.push(item);
+        
+        // Ambil semua children dari item ini dan urutkan berdasarkan nama
+        const children = data.filter(child => child.parent === item.id).sort((a, b) => a.name.localeCompare(b.name));
+        
+        // Tambahkan setiap child dan children-nya secara rekursif
+        children.forEach(child => {
+            addItemWithChildren(child);
+        });
+    };
+    
+    // Proses semua root items
+    rootItems.forEach(rootItem => {
+        addItemWithChildren(rootItem);
+    });
+    
+    return result;
+};
+
 const MasterWholesale = () => {
     const navigate = useNavigate();
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<WholesaleData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedRowIds, setSelectedRowIds] = useState<any[]>([]);
+    const [showHierarchy, setShowHierarchy] = useState(false);
 
 
     const fetchData = () => {
@@ -29,26 +75,49 @@ const MasterWholesale = () => {
             redirect: 'follow' as RequestRedirect,
         };
 
+        // Fetch data with hierarchy support
         fetch(`${stagingURL}/api/wholesales/`, requestOptions)
-            .then((response) => response.json())
+            .then((response) => {
+                console.log('📥 Fetch response status:', response.status);
+                return response.json();
+            })
             .then((result) => {                
+                console.log('📥 API Response:', result);
+                console.log('📥 API Response type:', typeof result);
+                console.log('📥 API Response length:', Array.isArray(result) ? result.length : 'Not array');
 
                 // Filter data untuk hanya menampilkan yang is_active = true
                 const filteredData = result.filter((item: any) => item.is_active === true);
+                console.log('📋 Filtered data length:', filteredData.length);
 
-                // Sort data berdasarkan id terbesar
-                const sortedData = filteredData.sort((a: any, b: any) => b.id - a.id);
+                // Check if items have hierarchy fields
+                if (filteredData.length > 0) {
+                    const sample = filteredData[0];
+                    console.log('📋 Sample item fields:', Object.keys(sample));
+                    console.log('📋 Sample item hierarchy fields:', {
+                        parent: sample.parent,
+                        parent_name: sample.parent_name,
+                        level: sample.level,
+                        children_count: sample.children_count,
+                        is_root: sample.is_root,
+                        is_leaf: sample.is_leaf
+                    });
+                }
 
-                setData(sortedData); // Set data yang sudah difilter dan diurutkan
+                // Sort data untuk menampilkan parent diikuti dengan child-nya
+                const sortedData = sortHierarchicalData(filteredData);
+
+                console.log('📋 Sorted data length:', sortedData.length);
+                setData(sortedData);
                 setLoading(false);
 
                 if (result.code == "token_not_valid") {
+                    console.log('❌ Token invalid, signing out...');
                     signOut(navigate);
                 }
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-                // showErrorToast('Error fetching data: ' + error);
                 setLoading(false);
             });
     };
@@ -58,36 +127,102 @@ const MasterWholesale = () => {
         fetchData();
     }, []);
 
-
-    const handleRowSelected = (selectedRows: any[]) => {
-        setSelectedRowIds(selectedRows); // Simpan semua data dari baris yang dipilih ke dalam state
+    const handleRowSelected = (_selectedRows: any[]) => {
+        // Function is kept for compatibility with DataTableAgen
     };
 
     // Definisikan kolom untuk DataTable
     const columns = [
         {
-            name:  "Nama Agen" ,
-            selector: (row: any) => row.name,
+            name: "Level",
+            selector: (row: WholesaleData) => row.level,
             sortable: true,
-            cell: (row: any) => row.name,
+            width: '80px',
+            cell: (row: WholesaleData) => (
+                <div className="flex items-center">
+                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                        L{row.level}
+                    </span>
+                </div>
+            ),
         },
         {
-            name:  "Telepon" ,
-            selector: (row: any) => row.phone_number,
+            name: "Nama Agen",
+            selector: (row: WholesaleData) => row.name,
             sortable: true,
-            cell: (row: any) => row.phone_number,
+            cell: (row: WholesaleData) => (
+                <div className="flex items-center">
+                    <span style={{ marginLeft: `${row.level * 16}px` }}>
+                        {row.level > 0 && '└─ '}
+                        {row.name}
+                    </span>
+                    {row.is_root && (
+                        <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                            Root
+                        </span>
+                    )}
+                </div>
+            ),
         },
         {
-            name:  "Kota" ,
-            selector: (row: any) => row.city,
+            name: "Children",
+            selector: (row: WholesaleData) => row.children_count,
             sortable: true,
-            cell: (row: any) => row.city,
+            width: '100px',
+            cell: (row: WholesaleData) => (
+                <div className="text-center">
+                    <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
+                        {row.children_count}
+                    </span>
+                </div>
+            ),
         },
         {
-            name:  "Alamat" ,
-            selector: (row: any) => row.address,
+            name: "Parent Agen",
+            selector: (row: WholesaleData) => row.parent_name || '-',
             sortable: true,
-            cell: (row: any) => row.address,
+            width: '150px',
+            cell: (row: WholesaleData) => (
+                <div>
+                    {row.parent_name ? (
+                        <span className="text-sm">{row.parent_name}</span>
+                    ) : (
+                        <span className="text-gray-400 text-sm">-</span>
+                    )}
+                </div>
+            ),
+        },
+        {
+            name: "PIC",
+            selector: (row: WholesaleData) => row.pic || '-',
+            sortable: true,
+            cell: (row: WholesaleData) => (
+                <div>
+                    {row.pic ? (
+                        <span className="text-sm">{row.pic}</span>
+                    ) : (
+                        <span className="text-gray-400 text-sm">-</span>
+                    )}
+                </div>
+            ),
+        },
+        {
+            name: "Telepon",
+            selector: (row: WholesaleData) => row.phone_number,
+            sortable: true,
+            cell: (row: WholesaleData) => row.phone_number,
+        },
+        {
+            name: "Kota",
+            selector: (row: WholesaleData) => row.city,
+            sortable: true,
+            cell: (row: WholesaleData) => row.city,
+        },
+        {
+            name: "Alamat",
+            selector: (row: WholesaleData) => row.address,
+            sortable: true,
+            cell: (row: WholesaleData) => row.address,
         },
     ];
 
@@ -101,7 +236,27 @@ const MasterWholesale = () => {
 
     return (
         <div>
-            <h1 className="text-lg font-bold mb-5">Master Agen</h1>
+            <div className="flex justify-between items-center mb-5">
+                <h1 className="text-lg font-bold">Master Agen (Hierarchy)</h1>
+                <div className="flex space-x-2">
+                    <button
+                        onClick={() => setShowHierarchy(!showHierarchy)}
+                        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                    >
+                        {showHierarchy ? 'Hide' : 'Show'} Hierarchy
+                    </button>
+                </div>
+            </div>
+
+            <div className="mb-4 p-4 bg-blue-50 rounded-md">
+                <h3 className="font-semibold text-blue-800 mb-2">Hierarchy Legend:</h3>
+                <div className="text-sm text-blue-700">
+                    <p>• L0, L1, L2... = Hierarchy Level</p>
+                    <p>• Root = Top-level wholesale (no parent)</p>
+                    <p>• Children = Number of direct children</p>
+                    <p>• Indentation shows hierarchy structure</p>
+                </div>
+            </div>
 
             <DataTableAgen
                 columns={columns}

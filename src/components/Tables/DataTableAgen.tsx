@@ -36,7 +36,8 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
     const [method, setMethod] = useState('POST');
     const [IdUpdate, setIdUpdate] = useState(null);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const [updateData, setUpdateData] = useState({ id: '', name: '', phone_number: '', address: '', city: '' });
+    const [updateData, setUpdateData] = useState({ id: '', name: '', phone_number: '', address: '', city: '', pic: '', parent: null as number | null });
+    const [allWholesales, setAllWholesales] = useState<any[]>([]);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -44,6 +45,11 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
         }, 2000);
         return () => clearTimeout(timeout);
     }, []);
+
+    // Fetch all wholesales for parent selection
+    useEffect(() => {
+        setAllWholesales(data);
+    }, [data]);
 
     const handleRowSelected = (state: any) => {
         if (onRowSelected) {
@@ -161,7 +167,15 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
     };
 
     const handleUpdate = (row: any) => {
-        setUpdateData({ id: row.id, name: row.name, phone_number: row.phone_number, city: row.city, address: row.address || '' });
+        setUpdateData({ 
+            id: row.id, 
+            name: row.name, 
+            phone_number: row.phone_number, 
+            city: row.city, 
+            address: row.address || '', 
+            pic: row.pic || '', 
+            parent: row.parent || null 
+        });
         setOpenUpdateModal(true);
     };
 
@@ -179,6 +193,8 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                 phone_number: updateData.phone_number,
                 city: updateData.city,
                 address: updateData.address,
+                pic: updateData.pic,
+                parent: updateData.parent,
                 is_active: true // Atur sesuai kebutuhan
             }),
         };
@@ -233,7 +249,14 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                 Tambah Data
             </button>
 
-            <ModalFormWholesale open={open} handleOpen={() => setOpen(false)} onSubmit={onSubmit} method={method} IdUpdate={IdUpdate} />
+            <ModalFormWholesale 
+                open={open} 
+                handleOpen={() => setOpen(false)} 
+                onSubmit={onSubmit} 
+                method={method} 
+                IdUpdate={IdUpdate} 
+                wholesales={allWholesales}
+            />
 
             <DataTable
                 columns={columnsWithActions}
@@ -287,7 +310,7 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                         />
                     </div>
 
-                    <div>
+                    <div className='mt-2'>
                         <label>Kota</label>
                         <input
                             type="text"
@@ -306,6 +329,35 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                             placeholder="Masukan alamat"
                             className="border p-2 w-full" rows={4}
                         />
+                    </div>
+
+                    <div className='mt-2'>
+                        <label>PIC (Person In Charge)</label>
+                        <input
+                            type="text"
+                            value={updateData.pic}
+                            onChange={(e) => setUpdateData({ ...updateData, pic: e.target.value })}
+                            placeholder="Enter PIC name"
+                            className="border p-2 w-full"
+                        />
+                    </div>
+
+                    <div className='mt-2'>
+                        <label>Parent</label>
+                        <select
+                            value={updateData.parent || ''}
+                            onChange={(e) => setUpdateData({ ...updateData, parent: e.target.value ? parseInt(e.target.value) : null })}
+                            className="border p-2 w-full"
+                        >
+                            <option value="">No Parent (Root)</option>
+                            {allWholesales.filter(w => w.id !== updateData.id).map((wholesale) => (
+                                <option key={wholesale.id} value={wholesale.id}>
+                                    {'  '.repeat(wholesale.level || 0)}
+                                    {wholesale.level > 0 ? '└─ ' : ''}
+                                    {wholesale.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </DialogBody>
                 <DialogFooter>

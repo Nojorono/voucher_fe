@@ -15,7 +15,7 @@ const getBaseURL = () => {
   
   // Development
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:8081';
+    return 'http://localhost:8000';
   }
   
   // ALB fallback
@@ -24,7 +24,7 @@ const getBaseURL = () => {
   }
   
   // Fallback untuk IP langsung
-  return `http://${hostname}:8081`;
+  return `http://${hostname}:8000`;
 };
 
 const API_BASE_URL = getBaseURL();
