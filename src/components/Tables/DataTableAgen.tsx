@@ -146,13 +146,13 @@ const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelecte
                     });
                 }
             })
-            .then((data) => {
-                setOpen(false);
-                onRefresh();
-                setTimeout(() => {
-                    showSuccessToast('Data berhasil ditambahkan!');
-                }, 2000);
-            })
+            // .then((data) => {
+            //     setOpen(false);
+            //     onRefresh();
+            //     setTimeout(() => {
+            //         showSuccessToast('Data berhasil ditambahkan!');
+            //     }, 2000);
+            // })
             .catch((error) => {
                 console.error('Error posting/updating data:', error);
                 showErrorToast(`Error posting/updating data ${error}`,);

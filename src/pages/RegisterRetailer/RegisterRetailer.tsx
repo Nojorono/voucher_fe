@@ -6,6 +6,7 @@ import CustomToast, { showErrorToast, showSuccessToast } from '../../components/
 import Spinner from '../../components/Spinner';
 import { BG3, banner1, banner2 } from '../../images/sample/index';
 import Swal from 'sweetalert2'
+import { decryptWsId, isValidEncryptedWsId } from '../../utils/encryption';
 
 interface IFormInput {
     ws_name: string;
@@ -20,11 +21,41 @@ interface IFormInput {
     kelurahan: Selection;
 }
 
+interface Wholesale {
+    id: number;
+    name: string;
+}
+
 const RegisterRetailer: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [reachLimit, setReachLimit] = useState(false);
+    const [defaultWholesale, setDefaultWholesale] = useState<Wholesale | null>(null);
+    const [encryptionError, setEncryptionError] = useState(false);
 
     useEffect(() => {
+        // Get encrypted token from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const encryptedToken = urlParams.get('token');
+        
+        if (encryptedToken) {
+            // Validate encrypted token
+            if (!isValidEncryptedWsId(encryptedToken)) {
+                console.error('Invalid encrypted token');
+                setEncryptionError(true);
+                return;
+            }
+            
+            // Decrypt the token to get ws_id
+            const wsId = decryptWsId(encryptedToken);
+            
+            if (wsId) {
+                fetchWholesaleData(wsId);
+            } else {
+                console.error('Failed to decrypt token');
+                setEncryptionError(true);
+            }
+        }
+
         // Check limit
         const checkLimit = async () => {
             const requestOptions = {
@@ -49,6 +80,21 @@ const RegisterRetailer: React.FC = () => {
 
         checkLimit()
     }, []);
+
+    const fetchWholesaleData = async (wsId: string) => {
+        try {
+            const response = await fetch(`${stagingURL}/api/wholesales/${wsId}/`);
+            if (response.ok) {
+                const wholesaleData = await response.json();
+                setDefaultWholesale({
+                    id: wholesaleData.id,
+                    name: wholesaleData.name
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching wholesale data:', error);
+        }
+    };
 
     const onSubmit: SubmitHandler<IFormInput> = async (data, event) => {
         await postRetailerData(data, event);
@@ -80,7 +126,7 @@ const RegisterRetailer: React.FC = () => {
 
             // Map form fields to FormData
             const formFields = {
-                ws_name: data.ws_name,
+                ws_name: data.ws_name || defaultWholesale?.name || '',
                 name: data.username,
                 phone_number: data.phone_number,
                 address: data.address,
@@ -152,7 +198,7 @@ const RegisterRetailer: React.FC = () => {
     };
 
     const fields: { name: keyof IFormInput; label: string; required: boolean; type?: string }[] = [
-        { name: 'ws_name', label: 'Nama Agen', required: true, type: 'select' },
+        { name: 'ws_name', label: 'Nama Agen', required: false, type: 'select' },
         { name: 'username', label: 'Nama Toko/Pemilik', required: true },
         { name: 'phone_number', label: 'Nomor Whatsapp', required: true },
         { name: 'address', label: 'Alamat', required: true },
@@ -179,15 +225,39 @@ const RegisterRetailer: React.FC = () => {
                                 <h2 className="text-4xl font-bold mb-10 text-white text-center">Promo RYO Sudah Berakhir</h2>
                             </div>
                         </div>
+                    ) : encryptionError ? (
+                        <div className="flex justify-center items-center w-full h-full">
+                            <div className="flex justify-center items-center h-screen bg-transparent">
+                                <div className="text-center">
+                                    <h2 className="text-4xl font-bold mb-5 text-red-400">Link Tidak Valid</h2>
+                                    <p className="text-xl text-white mb-5">
+                                        Link registrasi yang Anda gunakan tidak valid atau sudah kedaluwarsa.
+                                    </p>
+                                    <p className="text-lg text-white">
+                                        Silakan minta link registrasi yang baru dari agen Anda.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     ) : (
                         <>
                             <div className="w-full p-10">
                                 <div className="p-10">
                                     <h2 className="text-4xl font-bold mb-10 text-white text-center">Pendaftaran Retailer</h2>
 
+                                    {/* Show selected wholesale info */}
+                                    {defaultWholesale && (
+                                        <div className="mb-4 p-4 bg-blue-100 rounded-lg">
+                                            <p className="text-blue-800 font-semibold">
+                                                Agen Terpilih: {defaultWholesale.name}
+                                            </p>
+                                        </div>
+                                    )}
+
                                     <FormRegister<IFormInput>
                                         onSubmit={onSubmit}
                                         fields={fields}
+                                        defaultWholesale={defaultWholesale}
                                     />
                                 </div>
                             </div>

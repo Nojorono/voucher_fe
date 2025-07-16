@@ -15,9 +15,10 @@ interface FormProps<T extends FieldValues> {
         required?: boolean;
         type?: string;
     }[];
+    defaultWholesale?: { id: number; name: string } | null;
 }
 
-const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormProps<T>) => {
+const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields, defaultWholesale }: FormProps<T>) => {
     const {
         register,
         handleSubmit,
@@ -30,7 +31,6 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
     const [kelurahan, setKelurahan] = useState<{ value: string; label: string }[]>([]);
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoRemarks, setPhotoRemarks] = useState<string[]>([]);
-    const [dataWholesale, setDataWholesale] = useState<{ value: string; label: string }[]>([]);
 
     const [selectedProvinsi, setSelectedProvinsi] = useState<string | null>(null);
     const [selectedKota, setSelectedKota] = useState<string | null>(null);
@@ -205,6 +205,14 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
             return;
         }
 
+        // Pastikan ws_name terisi, baik dari selectedWS atau defaultWholesale
+        const wsName = selectedWS || (defaultWholesale ? defaultWholesale.name : '');
+        
+        if (!wsName) {
+            showErrorToast('Nama Agen diperlukan. Silakan gunakan link registrasi yang diberikan oleh agen.');
+            return;
+        }
+
         const remarksData = {
             ...data,
             photo_remarks: photoRemarks,
@@ -213,44 +221,17 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
             kota: selectedKota,
             kecamatan: selectedKecamatan,
             kelurahan: selectedKelurahan,
-            ws_name: selectedWS,
+            ws_name: wsName,
         };
         onSubmit(remarksData);
     };
 
-    const fetchDataWholesale = async () => {
-        const requestOptions: RequestInit = {
-            method: "GET",
-            redirect: "follow"
-        };
-
-        try {
-            const response = await fetch(`${stagingURL}/api/wholesales/`, requestOptions);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-
-
-            const options = data
-                .filter((item: { is_active: boolean }) => item.is_active)
-                .map((item: { name: string, id: string, city: string }) => ({
-                    value: item.name,
-                    label: (
-                        <span style={{ color: item.city === "JOG" ? "#006400" : "inherit", fontWeight: "bold" }}>
-                            {item.name}
-                        </span>
-                    ),
-                }));
-            setDataWholesale(options);
-        } catch (error) {
-            console.log(error instanceof Error ? error.message : 'An unknown error occurred');
-        }
-    };
-
+    // Set default wholesale if provided from URL
     useEffect(() => {
-        fetchDataWholesale();
-    }, [])
+        if (defaultWholesale) {
+            setSelectedWS(defaultWholesale.name);
+        }
+    }, [defaultWholesale]);
 
     return (
         <>
@@ -344,14 +325,26 @@ const FormRetailerRegister = <T extends FieldValues>({ onSubmit, fields }: FormP
                                     />
                                 )}
                                 {field.name === 'ws_name' && (
-                                    <Select
-                                        options={dataWholesale}
-                                        onChange={(selectedOption) => {
-                                            if (selectedOption) {
-                                                setSelectedWS(selectedOption.value);
-                                            }
-                                        }}
-                                    />
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={selectedWS || (defaultWholesale ? defaultWholesale.name : '')}
+                                            onChange={(e) => setSelectedWS(e.target.value)}
+                                            readOnly={true}
+                                            placeholder={defaultWholesale ? `${defaultWholesale.name}` : "Nama Agen akan terisi otomatis"}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 cursor-not-allowed"
+                                        />
+                                        {defaultWholesale && (
+                                            <p className="text-sm text-green-600 mt-1">
+                                                ✓ Agen sudah terpilih dari link registrasi
+                                            </p>
+                                        )}
+                                        {!defaultWholesale && (
+                                            <p className="text-sm text-blue-600 mt-1">
+                                                ℹ️ Gunakan link registrasi yang diberikan oleh agen
+                                            </p>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         ) : (

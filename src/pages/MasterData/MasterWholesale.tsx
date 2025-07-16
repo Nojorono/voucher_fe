@@ -84,10 +84,10 @@ const MasterWholesale = () => {
                 // Filter data untuk hanya menampilkan yang is_active = true
                 const filteredData = result.filter((item: any) => item.is_active === true);
                 
-                // Check if items have hierarchy fields
-                if (filteredData.length > 0) {
-                    const sample = filteredData[0];
-                }
+                // // Check if items have hierarchy fields
+                // if (filteredData.length > 0) {
+                //     const sample = filteredData[0];
+                // }
 
                 // Sort data untuk menampilkan parent diikuti dengan child-nya
                 const sortedData = sortHierarchicalData(filteredData);
