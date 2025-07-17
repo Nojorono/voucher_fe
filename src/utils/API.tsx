@@ -2,27 +2,27 @@ import axios from 'axios';
 
 const getBaseURL = () => {
   const hostname = window.location.hostname;
-  
+
   // Localhost development
   if (hostname === 'ryo.localhost') {
-    return 'http://apiryo.localhost';  // ✅ Domain-to-domain
+    return 'http://apiryo.localhost'; // ✅ Domain-to-domain
   }
-  
+
   // Production domains (HTTP only for now)
   if (hostname === 'ryo.kcsi.id') {
-    return 'http://apiryo.kcsi.id';  // ✅ HTTP backend
+    return 'http://apiryo.kcsi.id'; // ✅ HTTP backend
   }
-  
+
   // Development
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://10.0.63.208:8000';
   }
-  
+
   // ALB fallback
   if (hostname.includes('kcsi-alb-prod')) {
     return `http://${hostname}:8082`;
   }
-  
+
   // Fallback untuk IP langsung
   return `http://${hostname}:8000`;
 };
