@@ -60,8 +60,6 @@ const FormRetailerRegister = <T extends FieldValues>({
       try {
         const response = await fetch(`${stagingURL}/api/provinsi`);
         const data = await response.json();
-        console.log('Fetched Provinsi:', data);
-
         const options = data.map((item: string) => ({
           value: item,
           label: item,
