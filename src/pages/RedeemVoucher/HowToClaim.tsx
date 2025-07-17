@@ -6,6 +6,15 @@ import { encryptWsId } from '../../utils/encryption';
 export default function HowToClaim() {
     const [wsId, setWsId] = useState<string>('');
     const [encryptedWsId, setEncryptedWsId] = useState<string>('');
+    const { hostname, port } = window.location;
+    const baseUrl = `http://${hostname}${port ? `:${port}` : ''}`;
+    // if (hostname === 'ryo.kcsi.id') {
+    //     const baseUrl = `http://${hostname}`;
+    //     console.log('Current hostname:', baseUrl);
+    // } else{
+    //     const baseUrl = `http://${hostname}:${port}`;
+    //     console.log('Current hostname:', baseUrl);
+    // }
 
     useEffect(() => {
         // Get ws_id from localStorage
@@ -20,7 +29,8 @@ export default function HowToClaim() {
 
     // COPY CLIPBOARD
     const copyToClipboard = () => {
-        const registrationUrl = `https://ryoapp.niaganusaabadi.co.id/register/retailer?token=${encryptedWsId}`;
+        // Import stagingURL from src/utils/API.tsx
+        const registrationUrl = `${baseUrl}/register/retailer?token=${encryptedWsId}`;
         
         navigator.clipboard
             .writeText(registrationUrl)
@@ -40,7 +50,7 @@ export default function HowToClaim() {
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER MENDAPATKAN VOUCHER:</h2>
             <ol className="list-decimal list-inside mb-6">
                 <li className="mb-2">Toko/retailer diwajibkan memasang sticker POSM dan menyediakan tester di tempat yang telah disediakan di tempat yang strategis di dalam toko.</li>
-                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href={`https://ryoapp.niaganusaabadi.co.id/register/retailer?token=${encryptedWsId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
+                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href={`${baseUrl}/register/retailer?token=${encryptedWsId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
                 <li className="mb-2">Voucher akan dikirimkan oleh pihak admin hanya melalui no Whatsapp <strong>081220199495</strong> setelah melalui proses verifikasi.</li>
             </ol>
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER CLAIM VOUCHER:</h2>
