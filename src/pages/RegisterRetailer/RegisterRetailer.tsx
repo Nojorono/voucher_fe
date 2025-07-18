@@ -165,10 +165,21 @@ const RegisterRetailer: React.FC = () => {
           body: formData,
           signal: controller.signal,
           redirect: 'follow',
+          headers: {
+            'Accept': 'application/json',
+            'Origin': window.location.origin, 
+          },
+          mode: 'cors',
+          credentials: 'omit',
         },
       );
       clearTimeout(timeoutId);
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
       const result = await response.json();
+      console.log('Response data:', result);
 
       if (response.ok && result.message == 'Retailer registered successfully') {
         setLoading(false);
