@@ -168,6 +168,9 @@ const RegisterRetailer: React.FC = () => {
           headers: {
             'Accept': 'application/json',
             'Origin': window.location.origin, 
+            // ✅ Add headers untuk bypass WAF detection
+            'User-Agent': 'RYO-Frontend/1.0',
+            'X-Requested-With': 'XMLHttpRequest',
           },
           mode: 'cors',
           credentials: 'omit',
