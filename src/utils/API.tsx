@@ -15,7 +15,8 @@ const getBaseURL = () => {
 
   // Development
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://10.0.63.158:8000';
+    // return 'http://10.0.63.158:8000';
+     return 'http://apiryo.kcsi.id';
   }
 
   // ALB fallback

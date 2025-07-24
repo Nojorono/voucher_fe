@@ -29,6 +29,9 @@ interface DataTableProps {
 
 const DataTableAgen = memo(({ columns, data, selectableRows = true, onRowSelected, onRefresh }: DataTableProps) => {
 
+    console.log('DataTableAgen component mounted', data);
+    
+
     const [pending, setPending] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [rowToDelete, setRowToDelete] = useState<any>(null);
