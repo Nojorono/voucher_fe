@@ -165,26 +165,87 @@ const RegisterRetailer: React.FC = () => {
           body: formData,
           signal: controller.signal,
           redirect: 'follow',
+          headers: {
+            'Accept': 'application/json',
+            'Origin': window.location.origin, 
+            // ✅ Add headers untuk bypass WAF detection
+            'User-Agent': 'RYO-Frontend/1.0',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          mode: 'cors',
+          credentials: 'omit',
         },
       );
       clearTimeout(timeoutId);
-      const result = await response.json();
-
-      if (response.ok && result.message == 'Retailer registered successfully') {
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      console.log('Response ok:', response.ok);
+      console.log('Response type:', response.type);
+      
+      // ✅ Check if response is actually JSON
+      const contentType = response.headers.get('content-type');
+      console.log('Content-Type:', contentType);
+      
+      if (!contentType || !contentType.includes('application/json')) {
+        // Handle non-JSON response
+        const text = await response.text();
+        console.error('Non-JSON response:', text);
         setLoading(false);
+        setTimeout(() => {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Server Error!',
+            text: 'Server returned invalid response format.',
+          });
+        }, 1000);
+        return;
+      }
+
+      const result = await response.json();
+      console.log('Response data:', result);
+
+      // ✅ Enhanced success condition check
+      const isSuccess = (
+        response.ok && 
+        (response.status === 200 || response.status === 201) &&
+        result &&
+        (
+          result.message === 'Retailer registered successfully' ||
+          result.message?.includes('successfully')
+        )
+      );
+
+      console.log('Is success:', isSuccess);
+
+      if (isSuccess) {
+        // ✅ Force clear loading state immediately
+        setLoading(false);
+        
+        // ✅ Reset form immediately
+        if (event?.target) {
+          event.target.reset();
+        }
+        
         setTimeout(() => {
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Registrasi berhasil!',
-            text: 'Terima kasih telah mendaftar.',
+            text: `Terima kasih telah mendaftar. Silakan tunggu konfirmasi dari agen Anda.`,
+            confirmButtonText: 'OK'
+          }).then(() => {
+            // ✅ Additional cleanup after modal
+            window.location.reload();
           });
-          event?.target.reset();
-          return;
-        }, 1000);
+        }, 100);
+        
       } else {
+        // ✅ Always clear loading state
+        setLoading(false);
+        
         if (result.non_field_errors) {
-          setLoading(false);
           setTimeout(() => {
             Swal.fire({
               position: 'center',
@@ -193,21 +254,44 @@ const RegisterRetailer: React.FC = () => {
               text: result.non_field_errors.join(' '),
             });
           }, 1000);
+        } else {
+          setTimeout(() => {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'Registrasi gagal!',
+              text: result.message || 'Silakan coba lagi.',
+            });
+          }, 1000);
         }
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Registrasi gagal. Silakan coba lagi.',
-        });
       }
     } catch (error) {
       console.error(`Error Log: ${(error as Error).message}`);
+      
+      // ✅ Always clear loading state in catch block
       setLoading(false);
+      
+      // ✅ Handle different error types
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          console.error('Request was aborted due to timeout');
+          setTimeout(() => {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'Timeout!',
+              text: 'Request took too long. Please try again.',
+            });
+          }, 1000);
+          return;
+        }
+      }
+      
       setTimeout(() => {
         Swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'Timeout!',
+          title: 'Connection Error!',
           text: `Error: ${(error as Error).message}`,
         });
       }, 1000);

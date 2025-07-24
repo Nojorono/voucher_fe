@@ -6,7 +6,9 @@ import { encryptWsId } from '../../utils/encryption';
 export default function HowToClaim() {
     const [wsId, setWsId] = useState<string>('');
     const [encryptedWsId, setEncryptedWsId] = useState<string>('');
-
+    const { hostname, port } = window.location;
+    const baseUrl = `http://${hostname}${port ? `:${port}` : ''}`;
+    
     useEffect(() => {
         // Get ws_id from localStorage
         const wsId = localStorage.getItem('ws_id');
@@ -18,21 +20,84 @@ export default function HowToClaim() {
         }
     }, []);
 
-    // COPY CLIPBOARD
-    const copyToClipboard = () => {
-        const registrationUrl = `https://ryoapp.niaganusaabadi.co.id/register/retailer?token=${encryptedWsId}`;
+    // Fallback function untuk copy text
+    const fallbackCopyTextToClipboard = (text: string) => {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
         
-        navigator.clipboard
-            .writeText(registrationUrl)
-            .then(() => {
+        // Avoid scrolling to bottom
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.width = "2em";
+        textArea.style.height = "2em";
+        textArea.style.padding = "0";
+        textArea.style.border = "none";
+        textArea.style.outline = "none";
+        textArea.style.boxShadow = "none";
+        textArea.style.background = "transparent";
+        
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
                 Swal.fire({
                     position: "center",
                     icon: "success",
                     title: "Link sudah ter-copy!",
                     text: 'Silahkan Paste/Tempel pada Chat Retailer yang akan mendaftar!'
                 });
-            })
-            .catch((err) => console.error("Gagal menyalin teks: ", err));
+            } else {
+                throw new Error('Copy command was unsuccessful');
+            }
+        } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
+            // Show manual copy option
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "Copy Manual",
+                html: `
+                    <p>Silahkan copy link berikut secara manual:</p>
+                    <input type="text" value="${text}" style="width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" readonly onclick="this.select()">
+                    <p><small>Klik pada link untuk select all, lalu Ctrl+C untuk copy</small></p>
+                `,
+                showConfirmButton: true
+            });
+        }
+        
+        document.body.removeChild(textArea);
+    };
+
+    // COPY CLIPBOARD dengan fallback
+    const copyToClipboard = () => {
+        const registrationUrl = `${baseUrl}/register/retailer?token=${encryptedWsId}`;
+        
+        // Check if clipboard API is available
+        if (navigator.clipboard && window.isSecureContext) {
+            // Use modern clipboard API
+            navigator.clipboard
+                .writeText(registrationUrl)
+                .then(() => {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Link sudah ter-copy!",
+                        text: 'Silahkan Paste/Tempel pada Chat Retailer yang akan mendaftar!'
+                    });
+                })
+                .catch((err) => {
+                    console.error("Gagal menyalin teks: ", err);
+                    // Fallback to manual copy
+                    fallbackCopyTextToClipboard(registrationUrl);
+                });
+        } else {
+            // Fallback for older browsers or non-secure contexts
+            fallbackCopyTextToClipboard(registrationUrl);
+        }
     };
 
     return (
@@ -40,7 +105,7 @@ export default function HowToClaim() {
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER MENDAPATKAN VOUCHER:</h2>
             <ol className="list-decimal list-inside mb-6">
                 <li className="mb-2">Toko/retailer diwajibkan memasang sticker POSM dan menyediakan tester di tempat yang telah disediakan di tempat yang strategis di dalam toko.</li>
-                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href={`https://ryoapp.niaganusaabadi.co.id/register/retailer?token=${encryptedWsId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
+                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href={`${baseUrl}/register/retailer?token=${encryptedWsId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
                 <li className="mb-2">Voucher akan dikirimkan oleh pihak admin hanya melalui no Whatsapp <strong>081220199495</strong> setelah melalui proses verifikasi.</li>
             </ol>
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER CLAIM VOUCHER:</h2>
