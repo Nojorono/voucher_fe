@@ -58,7 +58,7 @@ const MasterWholesale = () => {
   const [data, setData] = useState<WholesaleData[]>([]);
   const [loading, setLoading] = useState(true);
   const [showHierarchy, setShowHierarchy] = useState(false);
-  
+
   const fetchData = () => {
     setLoading(true);
     const token = localStorage.getItem('token');
@@ -122,13 +122,19 @@ const MasterWholesale = () => {
   // Definisikan kolom untuk DataTable
   const columns = [
     {
+      name: '',
+      selector: () => '',
+      width: '40px',
+      cell: () => <div />,
+    },
+    {
       name: 'Level',
       selector: (row: WholesaleData) => row.level,
       sortable: true,
       width: '80px',
       cell: (row: WholesaleData) => (
-        <div className="flex items-center">
-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+        <div className="flex justify-center">
+          <span className="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-[2px] rounded-full shadow">
             L{row.level}
           </span>
         </div>
@@ -139,44 +145,25 @@ const MasterWholesale = () => {
       selector: (row: WholesaleData) => row.name,
       sortable: true,
       cell: (row: WholesaleData) => (
-        <div className="flex items-center">
-          <span style={{ marginLeft: `${row.level * 16}px` }}>
-            {row.level > 0 && '└─ '}
-            {row.name}
-          </span>
-          {row.is_root && (
-            <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-              Root
-            </span>
-          )}
+        <div
+          className="flex items-center text-sm font-medium text-gray-800"
+          style={{ marginLeft: `${row.level * 16}px` }}
+        >
+          {row.level > 0 && <span className="text-gray-400 mr-1">└─</span>}
+          {row.name}
         </div>
       ),
     },
     {
-      name: 'Children',
+      name: 'Sub Agen',
       selector: (row: WholesaleData) => row.children_count,
       sortable: true,
       width: '100px',
       cell: (row: WholesaleData) => (
         <div className="text-center">
-          <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
+          <span className="text-xs font-medium bg-slate-100 text-slate-700 px-2 py-[2px] rounded-full">
             {row.children_count}
           </span>
-        </div>
-      ),
-    },
-    {
-      name: 'Parent Agen',
-      selector: (row: WholesaleData) => row.parent_name || '-',
-      sortable: true,
-      width: '150px',
-      cell: (row: WholesaleData) => (
-        <div>
-          {row.parent_name ? (
-            <span className="text-sm">{row.parent_name}</span>
-          ) : (
-            <span className="text-gray-400 text-sm">-</span>
-          )}
         </div>
       ),
     },
@@ -184,33 +171,48 @@ const MasterWholesale = () => {
       name: 'PIC',
       selector: (row: WholesaleData) => row.pic || '-',
       sortable: true,
-      cell: (row: WholesaleData) => (
-        <div>
-          {row.pic ? (
-            <span className="text-sm">{row.pic}</span>
-          ) : (
-            <span className="text-gray-400 text-sm">-</span>
-          )}
-        </div>
-      ),
+      cell: (row: WholesaleData) =>
+        row.pic ? (
+          <span className="text-sm font-medium text-gray-800">{row.pic}</span>
+        ) : (
+          <span className="text-sm italic text-gray-400">Belum ada</span>
+        ),
     },
     {
       name: 'Telepon',
       selector: (row: WholesaleData) => row.phone_number,
       sortable: true,
-      cell: (row: WholesaleData) => row.phone_number,
+      cell: (row: WholesaleData) => (
+        <span className="text-sm text-gray-700">{row.phone_number}</span>
+      ),
     },
     {
       name: 'Kota',
       selector: (row: WholesaleData) => row.city,
       sortable: true,
-      cell: (row: WholesaleData) => row.city,
+      cell: (row: WholesaleData) => (
+        <span className="text-sm text-gray-700">{row.city}</span>
+      ),
     },
     {
       name: 'Alamat',
       selector: (row: WholesaleData) => row.address,
       sortable: true,
-      cell: (row: WholesaleData) => row.address,
+      cell: (row: WholesaleData) => {
+        const truncated =
+          row.address.length > 15
+            ? row.address.slice(0, 15) + '...'
+            : row.address;
+
+        return (
+          <span
+            className="text-sm text-gray-600"
+            title={row.address} // Menampilkan full address saat hover
+          >
+            {truncated}
+          </span>
+        );
+      },
     },
   ];
 
@@ -240,8 +242,11 @@ const MasterWholesale = () => {
         <h3 className="font-semibold text-blue-800 mb-2">Hierarchy Legend:</h3>
         <div className="text-sm text-blue-700">
           <p>• L0, L1, L2... = Hierarchy Level</p>
-          <p>• Root = Top-level wholesale (no parent)</p>
-          <p>• Children = Number of direct children</p>
+          <p>• L0 = Parent Agen</p>
+          <p>• L1 = Sub Agen dari Parent Agen</p>
+          <p>• L2 = Sub Agen dari Sub Agen</p>
+          {/* <p>• Root = Top-level wholesale (no parent)</p> */}
+          {/* <p>• Sub Agen = Number of Sub Agen</p> */}
           <p>• Indentation shows hierarchy structure</p>
         </div>
       </div>
