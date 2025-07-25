@@ -53,8 +53,8 @@ function Redeem() {
 
     const verifyVoucher = async () => {
 
-        if (subTotal < 20000) {
-            showErrorToast('Pembelian harus diatas 20,000 untuk redeem voucher.');
+        if (subTotal < 50000) {
+            showErrorToast('Pembelian harus diatas 50,000 untuk redeem voucher.');
             return false;
         }
 
@@ -240,7 +240,7 @@ function Redeem() {
     };
 
     const subTotal = skuItems.reduce((acc, item) => acc + item.nominal, 0);
-    const discount = isVoucherValid ? 20000 : 0;
+    const discount = isVoucherValid ? 50000 : 0;
     const grandTotalAfterDiscount = subTotal === 0 ? 0 : subTotal - discount;
 
     const fetchItemSKU = async () => {
@@ -477,7 +477,7 @@ function Redeem() {
                                         </label>
                                         <input
                                             type="text"
-                                            value={isVoucherValid ? `${(20000).toLocaleString('id-ID')}` : 0}
+                                            value={isVoucherValid ? `${(50000).toLocaleString('id-ID')}` : 0}
                                             readOnly
                                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                         />

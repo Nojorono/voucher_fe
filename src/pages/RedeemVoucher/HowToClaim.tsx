@@ -110,10 +110,10 @@ export default function HowToClaim() {
             </ol>
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER CLAIM VOUCHER:</h2>
             <ol className="list-decimal list-inside">
-                <li className="mb-2">Saat toko/retailer mau melakukan pembelian berikutnya, bisa menunjukkan kode voucher ke Agen untuk mendapatkan potongan Rp. 20.000 dari total nilai pembelian mereka.</li>
-                <li className="mb-2">Total nilai pembelian produk harus diatas nilai voucher (Rp. 20,000)</li>
+                <li className="mb-2">Saat toko/retailer mau melakukan pembelian berikutnya, bisa menunjukkan kode voucher ke Agen untuk mendapatkan potongan Rp. 50.000 dari total nilai pembelian mereka.</li>
+                <li className="mb-2">Total nilai pembelian produk harus diatas nilai voucher (Rp. 50.000)</li>
                 <li className="mb-2">Agen diwajibkan mengisi formulir "Redeem Voucher" dengan detail pembelian.</li>
-                <li className="mb-2">NNA akan mengganti biaya Rp. 20.000 kepada Agen sesuai dengan jumlah yang telah digunakan.</li>
+                <li className="mb-2">NNA akan mengganti biaya Rp. 50.000 kepada Agen sesuai dengan jumlah yang telah digunakan.</li>
             </ol>
 
             <div className="w-full mt-10 text-center">
