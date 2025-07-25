@@ -36,6 +36,7 @@ const RegisterRetailer: React.FC = () => {
     null,
   );
   const [encryptionError, setEncryptionError] = useState(false);
+  const [projectId, setProjectId] = useState('2'); // Assuming project_id is always 2 for this case
 
   useEffect(() => {
     // Get encrypted token from URL parameter
@@ -70,7 +71,7 @@ const RegisterRetailer: React.FC = () => {
 
       try {
         const response = await fetch(
-          `${stagingURL}/api/current-count/?id=1`,
+          `${stagingURL}/api/current-count/?project_id=${projectId}`,
           requestOptions,
         );
         const result = await response.json();
@@ -149,6 +150,7 @@ const RegisterRetailer: React.FC = () => {
         kota: data.kota,
         kecamatan: data.kecamatan,
         kelurahan: data.kelurahan,
+        project_id: projectId, // Ambil dari const projectId di atas
       };
 
       Object.entries(formFields).forEach(([key, value]) => {

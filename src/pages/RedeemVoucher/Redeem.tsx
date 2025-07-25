@@ -52,12 +52,6 @@ function Redeem() {
     };
 
     const verifyVoucher = async () => {
-
-        if (subTotal < 50000) {
-            showErrorToast('Pembelian harus diatas 50,000 untuk redeem voucher.');
-            return false;
-        }
-
         const token = localStorage.getItem('token');
         const ws_id = localStorage.getItem('ws_id');
 
@@ -72,15 +66,46 @@ function Redeem() {
         myHeaders.append('Content-Type', 'application/json');
 
         try {
+            // Cek diskon voucher
+            const cekDiscAmount = await fetch(
+                `${stagingURL}/api/voucher-discounts/by_voucher/?voucher_code=${voucherCode}`,
+                {
+                    method: 'GET',
+                    headers: myHeaders,
+                }
+            );
+            const discData = await cekDiscAmount.json();
+            console.log('Discount data:', discData);
+
+            let discountAmount = 0;
+            if (discData && discData.discounts && discData.discounts.length > 0) {
+                discountAmount = Number(discData.discounts[0].discount_amount) || 0;
+            }
+
+            if (subTotal < discountAmount) {
+                showErrorToast(
+                    `Pembelian harus diatas ${discountAmount.toLocaleString('id-ID')} untuk redeem voucher.`
+                );
+                return false;
+            }
+            if (discData.length === 0) {
+                showErrorToast('Voucher tidak ditemukan atau tidak berlaku.');
+                return false;
+            }
+
+            // Verifikasi voucher
             const verifyResponse = await fetch(`${stagingURL}/api/redeem_voucher/`, {
                 method: 'POST',
                 headers: myHeaders,
-                body: JSON.stringify({ voucher_code: voucherCode, ws_id: ws_id }),
+                body: JSON.stringify({ voucher_code: voucherCode, ws_id }),
             });
 
             const verifyData = await verifyResponse.json();
 
-            if (verifyResponse.status === 201 && verifyData.message === "Voucher redeemed successfully") {
+            if (
+                verifyResponse.status === 201 &&
+                verifyData.message === 'Voucher redeemed successfully'
+            ) {
                 showSuccessToast('Voucher valid.');
                 setIsVoucherValid(true);
                 setMessage(verifyData.message);
@@ -90,7 +115,6 @@ function Redeem() {
                 setErrMessage(verifyData.non_field_errors[0]);
                 return false;
             }
-
         } catch (error) {
             console.log('Gagal memverifikasi voucher, silakan coba lagi.');
             return false;
@@ -181,7 +205,7 @@ function Redeem() {
             showErrorToast(String(error));
         }
     };
-    
+
     const handleAddSKU = () => {
         if (skuItems.length >= 3) {
             showErrorToast('Maksimal hanya bisa menambahkan 3 SKU.');
