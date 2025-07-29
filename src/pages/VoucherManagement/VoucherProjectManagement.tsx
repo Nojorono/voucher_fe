@@ -187,20 +187,20 @@ const VoucherProjectManagement: React.FC = () => {
     {
       name: 'Actions',
       cell: (row: VoucherProject) => (
-        <div className="flex space-x-2">
+        <div className="flex gap-1">
           <Button
             size="sm"
             color={row.is_active ? "orange" : "green"}
             onClick={() => handleToggleStatus(row.id)}
-            className="px-3 py-1 text-xs"
+            className="px-2 py-1 text-xs min-w-[70px]"
           >
-            {row.is_active ? 'Deactivate' : 'Activate'}
+            {row.is_active ? 'Disable' : 'Enable'}
           </Button>
           <Button 
             size="sm" 
             color="blue" 
             onClick={() => handleEdit(row)}
-            className="px-3 py-1 text-xs"
+            className="px-2 py-1 text-xs"
           >
             Edit
           </Button>
@@ -208,13 +208,13 @@ const VoucherProjectManagement: React.FC = () => {
             size="sm" 
             color="red" 
             onClick={() => handleDelete(row.id)}
-            className="px-3 py-1 text-xs"
+            className="px-2 py-1 text-xs min-w-[70px]"
           >
             Delete
           </Button>
         </div>
       ),
-      width: '220px',
+      width: '240px',
     },
   ];
 

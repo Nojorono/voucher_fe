@@ -15,7 +15,7 @@ const VoucherLimitManagement: React.FC = () => {
     description: '',
     limit: '',
     current_count: '',
-    voucher_project_id: '',
+    voucher_project: '',
   });
   const [incrementData, setIncrementData] = useState({
     id: 0,
@@ -29,12 +29,10 @@ const VoucherLimitManagement: React.FC = () => {
       setLoading(true);
       // Fetch voucher limits
       const limits = await voucherService.getVoucherLimits();
-      console.log('Voucher limits loaded:', limits); // Debug log
       setData(limits);
 
       // Fetch projects untuk dropdown
       const projectsList = await voucherService.getVoucherProjects();
-      console.log('Projects loaded:', projectsList); // Debug log
       setProjects(projectsList);
 
     } catch (error) {
@@ -55,24 +53,21 @@ const VoucherLimitManagement: React.FC = () => {
       description: '',
       limit: '',
       current_count: '0',
-      voucher_project_id: '',
+      voucher_project: '',
     });
     setOpenModal(true);
   };
 
   const handleEdit = (item: VoucherLimit) => {
     setEditingItem(item);
-    console.log('Editing item:', item); // Debug log
-    console.log('Available projects:', projects); // Debug log
     
-    const projectId = (item.voucher_project || item.voucher_project_id)?.toString() || '';
-    console.log('Project ID to set:', projectId); // Debug log
+    const projectId = (item.voucher_project)?.toString() || '';
     
     setFormData({
       description: item.description || '',
       limit: item.limit.toString(),
       current_count: item.current_count.toString(),
-      voucher_project_id: projectId,
+      voucher_project: projectId,
     });
     setOpenModal(true);
   };
@@ -83,7 +78,7 @@ const VoucherLimitManagement: React.FC = () => {
         description: formData.description,
         limit: parseInt(formData.limit),
         current_count: parseInt(formData.current_count),
-        voucher_project_id: formData.voucher_project_id ? parseInt(formData.voucher_project_id) : undefined,
+        voucher_project: formData.voucher_project ? parseInt(formData.voucher_project) : undefined,
       };
 
       if (editingItem) {
@@ -208,21 +203,21 @@ const VoucherLimitManagement: React.FC = () => {
     {
       name: 'Actions',
       cell: (row: VoucherLimit) => (
-        <div className="flex space-x-2">
+        <div className="flex gap-2">
           <Button
             size="sm"
-            color="blue"
+            color="green"
             onClick={() => handleIncrement(row)}
             disabled={row.current_count >= row.limit}
-            className="px-3 py-1 text-xs"
+            className="px-2 py-1 text-xs"
           >
             +
           </Button>
           <Button 
             size="sm" 
-            color="green" 
+            color="blue" 
             onClick={() => handleEdit(row)}
-            className="px-3 py-1 text-xs"
+            className="px-2 py-1 text-xs"
           >
             Edit
           </Button>
@@ -230,7 +225,7 @@ const VoucherLimitManagement: React.FC = () => {
             size="sm" 
             color="red" 
             onClick={() => handleDelete(row.id)}
-            className="px-3 py-1 text-xs"
+            className="px-2 py-1 text-xs"
           >
             Delete
           </Button>
@@ -306,8 +301,8 @@ const VoucherLimitManagement: React.FC = () => {
               Voucher Project
             </Typography>
             <select
-              value={formData.voucher_project_id}
-              onChange={(e) => setFormData({ ...formData, voucher_project_id: e.target.value })}
+              value={formData.voucher_project}
+              onChange={(e) => setFormData({ ...formData, voucher_project: e.target.value })}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">No Project</option>
@@ -319,7 +314,7 @@ const VoucherLimitManagement: React.FC = () => {
             </select>
             {/* Debug info */}
             <div className="text-xs text-gray-500 mt-1">
-              Current value: {formData.voucher_project_id} | Projects count: {projects.length}
+              Current value: {formData.voucher_project} | Projects count: {projects.length}
             </div>
           </div>
           <Input

@@ -7,7 +7,6 @@ import {
   CreateVoucherProjectData,
   CreateVoucherLimitData,
   CreateVoucherDiscountData,
-  VoucherLimitUpdateData 
 } from '../types/voucher';
 
 const getAuthHeaders = () => {

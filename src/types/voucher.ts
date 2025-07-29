@@ -79,5 +79,6 @@ export interface CreateVoucherDiscountData {
   discount_amount: number;
   discount_percentage: number;
   agen_fee?: number;
+  voucher_project?: number;
   voucher_project_id?: number;
 }

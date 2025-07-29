@@ -15,8 +15,8 @@ const API = axios.create({
 });
 
 // Debug logging
-console.log('Frontend hostname:', window.location.hostname);
-console.log('API Base URL:', API_BASE_URL);
+// console.log('Frontend hostname:', window.location.hostname);
+// console.log('API Base URL:', API_BASE_URL);
 
 export default API;
 export { API_BASE_URL };
