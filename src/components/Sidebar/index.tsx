@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import {
   CurrencyDollarIcon, CheckCircleIcon,
-  NewspaperIcon, ChevronDownIcon, GiftIcon, ListBulletIcon, TicketIcon, DocumentCurrencyDollarIcon
+  NewspaperIcon, ChevronDownIcon, GiftIcon, ListBulletIcon, TicketIcon, DocumentCurrencyDollarIcon, CogIcon
 } from '@heroicons/react/24/solid';
 
 interface SidebarProps {
@@ -135,6 +135,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
+                  <li>
+                    <NavLink
+                      to="/voucher_management"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
+                                  font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 
+                                  ${pathname.includes('/voucher_management') && 'bg-graydark dark:bg-meta-4'}`}
+                    >
+                      <CogIcon className="h-6 w-6 text-white-500" />
+                      Voucher Management
+                    </NavLink>
+                  </li>
+
                   <SidebarLinkGroup
                     activeCondition={pathname === '/master_data' || pathname.includes('master_data')}
                   >
@@ -185,7 +197,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </li>
                           </ul>
 
-                          <ul className="mt-2 flex flex-col gap-2.5 pl-6">
+                          {/* <ul className="mt-2 flex flex-col gap-2.5 pl-6">
                             <li>
                               <NavLink
                                 to="/master_data/master_voucher_limit"
@@ -195,7 +207,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 Master Voucher Limit
                               </NavLink>
                             </li>
-                          </ul>
+                          </ul> */}
                         </div>
                       </React.Fragment>
                     )}

@@ -16,6 +16,7 @@ import Reimbursement from './pages/Reimburse/Reimbursement';
 import VerificationReimburse from './pages/VerificationReimburse/VerificationReimburse';
 import Profile from './pages/Profile/Profile';
 import MasterVoucherLimit from './pages/MasterData/MasterVoucherLimit';
+import VoucherManagementDashboard from './pages/VoucherManagement/VoucherManagementDashboard';
 
 const AppRoutes = () => {
 
@@ -121,6 +122,16 @@ const AppRoutes = () => {
                                                 <>
                                                     <PageTitle title="Master Voucher Limit" />
                                                     <MasterVoucherLimit />
+                                                </>
+                                            }
+                                        />
+
+                                        <Route
+                                            path="voucher_management"
+                                            element={
+                                                <>
+                                                    <PageTitle title="Voucher Management" />
+                                                    <VoucherManagementDashboard />
                                                 </>
                                             }
                                         />
