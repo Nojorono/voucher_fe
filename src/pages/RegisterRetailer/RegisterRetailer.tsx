@@ -9,7 +9,7 @@ import CustomToast, {
 import Spinner from '../../components/Spinner';
 import { BG3, banner1, banner2 } from '../../images/sample/index';
 import Swal from 'sweetalert2';
-import { decryptWsId, isValidEncryptedWsId } from '../../utils/encryption';
+import { decryptWsAndProjectId, isValidEncryptedToken } from '../../utils/encryption';
 
 interface IFormInput {
   ws_name: string;
@@ -36,7 +36,7 @@ const RegisterRetailer: React.FC = () => {
     null,
   );
   const [encryptionError, setEncryptionError] = useState(false);
-  const [projectId, setProjectId] = useState('2'); // Assuming project_id is always 2 for this case
+  const [projectId, setProjectId] = useState<string>(''); // Will be set from decryption
 
   useEffect(() => {
     // Get encrypted token from URL parameter
@@ -45,25 +45,32 @@ const RegisterRetailer: React.FC = () => {
 
     if (encryptedToken) {
       // Validate encrypted token
-      if (!isValidEncryptedWsId(encryptedToken)) {
+      if (!isValidEncryptedToken(encryptedToken)) {
         console.error('Invalid encrypted token');
         setEncryptionError(true);
         return;
       }
 
-      // Decrypt the token to get ws_id
-      const wsId = decryptWsId(encryptedToken);
+      // Decrypt the token to get both ws_id and project_id
+      const decryptedData = decryptWsAndProjectId(encryptedToken);
 
-      if (wsId) {
-        fetchWholesaleData(wsId);
+      if (decryptedData) {
+        console.log('Decrypted data:', decryptedData); // Debug log
+        setProjectId(decryptedData.projectId);
+        fetchWholesaleData(decryptedData.wsId);
       } else {
         console.error('Failed to decrypt token');
         setEncryptionError(true);
       }
+    } else {
+      console.error('No token found in URL');
+      setEncryptionError(true);
     }
 
     // Check limit
     const checkLimit = async () => {
+      if (!projectId) return; // Only check limit when projectId is available
+      
       const requestOptions = {
         method: 'GET',
         redirect: 'follow' as RequestRedirect,
@@ -87,7 +94,7 @@ const RegisterRetailer: React.FC = () => {
     };
 
     checkLimit();
-  }, []);
+  }, [projectId]); // Add projectId as dependency
 
   const fetchWholesaleData = async (wsId: string) => {
     try {
@@ -112,6 +119,17 @@ const RegisterRetailer: React.FC = () => {
     data: IFormInput,
     event?: React.BaseSyntheticEvent,
   ) => {
+    // Validate that we have both wholesale and project data
+    if (!defaultWholesale || !projectId) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Error!',
+        text: 'Data wholesale atau project tidak valid. Silakan gunakan link yang benar.',
+      });
+      return;
+    }
+
     showSuccessToast('Mohon tunggu, sedang mengunggah data...');
     setTimeout(() => {
       setLoading(true);
@@ -150,7 +168,7 @@ const RegisterRetailer: React.FC = () => {
         kota: data.kota,
         kecamatan: data.kecamatan,
         kelurahan: data.kelurahan,
-        project_id: projectId, // Ambil dari const projectId di atas
+        project_id: projectId, // Use dynamic projectId from decryption
       };
 
       Object.entries(formFields).forEach(([key, value]) => {
@@ -367,12 +385,17 @@ const RegisterRetailer: React.FC = () => {
                     Pendaftaran Retailer
                   </h2>
 
-                  {/* Show selected wholesale info */}
+                  {/* Show selected wholesale and project info */}
                   {defaultWholesale && (
                     <div className="mb-4 p-4 bg-blue-100 rounded-lg">
                       <p className="text-blue-800 font-semibold">
                         Agen Terpilih: {defaultWholesale.name}
                       </p>
+                      {/* {projectId && (
+                        <p className="text-blue-600 text-sm mt-1">
+                          Project ID: {projectId}
+                        </p>
+                      )} */}
                     </div>
                   )}
 

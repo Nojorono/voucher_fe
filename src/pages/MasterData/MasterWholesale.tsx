@@ -13,6 +13,8 @@ interface WholesaleData {
   is_active: boolean;
   parent: number | null;
   parent_name: string | null;
+  project: number | null;
+  project_name: string | null;
   children_count: number;
   level: number;
   is_root: boolean;
@@ -176,6 +178,20 @@ const MasterWholesale = () => {
           <span className="text-sm font-medium text-gray-800">{row.pic}</span>
         ) : (
           <span className="text-sm italic text-gray-400">Belum ada</span>
+        ),
+    },
+    {
+      name: 'Project',
+      selector: (row: WholesaleData) => row.project_name || '-',
+      sortable: true,
+      width: '150px',
+      cell: (row: WholesaleData) =>
+        row.project_name ? (
+          <span className="text-xs font-medium bg-green-100 text-green-800 px-2 py-1 rounded-full">
+            {row.project_name}
+          </span>
+        ) : (
+          <span className="text-xs italic text-gray-400">Belum dipilih</span>
         ),
     },
     {

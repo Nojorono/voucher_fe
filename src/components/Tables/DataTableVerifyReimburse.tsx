@@ -78,7 +78,7 @@ export const detailColumns = [
     },
     {
         name: "Diskon (Rp)",
-        selector: () => "20.000",
+        selector: (row: any) => `${Math.round(row.discount_amount).toLocaleString('id-ID')}`,
         sortable: false,
     },
     {
@@ -155,12 +155,14 @@ const exportToExcel = (fileName: string, data: any[]) => {
                 'Kelurahan': item.retailer_kelurahan,
                 'Kode Voucher': item.voucher_code,
                 'Nama Agen': item.wholesaler_name,
+                'Agen Fee': item.agen_fee,
                 'Total Price': Math.round(item.transactions[0]?.total_price).toLocaleString('id-ID'),
+                'Discount Amount': Math.round(item.discount_amount).toLocaleString('id-ID'),
                 'Total Price After Discount': Math.round(item.transactions[0]?.total_price_after_discount).toLocaleString('id-ID'),
                 'Item Name': '',
                 'Qty': '',
                 'Sub Total': '',
-                'Bukti Pembayaran': `${stagingURL}${item.transactions[0]?.image}`
+                'Bukti Pembayaran': `${item.transactions[0]?.image}`
             }];
         }
 
@@ -174,12 +176,14 @@ const exportToExcel = (fileName: string, data: any[]) => {
             'Kelurahan': index === 0 ? item.retailer_kelurahan : '',
             'Kode Voucher': index === 0 ? item.voucher_code : '',
             'Nama Agen': index === 0 ? item.wholesaler_name : '',
+            'Agen Fee': index === 0 ? Math.round(item.agen_fee).toLocaleString('id-ID') : '',
             'Total Price': index === 0 ? Math.round(item.transactions[0]?.total_price).toLocaleString('id-ID') : '',
+            'Discount Amount': index === 0 ? Math.round(item.discount_amount).toLocaleString('id-ID') : '',
             'Total Price After Discount': index === 0 ? Math.round(item.transactions[0]?.total_price_after_discount).toLocaleString('id-ID') : '',
             'Item Name': detail.item_name,
             'Qty': `${Math.round(detail.qty)}`,
             'Sub Total': `${Math.round(detail.sub_total).toLocaleString('id-ID')}`,
-            'Bukti Pembayaran': index === 0 ? `${stagingURL}${item.transactions[0]?.image}` : ''
+            'Bukti Pembayaran': index === 0 ? `${item.transactions[0]?.image}` : ''
         }));
     });
 

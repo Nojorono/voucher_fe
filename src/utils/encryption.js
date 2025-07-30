@@ -76,3 +76,91 @@ export const isValidEncryptedWsId = (encryptedWsId) => {
         return false;
     }
 };
+
+// Combined encryption for wholesale ID and project ID
+export const encryptWsAndProjectId = (wsId, projectId) => {
+    try {
+        // Combine both IDs with a separator
+        const combinedData = `${wsId}|${projectId}`;
+        
+        // XOR encryption
+        let encrypted = '';
+        for (let i = 0; i < combinedData.length; i++) {
+            const charCode = combinedData.charCodeAt(i);
+            const keyChar = SECRET_KEY.charCodeAt(i % SECRET_KEY.length);
+            encrypted += String.fromCharCode(charCode ^ keyChar);
+        }
+        
+        // Base64 encode to make it URL safe
+        const base64 = btoa(encrypted);
+        
+        // Add timestamp for additional security
+        const timestamp = Date.now().toString();
+        const timestampEncrypted = btoa(timestamp);
+        
+        return `${base64}.${timestampEncrypted}`;
+    } catch (error) {
+        console.error('Combined encryption error:', error);
+        return '';
+    }
+};
+
+// Combined decryption for wholesale and project IDs
+export const decryptWsAndProjectId = (encryptedToken) => {
+    try {
+        // Split encrypted data and timestamp
+        const [encryptedData, encryptedTimestamp] = encryptedToken.split('.');
+        
+        if (!encryptedData || !encryptedTimestamp) {
+            console.error('Invalid encrypted format');
+            return null;
+        }
+        
+        // Decode timestamp and check if it's not too old
+        const timestamp = parseInt(atob(encryptedTimestamp));
+        const currentTime = Date.now();
+        const hoursDifference = (currentTime - timestamp) / (1000 * 60 * 60);
+        
+        // Optional: Check if link is not older than 24 hours
+        if (hoursDifference > 24) {
+            console.warn('Encrypted link is too old');
+            // You can decide whether to reject or allow old links
+        }
+        
+        // Base64 decode
+        const encrypted = atob(encryptedData);
+        
+        // XOR decryption
+        let decrypted = '';
+        for (let i = 0; i < encrypted.length; i++) {
+            const charCode = encrypted.charCodeAt(i);
+            const keyChar = SECRET_KEY.charCodeAt(i % SECRET_KEY.length);
+            decrypted += String.fromCharCode(charCode ^ keyChar);
+        }
+        
+        // Split the combined data
+        const [wsId, projectId] = decrypted.split('|');
+        
+        if (!wsId || !projectId) {
+            console.error('Invalid decrypted format');
+            return null;
+        }
+        
+        return { wsId, projectId };
+    } catch (error) {
+        console.error('Combined decryption error:', error);
+        return null;
+    }
+};
+
+// Validation for combined token
+export const isValidEncryptedToken = (encryptedToken) => {
+    try {
+        const decrypted = decryptWsAndProjectId(encryptedToken);
+        return decrypted !== null && 
+               !isNaN(parseInt(decrypted.wsId)) && 
+               !isNaN(parseInt(decrypted.projectId));
+    } catch (error) {
+        return false;
+    }
+};

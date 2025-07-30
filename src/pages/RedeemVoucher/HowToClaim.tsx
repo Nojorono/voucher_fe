@@ -1,11 +1,12 @@
 import { FaCopy } from 'react-icons/fa';
 import Swal from 'sweetalert2'
 import { useEffect, useState } from 'react';
-import { encryptWsId } from '../../utils/encryption';
+import { encryptWsAndProjectId } from '../../utils/encryption';
 
 export default function HowToClaim() {
     const [wsId, setWsId] = useState<string>('');
-    const [encryptedWsId, setEncryptedWsId] = useState<string>('');
+    const [projectId] = useState<string>('2'); // Default project ID
+    const [encryptedToken, setEncryptedToken] = useState<string>('');
     const { hostname, port } = window.location;
     const baseUrl = `http://${hostname}${port ? `:${port}` : ''}`;
     
@@ -14,11 +15,11 @@ export default function HowToClaim() {
         const wsId = localStorage.getItem('ws_id');
         if (wsId) {
             setWsId(wsId);
-            // Encrypt the ws_id
-            const encrypted = encryptWsId(wsId);
-            setEncryptedWsId(encrypted);
+            // Encrypt both ws_id and project_id
+            const encrypted = encryptWsAndProjectId(wsId, projectId);
+            setEncryptedToken(encrypted);
         }
-    }, []);
+    }, [projectId]);
 
     // Fallback function untuk copy text
     const fallbackCopyTextToClipboard = (text: string) => {
@@ -74,7 +75,7 @@ export default function HowToClaim() {
 
     // COPY CLIPBOARD dengan fallback
     const copyToClipboard = () => {
-        const registrationUrl = `${baseUrl}/register/retailer?token=${encryptedWsId}`;
+        const registrationUrl = `${baseUrl}/register/retailer?token=${encryptedToken}`;
         
         // Check if clipboard API is available
         if (navigator.clipboard && window.isSecureContext) {
@@ -105,7 +106,7 @@ export default function HowToClaim() {
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER MENDAPATKAN VOUCHER:</h2>
             <ol className="list-decimal list-inside mb-6">
                 <li className="mb-2">Toko/retailer diwajibkan memasang sticker POSM dan menyediakan tester di tempat yang telah disediakan di tempat yang strategis di dalam toko.</li>
-                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href={`${baseUrl}/register/retailer?token=${encryptedWsId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
+                <li className="mb-2">Toko/retailer diwajibkan mengambil foto sticker POSM, kotak tester yang sudah terisi dan kode di kotak tester dengan cara mengisi formulir ini: <a href={`${baseUrl}/register/retailer?token=${encryptedToken}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">REGISTER</a></li>
                 <li className="mb-2">Voucher akan dikirimkan oleh pihak admin hanya melalui no Whatsapp <strong>081220199495</strong> setelah melalui proses verifikasi.</li>
             </ol>
             <h2 className="text-2xl font-bold mb-4">CARA RETAILER CLAIM VOUCHER:</h2>
@@ -120,17 +121,17 @@ export default function HowToClaim() {
                 <button
                     onClick={copyToClipboard}
                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
-                    disabled={!wsId || !encryptedWsId}
+                    disabled={!wsId || !encryptedToken}
                 >
                     <FaCopy className="mr-2" />
                     <span>Copy Retailer Registration Link</span>
                 </button>
-                {(!wsId || !encryptedWsId) && (
+                {(!wsId || !encryptedToken) && (
                     <p className="text-red-500 text-sm mt-2">Loading wholesale ID...</p>
                 )}
-                {encryptedWsId && (
+                {encryptedToken && (
                     <p className="text-green-600 text-sm mt-2">
-                        🔒 Link aman dengan enkripsi
+                        🔒 Link aman dengan enkripsi (WS + Project ID)
                     </p>
                 )}
             </div>

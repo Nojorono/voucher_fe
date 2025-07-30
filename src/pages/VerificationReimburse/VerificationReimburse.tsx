@@ -77,6 +77,12 @@ const VerificationReimburse = () => {
       cell: (row: any) => <div className="text-sm">{row.wholesaler_name}</div>,
     },
     {
+      name: "Fee",
+      selector: (row: any) => row.agen_fee,
+      sortable: true,
+      cell: (row: any) => <div className="text-sm">{row.agen_fee}</div>,
+    },
+    {
       name: "Tanggal",
       selector: (row: any) => row.reimbursed_at,
       sortable: true,

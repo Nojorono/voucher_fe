@@ -15,6 +15,7 @@ interface FormAddWholesaleProps {
   method: string;
   IdUpdate: any;
   wholesales?: any[];
+  projects?: any[];
 }
 
 const ModalFormWholesale: React.FC<FormAddWholesaleProps> = ({
@@ -25,6 +26,7 @@ const ModalFormWholesale: React.FC<FormAddWholesaleProps> = ({
   method,
   IdUpdate,
   wholesales = [],
+  projects = [],
 }) => {
   const { register, handleSubmit, reset } = useForm({
     defaultValues: initialData || {},
@@ -102,6 +104,17 @@ const ModalFormWholesale: React.FC<FormAddWholesaleProps> = ({
                   {'  '.repeat(wholesale.level || 0)}
                   {wholesale.level > 0 ? '└─ ' : ''}
                   {wholesale.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mt-2">
+            <label>Project</label>
+            <select {...register('project')} className="border p-2 w-full">
+              <option value="">Pilih Project</option>
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
                 </option>
               ))}
             </select>
