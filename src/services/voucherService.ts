@@ -216,4 +216,12 @@ export const voucherService = {
     if (!response.ok) throw new Error('Failed to fetch discounts by project');
     return response.json();
   },
+
+  getDiscountsByVoucherCode: async (voucherCode: string): Promise<any> => {
+    const response = await fetch(`${stagingURL}/api/voucher-discounts/by_voucher/?voucher_code=${encodeURIComponent(voucherCode)}`, {
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to fetch discounts by voucher');
+    return response.json();
+  },
 };

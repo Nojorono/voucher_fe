@@ -10,6 +10,7 @@ import CustomToast, {
   showErrorToast,
   showSuccessToast,
 } from '../Toast/CustomToast';
+import { voucherService } from '../../services/voucherService';
 
 const CustomLoader = () => <Spinner />;
 
@@ -263,22 +264,41 @@ const DataTableApproval = memo(
           selector: (row) => row.retailer_phone_number,
           sortable: true,
           cell: (row) => {
-            if (row.retailer_voucher_code != null && row.status == 'Verified') {
-              const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp 20.000 yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: 2 Juli 2025%0A- Bisa di klaim di Agen: ${row.wholesale_name}%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
+            const handleWhatsAppClick = async (
+              event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+            ) => {
+              event.preventDefault();
 
+              if (row.retailer_voucher_code && row.status === 'Verified') {
+                try {
+                  // Ambil nominal diskon langsung
+                  const discount = await fetchDiscByVoucherCode(
+                    row.retailer_voucher_code,
+                  );
+
+                  const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp ${discount} yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: 2 Juli 2025%0A- Bisa di klaim di Agen: ${row.wholesale_name}%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
+
+                  window.open(whatsappLink, '_blank');
+                } catch (error) {
+                  console.error('Error opening WhatsApp link:', error);
+                  showErrorToast('Gagal mengambil diskon');
+                }
+              }
+            };
+
+            if (row.retailer_voucher_code && row.status === 'Verified') {
               return (
                 <a
-                  href={whatsappLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#"
+                  onClick={handleWhatsAppClick}
                   className="text-blue-500 underline"
                   style={{ fontSize: '10px', fontWeight: 'bold' }}
                 >
                   {row.retailer_phone_number}
                 </a>
               );
-            } else if (row.status == 'Rejected') {
-              const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Setelah%20kami%20lakukan%20pengecekan,%20saat%20ini%20pengajuan%20Anda%20belum%20memenuhi%20kriteria%20untuk%20disetujui.%20Silakan%20lakukan%20perbaikan%20dengan%20cek%20kembali%20untuk%20data%20yang%20tidak%20sesuai,%20foto%20yang%20kurang%20jelas,%20atau%20informasi%20yang%20tidak%20lengkap%20lalu%20ajukan%20kembali%20formulir%20dengan%20informasi%20yang%20benar%20dan%20lengkap.%20Jika%20ada%20pertanyaan,%20Anda%20bisa%20menghubungi%20kami%20di%20nomor%20ini.%20Kami%20akan%20menunggu%20respon%20dari%20anda.%20Terima%20kasih%20atas%20pengertiannya.`;
+            } else if (row.status === 'Rejected') {
+              const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Setelah%20kami%20lakukan%20pengecekan,%20saat%20ini%20pengajuan%20Anda%20belum%20memenuhi%20kriteria%20untuk%20disetujui...`;
 
               return (
                 <a
@@ -300,6 +320,7 @@ const DataTableApproval = memo(
             }
           },
         },
+
         createColumn('Alamat', (row) => row.retailer_address),
         createColumn('Status', (row) => (
           <div
@@ -337,40 +358,6 @@ const DataTableApproval = memo(
             ) : null,
           sortable: false,
         },
-        // {
-        //   name: 'Foto Tester',
-        //   cell: (row) =>
-        //     row.images[1] ? (
-        //       <img
-        //         loading="lazy"
-        //         src={`${row.images[1]}`}
-        //         alt="Retailer"
-        //         style={{ width: '40px', height: '40px', cursor: 'pointer' }}
-        //         onClick={() => {
-        //           setCurrentImage(`${row.images[1]}`);
-        //           setLightboxOpen(true);
-        //         }}
-        //       />
-        //     ) : null,
-        //   sortable: false,
-        // },
-        // {
-        //   name: 'Foto Kode Tester',
-        //   cell: (row) =>
-        //     row.images[2] ? (
-        //       <img
-        //         loading="lazy"
-        //         src={`${row.images[2]}`}
-        //         alt="Retailer"
-        //         style={{ width: '40px', height: '40px', cursor: 'pointer' }}
-        //         onClick={() => {
-        //           setCurrentImage(`${row.images[2]}`);
-        //           setLightboxOpen(true);
-        //         }}
-        //       />
-        //     ) : null,
-        //   sortable: false,
-        // },
       ];
     }, [stagingURL]);
 
@@ -429,6 +416,26 @@ const DataTableApproval = memo(
           paddingRight: '8px',
         },
       },
+    };
+
+    const fetchDiscByVoucherCode = async (
+      voucher_code: string,
+    ): Promise<string> => {
+      try {
+        const response = await voucherService.getDiscountsByVoucherCode(
+          voucher_code,
+        );
+        const discountAmountRaw = response?.discounts?.[0]?.discount_amount;
+
+        return discountAmountRaw != null
+          ? Number(discountAmountRaw).toLocaleString('id-ID', {
+              maximumFractionDigits: 0,
+            })
+          : '';
+      } catch (error) {
+        console.error('Error fetching discount:', error);
+        return '';
+      }
     };
 
     return (
