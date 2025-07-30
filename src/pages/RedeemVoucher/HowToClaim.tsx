@@ -5,7 +5,7 @@ import { encryptWsAndProjectId } from '../../utils/encryption';
 
 export default function HowToClaim() {
     const [wsId, setWsId] = useState<string>('');
-    const [projectId] = useState<string>('2'); // Default project ID
+    const [projectId] = useState<string>(''); 
     const [encryptedToken, setEncryptedToken] = useState<string>('');
     const { hostname, port } = window.location;
     const baseUrl = `http://${hostname}${port ? `:${port}` : ''}`;
@@ -13,7 +13,8 @@ export default function HowToClaim() {
     useEffect(() => {
         // Get ws_id from localStorage
         const wsId = localStorage.getItem('ws_id');
-        if (wsId) {
+        const projectId = localStorage.getItem('project');
+        if (wsId && projectId) {
             setWsId(wsId);
             // Encrypt both ws_id and project_id
             const encrypted = encryptWsAndProjectId(wsId, projectId);

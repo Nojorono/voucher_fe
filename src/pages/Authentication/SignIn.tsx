@@ -36,6 +36,7 @@ const SignIn: React.FC = () => {
         name,
         phone_number,
         is_staff,
+        project,
       } = response.data;
 
       // Simpan data pengguna dan wholesale di localStorage
@@ -50,6 +51,7 @@ const SignIn: React.FC = () => {
       localStorage.setItem('username', username);
       localStorage.setItem('password', password);
       localStorage.setItem('is_staff', is_staff);
+      localStorage.setItem('project', project || '');
 
       if (is_staff === true) {
         showSuccessToast('Login successful. Redirecting to...');
