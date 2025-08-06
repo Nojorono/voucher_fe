@@ -142,7 +142,7 @@ const RegisterRetailer: React.FC = () => {
       const validPhotos: File[] = [];
       Array.from(data.photos).forEach((photo, index) => {
         const remark =
-          ['Foto Pack/Slop Display', 'Foto Tester', 'Foto Kode Tester'][
+          ['Foto Sunscreen', 'Foto Tester', 'Foto Kode Tester'][
             index
           ] || 'Foto Lainnya';
         if (photo.size > 600 * 1024) {

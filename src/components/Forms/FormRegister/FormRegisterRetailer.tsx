@@ -155,7 +155,7 @@ const FormRetailerRegister = <T extends FieldValues>({
       let file = files[0];
       const remark =
         index === 0
-          ? 'Foto Pack/Slop Display'
+          ? 'Foto Sunscreen'
           : index === 1
           ? 'Foto Tester'
           : 'Foto Kode Tester';
@@ -287,7 +287,7 @@ const FormRetailerRegister = <T extends FieldValues>({
                   <div key={index} className="mb-2">
                     <label className="mt-1 block text-sm text-white">
                       {index === 0
-                        ? 'Foto Pack/Slop Display'
+                        ? 'Foto Sunscreen'
                         : index === 1
                         ? 'Foto Tester'
                         : 'Foto Kode Tester'}

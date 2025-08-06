@@ -276,7 +276,9 @@ const DataTableApproval = memo(
                     row.retailer_voucher_code,
                   );
 
-                  const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp ${discount} yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: 2 Juli 2025%0A- Bisa di klaim di Agen: ${row.wholesale_name}%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
+                  const { discount: discountAmount, periodEnd } = discount;
+
+                  const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp ${discountAmount} yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: ${periodEnd}%0A- Bisa di klaim di Agen: ${row.wholesale_name}%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
 
                   window.open(whatsappLink, '_blank');
                 } catch (error) {
@@ -342,7 +344,7 @@ const DataTableApproval = memo(
           sortable: true,
         },
         {
-          name: 'Foto Pack/Slop Display',
+          name: 'Foto Sunscreen',
           cell: (row) =>
             row.images[0] ? (
               <img
@@ -418,23 +420,40 @@ const DataTableApproval = memo(
       },
     };
 
+    // Mengambil discount dan period_end sekaligus
     const fetchDiscByVoucherCode = async (
       voucher_code: string,
-    ): Promise<string> => {
+    ): Promise<{ discount: string; periodEnd: string }> => {
       try {
         const response = await voucherService.getDiscountsByVoucherCode(
           voucher_code,
         );
         const discountAmountRaw = response?.discounts?.[0]?.discount_amount;
+        const periodEndRaw = response?.discounts?.[0]?.periode_end;
 
-        return discountAmountRaw != null
-          ? Number(discountAmountRaw).toLocaleString('id-ID', {
-              maximumFractionDigits: 0,
-            })
-          : '';
+        // Format discount
+        const discount =
+          discountAmountRaw != null
+            ? Number(discountAmountRaw).toLocaleString('id-ID', {
+                maximumFractionDigits: 0,
+              })
+            : '';
+
+        // Format periodEnd ke format tanggal Indonesia (misal: 29 November 2025)
+        let periodEnd = '';
+        if (periodEndRaw) {
+          const date = new Date(periodEndRaw);
+          periodEnd = date.toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          });
+        }
+
+        return { discount, periodEnd };
       } catch (error) {
         console.error('Error fetching discount:', error);
-        return '';
+        return { discount: '', periodEnd: '' };
       }
     };
 
