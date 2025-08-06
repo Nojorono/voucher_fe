@@ -1,4 +1,4 @@
-import sample1 from './sample-1.jpeg';
+import sample1 from './sample-1.jpg';
 import sample2 from './sample-2.jpeg';
 import sample3 from './sample-3.jpeg';
 import BG3 from './BG-3.jpg';

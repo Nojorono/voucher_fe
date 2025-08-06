@@ -122,7 +122,7 @@ const VoucherProjectManagement: React.FC = () => {
         <div className="py-2">
           <div className="font-medium text-gray-900">{row.name}</div>
           {row.description && (
-            <div className="text-sm text-gray-500 truncate max-w-xs">
+            <div className="text-sm text-gray-500 break-words whitespace-pre-line max-w-xs">
               {row.description}
             </div>
           )}
