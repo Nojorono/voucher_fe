@@ -278,7 +278,7 @@ const DataTableApproval = memo(
 
                   const { discount: discountAmount, periodEnd } = discount;
 
-                  const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp ${discountAmount} yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Berlaku Hingga: ${periodEnd}%0A- Bisa di klaim di Agen: ${row.wholesale_name}%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
+                    const whatsappLink = `https://wa.me/${row.retailer_phone_number}?text=Pengajuan%20Klaim%20Anda%20telah%20diapprove!%20Sebagai%20apresiasi,%20berikut%20adalah%20kode%20voucher%20Anda:%0A- Kode Voucher: *${row.retailer_voucher_code}*%0A- Diskon: Rp ${discountAmount} yang dapat digunakan untuk pembelian produk Baron berikutnya%0A- Voucher hanya berlaku jika Nilai total pembelian produk Baron lebih dari Rp 50.000.%0A- Berlaku Hingga: ${periodEnd}%0A- Bisa di klaim di Agen: ${row.wholesale_name}%0AGunakan kode ini saat pembelian untuk menikmati potongan harga! Jika ada pertanyaan, jangan ragu untuk menghubungi kami.`;
 
                   window.open(whatsappLink, '_blank');
                 } catch (error) {
